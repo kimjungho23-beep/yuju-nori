@@ -1,10 +1,13 @@
-// 유주 놀이터 오프라인 저장소. 앱을 고치면 VERSION 숫자를 올려주세요.
-const VERSION = 'yuju-v4';
+// 유주 놀이터 오프라인 저장소. 앱을 고치면 VERSION 숫자를 올려주세요 (index.html의 APP_VERSION도 같이).
+const VERSION = 'yuju-v5';
 const CORE = ['./', './index.html', './manifest.json',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
+  // cache:'reload' = 브라우저에 남은 옛 파일 말고 서버에서 새로 받기
+  e.waitUntil(caches.open(VERSION)
+    .then(c => c.addAll(CORE.map(u => new Request(u, { cache: 'reload' }))))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -32,12 +35,31 @@ self.addEventListener('fetch', e => {
 
   if (url.origin !== location.origin) return;
 
-  // 앱 파일: 저장본을 바로 보여주고, 인터넷이 되면 뒤에서 새 버전으로 갱신
+  // 앱 화면(index.html): 인터넷이 되면 항상 최신으로, 안 되면(3.5초) 저장본으로
+  const isPage = req.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');
+  if (isPage) {
+    e.respondWith((async () => {
+      const c = await caches.open(VERSION);
+      try {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 3500);
+        const res = await fetch('./index.html', { cache: 'no-cache', signal: ctrl.signal });
+        clearTimeout(t);
+        if (!res.ok) throw new Error(res.status);
+        c.put('./index.html', res.clone());
+        return res;
+      } catch (_) {
+        return (await c.match('./index.html')) || Response.error();
+      }
+    })());
+    return;
+  }
+
+  // 아이콘 등 나머지: 저장본 먼저, 뒤에서 새로 받아두기
   e.respondWith(caches.open(VERSION).then(async c => {
-    const key = req.mode === 'navigate' ? './index.html' : req;
-    const hit = await c.match(key, { ignoreSearch: true });
-    const net = fetch(req).then(res => {
-      if (res.ok) c.put(key, res.clone());
+    const hit = await c.match(req, { ignoreSearch: true });
+    const net = fetch(req, { cache: 'no-cache' }).then(res => {
+      if (res.ok) c.put(req, res.clone());
       return res;
     }).catch(() => hit);
     return hit || net;

@@ -36,6 +36,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 .rbtn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(30,90,140,.18)}
 .rbtn.off{opacity:.6}
 .musicBtn{position:relative}
+#ver{position:absolute;right:max(12px,2vmin);bottom:max(8px,1.4vmin);font-size:clamp(12px,1.8vmin,16px);color:rgba(255,255,255,.85);pointer-events:none}
 .musicBtn.off::after{content:'';position:absolute;left:16%;right:16%;top:calc(50% - 3px);height:6px;border-radius:6px;background:#ff5a6e;transform:rotate(-40deg)}
 #toast{position:fixed;left:50%;top:max(18px,3vmin);transform:translate(-50%,-150%);z-index:200;pointer-events:none;background:rgba(43,58,85,.88);color:#fff;
   padding:1.4vmin 3.2vmin;border-radius:99px;font-size:clamp(16px,2.8vmin,26px);white-space:nowrap;transition:transform .3s ease}
@@ -209,6 +210,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 <section id="home" class="screen on">
   <div class="topbar"><span></span><button class="rbtn musicBtn" aria-label="음악">🎵</button></div>
   <div class="lane"><div class="swim"><img id="swimImg" alt=""></div></div>
+  <span id="ver"></span>
   <div class="homeWrap">
     <h1 class="title" id="title"></h1>
     <div class="menu">
@@ -448,7 +450,8 @@ const S={pieces:[4,6].includes(+store.get('yj_pieces',4))?+store.get('yj_pieces'
 try{S.photos=JSON.parse(store.get('yj_photos','[]'))||[];}catch(e){S.photos=[];}
 const items=()=>[...CHARS.map(c=>({...c,thumb:svgURL(c.svg(true))})),...S.photos.map(p=>({id:p.id,photo:true,src:p.src,thumb:p.src}))];
 
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;}
+function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingReload){location.reload();return;}
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;}
 function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.textContent='🎵';b.classList.toggle('off',!S.music);
   b.setAttribute('aria-label',S.music?'배경음악 끄기':'배경음악 켜기');});}
 let toastT=0;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1800);}
@@ -582,7 +585,19 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='game'){renderSelect();show('select');}else if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+const APP_VERSION='v5';
+$('ver').textContent=APP_VERSION;
+let pendingReload=false;
+if('serviceWorker' in navigator){
+  const hadCtrl=!!navigator.serviceWorker.controller;
+  addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>{
+    // 앱으로 돌아올 때마다 새 버전 확인
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{});});
+  }).catch(()=>{}));
+  // 새 버전이 준비되면: 첫 화면이면 바로, 놀이 중이면 첫 화면으로 돌아갈 때 새로고침 (그리던 그림이 날아가지 않게)
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadCtrl)return;
+    if(S.screen==='home')location.reload();else pendingReload=true;});
+}
 
 let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(S.screen==='game'&&G&&!G.over)startGame();if(S.screen==='draw')fitPaper();},300);});
 
