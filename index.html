@@ -34,7 +34,12 @@ img{-webkit-user-drag:none;pointer-events:none}
 .rbtn{pointer-events:auto;width:clamp(58px,9vmin,86px);height:clamp(58px,9vmin,86px);border-radius:50%;border:none;background:#fff;
   box-shadow:0 6px 0 rgba(30,90,140,.18);font-size:clamp(28px,4.6vmin,44px);display:grid;place-items:center;transition:transform .1s}
 .rbtn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(30,90,140,.18)}
-.rbtn.off{opacity:.55}
+.rbtn.off{opacity:.6}
+.musicBtn{position:relative}
+.musicBtn.off::after{content:'';position:absolute;left:16%;right:16%;top:calc(50% - 3px);height:6px;border-radius:6px;background:#ff5a6e;transform:rotate(-40deg)}
+#toast{position:fixed;left:50%;top:max(18px,3vmin);transform:translate(-50%,-150%);z-index:200;pointer-events:none;background:rgba(43,58,85,.88);color:#fff;
+  padding:1.4vmin 3.2vmin;border-radius:99px;font-size:clamp(16px,2.8vmin,26px);white-space:nowrap;transition:transform .3s ease}
+#toast.on{transform:translate(-50%,0)}
 
 /* 홈 */
 .homeWrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5vmin}
@@ -199,6 +204,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 </head>
 <body>
 <div id="bubbles"></div>
+<div id="toast"></div>
 
 <section id="home" class="screen on">
   <div class="topbar"><span></span><button class="rbtn musicBtn" aria-label="음악">🎵</button></div>
@@ -443,13 +449,15 @@ try{S.photos=JSON.parse(store.get('yj_photos','[]'))||[];}catch(e){S.photos=[];}
 const items=()=>[...CHARS.map(c=>({...c,thumb:svgURL(c.svg(true))})),...S.photos.map(p=>({id:p.id,photo:true,src:p.src,thumb:p.src}))];
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;}
-function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.textContent=S.music?'🎵':'🔇';b.classList.toggle('off',!S.music);});}
+function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.textContent='🎵';b.classList.toggle('off',!S.music);
+  b.setAttribute('aria-label',S.music?'배경음악 끄기':'배경음악 켜기');});}
+let toastT=0;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1800);}
 let unlocked=false;
 document.addEventListener('pointerdown',()=>{audio();if(!unlocked){unlocked=true;if(S.music)bgmStart();}},true);
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('visibilitychange',()=>{if(!AU.ctx)return;document.hidden?AU.ctx.suspend():AU.ctx.resume();});
 document.querySelectorAll('.musicBtn').forEach(b=>b.onclick=()=>{S.music=!S.music;store.set('yj_music',S.music?'1':'0');
-  S.music?bgmStart():bgmStop();syncMusic();sfx.tap();});
+  S.music?bgmStart():bgmStop();syncMusic();sfx.tap();toast(S.music?'🎵 배경음악 켜짐':'🎵 배경음악 꺼짐 (효과음은 그대로)');});
 syncMusic();
 
 /* 거품 */
