@@ -448,7 +448,7 @@ const AU={ctx:null,master:null,bgm:null};
 function audio(){
   if(!AU.ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
     AU.ctx=new C();AU.master=AU.ctx.createGain();AU.master.gain.value=.9;AU.master.connect(AU.ctx.destination);
-    AU.bgm=AU.ctx.createGain();AU.bgm.gain.value=.55;AU.bgm.connect(AU.master);}
+    AU.bgm=AU.ctx.createGain();AU.bgm.gain.value=.3;AU.bgm.connect(AU.master);}
   if(AU.ctx.state==='suspended')AU.ctx.resume();
   return AU.ctx;
 }
@@ -494,25 +494,62 @@ Object.assign(sfx,{
   chomp(){[0,.2].forEach(t=>{tone({f:230,f2:110,t,d:.13,v:.35,type:'triangle'});noise({f:700,t,d:.08,v:.15});});},
 });
 
-/* 배경음: 직접 작곡한 오르골 풍 루프 */
-const BPM=108,SPB=60/BPM;
-const MEL=[[76,1],[79,1],[81,1],[79,1],[76,1],[74,1],[72,2],[74,1],[76,1],[79,1],[76,1],[74,3],[0,1],
-           [76,1],[79,1],[81,1],[84,1],[81,1],[79,1],[76,2],[74,1],[76,1],[74,1],[72,1],[72,3],[0,1]];
-const ROOTS=[48,48,43,43,48,45,43,48];
-const BGM=(()=>{const ev=[];let t=0;MEL.forEach(([m,b])=>{if(m)ev.push({t,m,b,k:'mel'});t+=b;});
-  ROOTS.forEach((r,i)=>{ev.push({t:i*4,m:r,k:'bass'});ev.push({t:i*4+2,m:r+7,k:'bass'});ev.push({t:i*4+1,k:'tick'});ev.push({t:i*4+3,k:'tick'});});
-  ev.sort((a,b)=>a.t-b.t);return{ev,len:32};})();
-let bgmTimer=null,loopStart=0,bIdx=0;
-function bgmNote(e,at){
-  if(e.k==='mel'){const f=mtof(e.m);tone({f,at,d:e.b*SPB*.9+.45,v:.13,out:AU.bgm});tone({f:f*2,at,d:.35,v:.035,out:AU.bgm});}
-  else if(e.k==='bass')tone({f:mtof(e.m),at,d:.55,v:.09,type:'triangle',out:AU.bgm});
-  else tone({f:1500,f2:2300,at,d:.05,v:.025,out:AU.bgm});
-}
+/* 배경음: 직접 작곡한 동요풍 4곡을 돌아가며 재생. 같은 곡도 두 번째엔 악기·반주가 바뀜 */
+const BGM_VOL=.3;
+const SONGS=[
+ {name:'바다 오르골',bpm:104,beats:4,lead:'box',acc:'pluck',
+  mel:[[76,1],[79,1],[81,1],[79,1],[76,1],[74,1],[72,2],[74,1],[76,1],[79,1],[76,1],[74,3],[0,1],
+       [76,1],[79,1],[81,1],[84,1],[81,1],[79,1],[76,2],[74,1],[76,1],[74,1],[72,1],[72,3],[0,1]],
+  ch:[[48,4],[48,4],[43,4],[43,4],[48,4],[45,3],[43,4],[48,4]]},
+ {name:'통통 물방울',bpm:120,beats:4,lead:'marimba',acc:'oompah',
+  mel:[[84,.5],[81,.5],[84,.5],[81,.5],[77,1],[81,1],[79,.5],[81,.5],[79,.5],[77,.5],[74,1],[0,1],
+       [72,.5],[74,.5],[77,.5],[79,.5],[81,1],[84,1],[81,.5],[79,.5],[77,.5],[79,.5],[81,2],
+       [84,.5],[81,.5],[84,.5],[81,.5],[86,1],[84,1],[81,.5],[79,.5],[81,.5],[84,.5],[79,2],
+       [77,.5],[79,.5],[81,.5],[77,.5],[79,1],[76,1],[77,3],[0,1]],
+  ch:[[41,4],[50,3],[46,4],[48,4],[41,4],[48,4],[46,4],[41,4]]},
+ {name:'물결 왈츠',bpm:96,beats:3,lead:'flute',acc:'waltz',
+  mel:[[83,2],[81,1],[79,2],[74,1],[76,1],[79,1],[83,1],[81,3],[83,2],[86,1],[88,2],[86,1],[83,1],[81,1],[78,1],[79,3],
+       [86,2],[83,1],[88,2],[86,1],[83,1],[79,1],[81,1],[83,3],[81,2],[79,1],[76,2],[79,1],[81,1],[83,1],[81,1],[79,3]],
+  ch:[[43,4],[43,4],[48,4],[50,4],[43,4],[48,4],[50,4],[43,4],[43,4],[48,4],[40,3],[43,4],[45,3],[48,4],[50,4],[43,4]]},
+ {name:'깡총 산책',bpm:116,beats:4,lead:'box',acc:'skip',
+  mel:[[76,.75],[77,.25],[79,1],[76,.75],[77,.25],[79,1],[81,.75],[79,.25],[77,1],[74,2],
+       [74,.75],[76,.25],[77,1],[74,.75],[76,.25],[77,1],[79,.75],[77,.25],[76,1],[72,2],
+       [76,.5],[79,.5],[84,1],[83,.5],[81,.5],[79,1],[81,.5],[77,.5],[81,1],[79,2],
+       [77,.5],[76,.5],[74,.5],[76,.5],[77,.5],[74,.5],[71,1],[72,3],[0,1]],
+  ch:[[48,4],[41,4],[43,4],[48,4],[48,4],[41,4],[43,4],[48,4]]},
+];
+function buildSong(s,loop){const ev=[],B=s.beats,alt=loop%2===1;let t=0;
+  const lead=alt?({box:'marimba',marimba:'bell',flute:'box'}[s.lead]):s.lead;
+  s.mel.forEach(([m,b])=>{if(m)ev.push({t,k:'mel',m,b,inst:lead});t+=b;});
+  s.ch.forEach(([r,q],i)=>{const o=i*B,stab=[r+24,r+24+q,r+31];
+    const bass=(bt,m,d=.5)=>ev.push({t:o+bt,k:'bass',m,d}),chord=bt=>stab.forEach(m=>ev.push({t:o+bt,k:'stab',m})),tick=bt=>ev.push({t:o+bt,k:'tick'});
+    if(s.acc==='pluck'){bass(0,r);bass(2,r+7);tick(1);tick(3);}
+    else if(s.acc==='oompah'){bass(0,r,.25);chord(1);bass(2,r+7,.25);chord(3);}
+    else if(s.acc==='waltz'){bass(0,r,1.2);chord(1);chord(2);}
+    else{bass(0,r);bass(2,r+7);chord(1.5);chord(3.5);[0,1,2,3].forEach(tick);}
+    if(alt){const base=72+((r%12)+12)%12;const arp=[base,base+q,base+7,base+12];   // 두 번째엔 반짝이 아르페지오
+      for(let k=0;k<B*2;k++)ev.push({t:o+k*.5,k:'arp',m:arp[k%4]});}});
+  ev.sort((a,b)=>a.t-b.t);return{ev,len:t};}
+const PL={song:Math.floor(Math.random()*SONGS.length),loop:0,ev:[],len:0,spb:.5,start:0,idx:0};
+function loadSeg(){const s=SONGS[PL.song],b=buildSong(s,PL.loop);PL.ev=b.ev;PL.len=b.len;PL.spb=60/s.bpm;PL.idx=0;}
+let bgmTimer=null;
+function bgmNote(e,at){const o=AU.bgm,f=mtof(e.m||0),spb=PL.spb;
+  if(e.k==='mel'){const d=e.b*spb;
+    if(e.inst==='box'){tone({f,at,d:d*.9+.45,v:.13,out:o});tone({f:f*2,at,d:.35,v:.035,out:o});}
+    else if(e.inst==='marimba'){tone({f,at,d:Math.min(.5,d+.2),v:.15,out:o});tone({f:f*4,at,d:.07,v:.03,out:o});}
+    else if(e.inst==='flute'){tone({f,at,d:d*.95+.25,v:.11,a:.05,type:'triangle',out:o});tone({f:f*2,at,d:d*.8,v:.012,a:.05,out:o});}
+    else{tone({f:f*2,at,d:.6,v:.07,out:o});tone({f,at,d:.4,v:.06,out:o});}}
+  else if(e.k==='bass')tone({f,at,d:e.d,v:.09,type:'triangle',out:o});
+  else if(e.k==='stab')tone({f,at,d:.18,v:.03,out:o});
+  else if(e.k==='arp')tone({f:f*2,at,d:.22,v:.022,out:o});
+  else tone({f:1500,f2:2300,at,d:.05,v:.02,out:o});}
 function bgmTick(){const c=AU.ctx,h=c.currentTime+.35;
-  for(;;){const e=BGM.ev[bIdx],at=loopStart+e.t*SPB;if(at>h)break;bgmNote(e,at);
-    if(++bIdx>=BGM.ev.length){bIdx=0;loopStart+=BGM.len*SPB;}}}
-function bgmStart(){const c=audio();if(!c||bgmTimer)return;AU.bgm.gain.setValueAtTime(.55,c.currentTime);
-  loopStart=c.currentTime+.15;bIdx=0;bgmTick();bgmTimer=setInterval(bgmTick,90);}
+  for(let guard=0;guard<500;guard++){
+    if(PL.idx>=PL.ev.length){PL.start+=PL.len*PL.spb;PL.loop++;
+      if(PL.loop>=2){PL.loop=0;PL.song=(PL.song+1)%SONGS.length;PL.start+=PL.spb*2;}loadSeg();continue;}
+    const e=PL.ev[PL.idx],at=PL.start+e.t*PL.spb;if(at>h)break;bgmNote(e,at);PL.idx++;}}
+function bgmStart(){const c=audio();if(!c||bgmTimer)return;AU.bgm.gain.cancelScheduledValues(c.currentTime);AU.bgm.gain.setValueAtTime(BGM_VOL,c.currentTime);
+  PL.loop=0;loadSeg();PL.start=c.currentTime+.15;bgmTick();bgmTimer=setInterval(bgmTick,90);}
 function bgmStop(){if(!bgmTimer)return;clearInterval(bgmTimer);bgmTimer=null;const c=AU.ctx;
   AU.bgm.gain.setTargetAtTime(0,c.currentTime,.05);}
 
@@ -715,7 +752,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='game'){renderSelect();show('select');}else if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v8';
+const APP_VERSION='v9';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
