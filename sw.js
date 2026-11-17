@@ -1,5 +1,5 @@
 // 유주 놀이터 오프라인 저장소. 앱을 고치면 VERSION 숫자를 올려주세요 (index.html의 APP_VERSION도 같이).
-const VERSION = 'yuju-v6';
+const VERSION = 'yuju-v7';
 const CORE = ['./', './index.html', './manifest.json',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
 

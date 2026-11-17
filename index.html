@@ -103,7 +103,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 .board.cheer .full{display:block}
 .board.cheer .guide{display:none}
 @keyframes cheer{0%,100%{transform:translateY(0) scale(1)}35%{transform:translateY(-4%) scale(1.03,.98)}55%{transform:translateY(0) scale(1.02,.97)}}
-.piece{position:absolute;touch-action:none;filter:drop-shadow(0 .8vmin .7vmin rgba(0,50,100,.28));transition:transform .15s;animation:popin .45s backwards}
+.piece{position:absolute;touch-action:none;filter:drop-shadow(0 .8vmin .7vmin rgba(0,50,100,.28));transition:transform .15s;animation:popsoft .3s}
 .piece.grid{border-radius:1.2vmin}
 .piece.hold{transform:scale(1.07);filter:drop-shadow(0 2vmin 1.6vmin rgba(0,50,100,.3))}
 .piece.locked{transition:left .22s ease-out,top .22s ease-out;filter:none;border-radius:0}
@@ -113,11 +113,12 @@ img{-webkit-user-drag:none;pointer-events:none}
   box-shadow:inset 0 0 0 .8vmin #fff,0 0 3vmin 1vmin rgba(255,255,255,.9);animation:slotHint 1.6s ease-out forwards}
 @keyframes slotHint{0%,30%,60%{opacity:1}15%,45%{opacity:.25}100%{opacity:0}}
 @keyframes popin{from{transform:scale(0)}70%{transform:scale(1.12)}to{transform:scale(1)}}
+@keyframes popsoft{from{transform:scale(.7)}70%{transform:scale(1.08)}to{transform:scale(1)}}
 @keyframes hint{0%,100%{transform:none}20%{transform:rotate(-7deg) scale(1.06)}40%{transform:rotate(7deg) scale(1.06)}60%{transform:rotate(-4deg)}80%{transform:rotate(3deg)}}
 
-#stage.enter{animation:slideIn .5s cubic-bezier(.2,.8,.3,1)}
+#stage.enter{animation:slideIn .3s ease-out}
 #stage.leave{animation:slideOut .45s ease-in forwards}
-@keyframes slideIn{from{transform:translateX(30vw);opacity:0}to{transform:none;opacity:1}}
+@keyframes slideIn{from{transform:translateX(6vw);opacity:0}to{transform:none;opacity:1}}
 @keyframes slideOut{to{transform:translateX(-30vw);opacity:0}}
 
 /* 그림 그리기 */
@@ -236,7 +237,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 .ask{position:absolute;z-index:5;background:#fff;border-radius:4vmin;padding:1.4vmin 3vmin;display:flex;align-items:center;gap:1.6vmin;
   font-size:clamp(22px,4.6vmin,46px);box-shadow:0 1vmin 0 rgba(30,90,140,.15);animation:popin .45s;white-space:nowrap}
 .ask svg{width:clamp(60px,12vmin,120px);height:auto}
-.fish{position:absolute;touch-action:none;filter:drop-shadow(0 .8vmin .7vmin rgba(0,50,100,.22));transition:transform .15s;animation:popin .45s backwards}
+.fish{position:absolute;touch-action:none;filter:drop-shadow(0 .8vmin .7vmin rgba(0,50,100,.22));transition:transform .15s;animation:popsoft .3s}
 .fish .fb{width:100%;height:100%;animation:fishBob 2.2s ease-in-out infinite}
 .fish svg{width:100%;height:100%;display:block}
 @keyframes fishBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8%) rotate(3deg)}}
@@ -612,7 +613,7 @@ async function startGame(){
   P.sort(()=>Math.random()-.5).forEach((p,i)=>{let best=[m,top],bs=1e18;
     for(let k=0;k<90;k++){const x=m+Math.random()*Math.max(1,W-p.w-2*m),y=top+Math.random()*Math.max(1,H-p.h-top-m);
       let s=ov(x,y,p.w,p.h,bx,by,B,B)*4;placed.forEach(q=>s+=ov(x,y,p.w,p.h,q.x,q.y,q.w,q.h));if(s<bs){bs=s;best=[x,y];}}
-    p.x=p.hx=best[0];p.y=p.hy=best[1];placed.push(p);p.el.style.animationDelay=(i*.08)+'s';});
+    p.x=p.hx=best[0];p.y=p.hy=best[1];placed.push(p);});
 
   G={P,board,done:0,W,H,z:10,last:Date.now(),over:false};
   P.forEach(p=>{const el=p.el;pos(p);stage.appendChild(el);
@@ -656,7 +657,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='game'){renderSelect();show('select');}else if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v6';
+const APP_VERSION='v7';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -670,8 +671,13 @@ if('serviceWorker' in navigator){
     if(S.screen==='home')location.reload();else pendingReload=true;});
 }
 
-let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(S.screen==='game'&&G&&!G.over)startGame();if(S.screen==='draw')fitPaper();
-  if(S.screen==='peek'&&!PK.busy)pkRound();if(S.screen==='feed'&&!FD.busy){fdBuild();fdRound();}},300);});
+// 화면 크기 변화: 작업 표시줄·상태바가 잠깐 나타나는 정도는 무시하고, 가로↔세로가 바뀔 때만 다시 배치
+let rz,lastLand=innerWidth>=innerHeight;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{
+  if(S.screen==='draw')fitPaper();
+  const land=innerWidth>=innerHeight;if(land===lastLand)return;lastLand=land;
+  if(S.screen==='game'&&G&&!G.over&&!G.P.some(p=>p.drag))startGame();
+  if(S.screen==='peek'&&!PK.busy)pkRound();
+  if(S.screen==='feed'&&!FD.busy&&!FD.fish.some(f=>f.drag)){fdBuild();fdRound();}},300);});
 
 /* ================= 그림 그리기 ================= */
 const PW=1600,PH=1100;
@@ -1058,7 +1064,7 @@ function fdRound(){if(S.screen!=='feed')return;FD.busy=false;FD.last=Date.now();
   cols.forEach((c,i)=>{const el=document.createElement('div');el.className='fish';el.innerHTML=`<div class="fb" style="animation-delay:-${i*.7}s">${fishSVG(c)}</div>`;
     let x,y;if(FD.land){x=R.x+(i%2?R.w-fw:0)*.5+Math.random()*Math.max(0,R.w-fw)*.5;y=R.y+R.h*(i+.5)/3-fh/2;}
     else{x=R.x+R.w*(i+.5)/3-fw/2;y=R.y+Math.random()*Math.max(0,R.h-fh);}
-    const f={el,c,x,y,hx:x,hy:y,w:fw,h:fh};Object.assign(el.style,{left:x+'px',top:y+'px',width:fw+'px',height:fh+'px',animationDelay:(i*.12)+'s'});
+    const f={el,c,x,y,hx:x,hy:y,w:fw,h:fh};Object.assign(el.style,{left:x+'px',top:y+'px',width:fw+'px',height:fh+'px'});
     fdDrag(f);$('fdArea').appendChild(el);FD.fish.push(f);});}
 function mouthXY(){const r=FD.shark.querySelector('.mHit').getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height/2};}
 function fdDrag(f){const el=f.el;
