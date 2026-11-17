@@ -534,7 +534,7 @@ async function startGame(){
 
   G={P,board,done:0,W,H,z:10,last:Date.now(),over:false};
   P.forEach(p=>{const el=p.el;pos(p);stage.appendChild(el);
-    el.addEventListener('pointerdown',e=>{if(p.locked||G.over)return;e.preventDefault();el.setPointerCapture(e.pointerId);
+    el.addEventListener('pointerdown',e=>{if(p.locked||G.over)return;e.preventDefault();try{el.setPointerCapture(e.pointerId);}catch(_){}
       p.drag={id:e.pointerId,ox:e.clientX-p.x,oy:e.clientY-p.y};el.classList.remove('hint','back');el.classList.add('hold');el.style.zIndex=++G.z;G.last=Date.now();sfx.pick();});
     el.addEventListener('pointermove',e=>{if(!p.drag||p.drag.id!==e.pointerId)return;
       p.x=Math.max(-p.w*.4,Math.min(G.W-p.w*.6,e.clientX-p.drag.ox));p.y=Math.max(-p.h*.4,Math.min(G.H-p.h*.6,e.clientY-p.drag.oy));pos(p);});
