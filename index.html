@@ -101,6 +101,10 @@ img{-webkit-user-drag:none;pointer-events:none}
 .piece.hold{transform:scale(1.07);filter:drop-shadow(0 2vmin 1.6vmin rgba(0,50,100,.3))}
 .piece.locked{transition:left .22s ease-out,top .22s ease-out;filter:none;border-radius:0}
 .piece.hint{animation:hint 1s}
+.piece.back{transition:left .4s cubic-bezier(.3,1.35,.5,1),top .4s cubic-bezier(.3,1.35,.5,1),transform .15s}
+.slotHint{position:absolute;z-index:3;pointer-events:none;border-radius:1.2vmin;background:rgba(255,255,255,.5);
+  box-shadow:inset 0 0 0 .8vmin #fff,0 0 3vmin 1vmin rgba(255,255,255,.9);animation:slotHint 1.6s ease-out forwards}
+@keyframes slotHint{0%,30%,60%{opacity:1}15%,45%{opacity:.25}100%{opacity:0}}
 @keyframes popin{from{transform:scale(0)}70%{transform:scale(1.12)}to{transform:scale(1)}}
 @keyframes hint{0%,100%{transform:none}20%{transform:rotate(-7deg) scale(1.06)}40%{transform:rotate(7deg) scale(1.06)}60%{transform:rotate(-4deg)}80%{transform:rotate(3deg)}}
 
@@ -526,19 +530,27 @@ async function startGame(){
   P.sort(()=>Math.random()-.5).forEach((p,i)=>{let best=[m,top],bs=1e18;
     for(let k=0;k<90;k++){const x=m+Math.random()*Math.max(1,W-p.w-2*m),y=top+Math.random()*Math.max(1,H-p.h-top-m);
       let s=ov(x,y,p.w,p.h,bx,by,B,B)*4;placed.forEach(q=>s+=ov(x,y,p.w,p.h,q.x,q.y,q.w,q.h));if(s<bs){bs=s;best=[x,y];}}
-    p.x=best[0];p.y=best[1];placed.push(p);p.el.style.animationDelay=(i*.08)+'s';});
+    p.x=p.hx=best[0];p.y=p.hy=best[1];placed.push(p);p.el.style.animationDelay=(i*.08)+'s';});
 
   G={P,board,done:0,W,H,z:10,last:Date.now(),over:false};
   P.forEach(p=>{const el=p.el;pos(p);stage.appendChild(el);
     el.addEventListener('pointerdown',e=>{if(p.locked||G.over)return;e.preventDefault();el.setPointerCapture(e.pointerId);
-      p.drag={id:e.pointerId,ox:e.clientX-p.x,oy:e.clientY-p.y};el.classList.remove('hint');el.classList.add('hold');el.style.zIndex=++G.z;G.last=Date.now();sfx.pick();});
+      p.drag={id:e.pointerId,ox:e.clientX-p.x,oy:e.clientY-p.y};el.classList.remove('hint','back');el.classList.add('hold');el.style.zIndex=++G.z;G.last=Date.now();sfx.pick();});
     el.addEventListener('pointermove',e=>{if(!p.drag||p.drag.id!==e.pointerId)return;
       p.x=Math.max(-p.w*.4,Math.min(G.W-p.w*.6,e.clientX-p.drag.ox));p.y=Math.max(-p.h*.4,Math.min(G.H-p.h*.6,e.clientY-p.drag.oy));pos(p);});
     const up=e=>{if(!p.drag||p.drag.id!==e.pointerId)return;p.drag=null;el.classList.remove('hold');G.last=Date.now();
-      if(Math.hypot(p.x-p.tx,p.y-p.ty)<Math.min(p.w,p.h)*.5)lock(p);else sfx.drop();};
+      if(Math.hypot(p.x-p.tx,p.y-p.ty)<Math.min(p.w,p.h)*.5)lock(p);else goHome(p);};
     el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);});
 }
 function pos(p){p.el.style.left=p.x+'px';p.el.style.top=p.y+'px';}
+// 틀린 곳에 놓으면: 처음 자리로 통통 돌아가고, 맞는 자리가 반짝반짝
+let lastHereSay=0;
+function goHome(p){sfx.drop();const el=p.el;el.classList.add('back');p.x=p.hx;p.y=p.hy;pos(p);
+  setTimeout(()=>el.classList.remove('back'),450);
+  const h=document.createElement('div');h.className='slotHint';
+  Object.assign(h.style,{left:p.tx+'px',top:p.ty+'px',width:p.w+'px',height:p.h+'px'});
+  h.addEventListener('animationend',()=>h.remove());stage.appendChild(h);
+  if(Date.now()-lastHereSay>4000){lastHereSay=Date.now();setTimeout(()=>say('여기야!'),250);}}
 function lock(p){p.locked=true;p.x=p.tx;p.y=p.ty;p.el.classList.add('locked');p.el.style.zIndex=2;pos(p);
   sfx.snap(G.done++);burst(p.tx+p.w/2,p.ty+p.h/2,14,Math.min(p.w,p.h)*.7);
   if(G.done===G.P.length)finish();}
