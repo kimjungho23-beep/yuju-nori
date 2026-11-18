@@ -185,7 +185,13 @@ img{-webkit-user-drag:none;pointer-events:none}
 .dtab{width:clamp(56px,10vmin,90px);height:clamp(56px,10vmin,90px);border:none;border-radius:2.6vmin;background:#fff;font-size:clamp(28px,5.4vmin,50px);
   box-shadow:0 .7vmin 0 rgba(200,80,130,.18);display:grid;place-items:center;transition:transform .12s}
 .dtab.sel{background:#ff8fb8;transform:translateY(-.6vmin) scale(1.06)}
-.ditems{flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;display:grid;grid-template-columns:repeat(4,1fr);gap:2vmin;align-content:start;padding:1vmin}
+.ditems{flex:1;min-height:0;overflow:hidden;touch-action:none;display:grid;grid-template-columns:repeat(4,1fr);gap:2vmin;align-content:start;padding:1vmin}
+.ditem{touch-action:none}
+.ditem.lift svg{opacity:.25}
+.dragItem{position:fixed;left:0;top:0;z-index:120;pointer-events:none;transform-origin:0 0;filter:drop-shadow(0 1.4vmin 1.2vmin rgba(150,40,90,.3))}
+.dragItem svg{width:100%;height:100%;display:block;overflow:visible}
+.dollStage{transition:box-shadow .2s}
+.dollStage.near{box-shadow:inset 0 0 0 1vmin rgba(255,255,255,.95),inset 0 0 6vmin rgba(255,143,184,.55)}
 .ditem{position:relative;aspect-ratio:1;border:none;border-radius:3vmin;background:#fff;box-shadow:0 .8vmin 0 rgba(200,80,130,.15);padding:.8vmin;transition:transform .12s}
 .ditem:active{transform:scale(.93)}
 .ditem svg{width:100%;height:100%;display:block}
@@ -840,7 +846,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='game'){renderSelect();show('select');}else if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v10';
+const APP_VERSION='v11';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1113,9 +1119,45 @@ function renderCloset(){
   const t=$('dTabs');t.innerHTML='';
   DCATS.forEach(([id,icn,name])=>{const b=document.createElement('button');b.className='dtab'+(dTab===id?' sel':'');b.innerHTML=ic(icn);
     b.onclick=()=>{dTab=id;sfx.bubble();say(name);renderCloset();};t.appendChild(b);});
-  const g=$('dItems');g.innerHTML='';
-  DITEMS.filter(i=>i.cat===dTab).forEach(it=>{const b=document.createElement('button');b.className='ditem'+(DS[slotOf(it)]===it.id?' on':'');
-    b.innerHTML=thumb(it);b.onclick=e=>wear(it,e);g.appendChild(b);});}
+  const g=$('dItems');g.innerHTML='';const list=DITEMS.filter(i=>i.cat===dTab);
+  g.style.gridTemplateColumns=`repeat(${list.length>8?5:4},1fr)`;   // 스크롤 없이 한 화면에
+  list.forEach(it=>{const b=document.createElement('button');b.className='ditem'+(DS[slotOf(it)]===it.id?' on':'');
+    b.innerHTML=thumb(it);bindItemDrag(it,b);g.appendChild(b);});}
+
+/* 옷을 눌러서 인형 쪽으로 끌고 가면 '딱' 붙기 (퍼즐처럼). 톡 누르기만 해도 날아가서 입혀짐 */
+let DG=null;
+function dollMap(){const r=$('doll').getBoundingClientRect(),s=Math.min(r.width/400,r.height/700);
+  return{r,s,ox:r.left+(r.width-400*s)/2,oy:r.top+(r.height-700*s)/2+40*s};}   // 인형 좌표 (x,y) → 화면 (ox+x*s, oy+y*s)
+const itemBox=it=>(it.cat==='hair'?'70 0 260 440':it.box).split(' ').map(Number);
+const itemArt=it=>it.cat==='hair'?`<g fill="${it.c}">${it.back}</g><g fill="${it.c}">${it.front}</g>${it.deco}`:it.svg;
+function dgSet(x,y,k,dur){const el=DG.el;el.style.transition=dur?`transform ${dur}s cubic-bezier(.3,1.2,.5,1),opacity ${dur}s`:'none';
+  el.style.transform=`translate(${x}px,${y}px) scale(${k})`;DG.x=x;DG.y=y;DG.k=k;}
+function bindItemDrag(it,tile){
+  tile.addEventListener('pointerdown',e=>{if(DG)return;e.preventDefault();try{tile.setPointerCapture(e.pointerId);}catch(_){}
+    const tr=tile.getBoundingClientRect(),[bx,by,bw,bh]=itemBox(it),M=dollMap(),W=bw*M.s,H=bh*M.s;
+    const el=document.createElement('div');el.className='dragItem';el.style.width=W+'px';el.style.height=H+'px';
+    el.innerHTML=`<svg viewBox="${bx} ${by} ${bw} ${bh}">${itemArt(it)}</svg>`;document.body.appendChild(el);
+    const k0=Math.min(tr.width/W,tr.height/H)*.85,hx=tr.left+tr.width/2-W*k0/2,hy=tr.top+tr.height/2-H*k0/2;
+    DG={it,tile,el,W,H,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false,k0,hx,hy,tx:M.ox+bx*M.s,ty:M.oy+by*M.s,M};
+    dgSet(hx,hy,k0,0);tile.classList.add('lift');sfx.pick();});
+  tile.addEventListener('pointermove',e=>{if(!DG||DG.id!==e.pointerId)return;
+    if(!DG.moved&&Math.hypot(e.clientX-DG.sx,e.clientY-DG.sy)<12)return;
+    const first=!DG.moved;DG.moved=true;
+    dgSet(e.clientX-DG.W/2,e.clientY-DG.H*.45,1,first?.18:0);                     // 끌면 인형 크기로 커짐
+    $('dollStage').classList.toggle('near',nearDoll(e));});
+  const up=e=>{if(!DG||DG.id!==e.pointerId)return;const d=DG,s=slotOf(d.it),worn=DS[s]===d.it.id;$('dollStage').classList.remove('near');
+    if(!d.moved){ if(worn&&s!=='hair')takeOff(d);else snapOn(d,.5); }      // 톡: 입었으면 벗기, 아니면 날아가서 입히기
+    else if(nearDoll(e))snapOn(d,.22);
+    else{sfx.drop();dgSet(d.hx,d.hy,d.k0,.32);d.el.style.opacity=.2;setTimeout(()=>dgEnd(d),330);}};
+  tile.addEventListener('pointerup',up);tile.addEventListener('pointercancel',up);}
+function nearDoll(e){const r=DG.M.r,mx=r.width*.12,my=r.height*.04;   // 인형 몸 근처면 붙음 (아이 손에 맞게 넉넉히)
+  return e.clientX>r.left+mx&&e.clientX<r.right-mx&&e.clientY>r.top+my&&e.clientY<r.bottom-my;}
+function snapOn(d,dur){dgSet(d.tx,d.ty,1,dur);setTimeout(()=>{const s=slotOf(d.it);DS[s]=d.it.id;
+    tone({f:700,f2:1500,d:.08,v:.2});sparkle();say(d.it.name);happyFace();drawDoll(s);hop();
+    burst(d.tx+d.W/2,d.ty+d.H/2,16,Math.max(d.W,d.H)*.6);store.set('yj_doll',JSON.stringify(DS));dgEnd(d);renderCloset();},dur*1000);}
+function takeOff(d){const s=slotOf(d.it);DS[s]=null;drawDoll();store.set('yj_doll',JSON.stringify(DS));sfx.drop();
+  dgSet(d.tx,d.ty,1,0);requestAnimationFrame(()=>{dgSet(d.hx,d.hy,d.k0,.38);setTimeout(()=>{dgEnd(d);renderCloset();},400);});}
+function dgEnd(d){d.el.remove();d.tile.classList.remove('lift');if(DG===d)DG=null;}
 function happyFace(){dHappy=true;clearTimeout(dHappyT);dHappyT=setTimeout(()=>{dHappy=false;drawDoll();},1100);}
 function hop(){const d=$('doll');d.classList.remove('hop');void d.offsetWidth;d.classList.add('hop');}
 function sparkle(){[0,1,2,3,4,5].forEach(i=>bell(mtof(PENT[i+2]),i*.05,.09,.45));}
