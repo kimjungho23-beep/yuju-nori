@@ -115,6 +115,10 @@ img{-webkit-user-drag:none;pointer-events:none}
 .piece.back{transition:left .4s cubic-bezier(.3,1.35,.5,1),top .4s cubic-bezier(.3,1.35,.5,1),transform .15s}
 .slotHint{position:absolute;z-index:3;pointer-events:none;border-radius:1.2vmin;background:rgba(255,255,255,.5);
   box-shadow:inset 0 0 0 .8vmin #fff,0 0 3vmin 1vmin rgba(255,255,255,.9);animation:slotHint 1.6s ease-out forwards}
+.board.charb .guide{filter:drop-shadow(0 0 .35vmin #fff) drop-shadow(0 0 .35vmin #fff)}
+.piece.charp{filter:drop-shadow(0 0 .25vmin #fff) drop-shadow(0 0 .25vmin #fff) drop-shadow(0 .8vmin .7vmin rgba(0,50,100,.28))}
+.piece.charp.hold{filter:drop-shadow(0 0 .25vmin #fff) drop-shadow(0 0 .25vmin #fff) drop-shadow(0 2vmin 1.6vmin rgba(0,50,100,.3))}
+.piece.charp.locked{filter:none}
 .slotHint.shaped{background:none;box-shadow:none;border-radius:0;filter:drop-shadow(0 0 1.2vmin #fff)}
 @keyframes slotHint{0%,30%,60%{opacity:1}15%,45%{opacity:.25}100%{opacity:0}}
 @keyframes popin{from{transform:scale(0)}70%{transform:scale(1.12)}to{transform:scale(1)}}
@@ -333,7 +337,7 @@ img{-webkit-user-drag:none;pointer-events:none}
   <div class="selWrap">
     <h2 class="subtitle">어떤 그림 맞춰볼까?</h2>
     <div class="picGrid" id="picGrid"></div>
-    <div class="optRows"><div class="pieceRow" id="pieceRow"></div><div class="pieceRow" id="shapeRow"></div></div>
+    <div class="optRows"><div class="pieceRow" id="pieceRow"></div><div class="pieceRow" id="shapeRow"></div><div class="pieceRow" id="frameRow"></div></div>
   </div>
   <input type="file" id="photoIn" accept="image/*" hidden>
 </section>
@@ -669,7 +673,7 @@ const eul=w=>w+(hasBatchim(w)?'을':'를');
 const $=id=>document.getElementById(id);
 const rand=a=>a[Math.floor(Math.random()*a.length)];
 const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:v;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
-const S={shape:['square','jigsaw','wave','mix'].includes(store.get('yj_shape','jigsaw'))?store.get('yj_shape','jigsaw'):'jigsaw',
+const S={frame:store.get('yj_frame','char')==='square'?'square':'char',shape:['square','jigsaw','wave','mix'].includes(store.get('yj_shape','jigsaw'))?store.get('yj_shape','jigsaw'):'jigsaw',
   pieces:[4,6].includes(+store.get('yj_pieces',4))?+store.get('yj_pieces',4):4,music:store.get('yj_music','1')==='1',cur:0,photos:[],screen:'home'};
 try{S.photos=JSON.parse(store.get('yj_photos','[]'))||[];}catch(e){S.photos=[];}
 const items=()=>[...CHARS.map(c=>({...c,thumb:svgURL(c.svg(true))})),...S.photos.map(p=>({id:p.id,photo:true,src:p.src,thumb:p.src}))];
@@ -724,6 +728,11 @@ function renderSelect(){
   SHAPE_OPTS.forEach(([id,name,icon])=>{const b=document.createElement('button');b.className='pbtn'+(S.shape===id?' sel':'');
     b.innerHTML=`<div class="mini shp">${icon}</div><small>${name}</small>`;
     b.onclick=()=>{S.shape=id;store.set('yj_shape',id);sfx.bubble();say(name==='섞기'?'여러 모양을 섞어요':name+' 모양');renderSelect();};sr.appendChild(b);});
+  const fr=$('frameRow');fr.innerHTML='';
+  [['char','캐릭터','<svg viewBox="0 0 40 40"><path d="M6 21 Q14 9 27 13 L33 6 L33 17 Q37 21 33 25 L33 34 L27 28 Q14 32 6 21 Z"/><circle cx="12" cy="19" r="2" fill="#fff"/></svg>'],
+   ['square','네모 그림','<svg viewBox="0 0 40 40"><rect x="5" y="7" width="30" height="26" rx="4"/><circle cx="14" cy="16" r="3" fill="#fff"/></svg>']].forEach(([id,name,icon])=>{
+    const b=document.createElement('button');b.className='pbtn'+(S.frame===id?' sel':'');b.innerHTML=`<div class="mini shp">${icon}</div><small>${name}</small>`;
+    b.onclick=()=>{S.frame=id;store.set('yj_frame',id);sfx.bubble();say(id==='char'?'캐릭터 모양으로 해요':'네모 그림으로 해요');renderSelect();};fr.appendChild(b);});
 }
 const SHAPE_OPTS=[
   ['square','네모','<svg viewBox="0 0 40 40"><rect x="6" y="6" width="28" height="28" rx="4"/></svg>'],
@@ -754,19 +763,31 @@ async function startGame(){
   let bx,by;
   if(n===1&&land){bx=W*.7-B/2;by=(H-B)/2+top*.3;}else if(n===1){bx=(W-B)/2;by=H*.7-B/2;}else{bx=(W-B)/2;by=(H-B)/2+top*.3;}
   const dpr=Math.min(2,window.devicePixelRatio||1),R=Math.round(B*dpr);
-  const src=await loadImg(it.photo?it.src:svgURL(it.svg(!sil)));
-  const full=document.createElement('canvas');full.width=full.height=R;full.className='full';full.getContext('2d').drawImage(src,0,0,R,R);
+  const cm=!sil&&!it.photo&&S.frame!=='square';   // 캐릭터 모양으로 따기 (배경 없이 캐릭터만)
+  const src=await loadImg(it.photo?it.src:svgURL(it.svg(!sil&&!cm)));
+  const full=document.createElement('canvas');full.width=full.height=R;full.className='full';
+  const fctx=full.getContext('2d',{willReadFrequently:cm});fctx.drawImage(src,0,0,R,R);
+  // 캐릭터 모양일 때: 캐릭터가 실제로 있는 영역(투명 아닌 곳)만 나눔
+  let ox=0,oy=0,AW=B,AH=B;
+  if(cm){const d=fctx.getImageData(0,0,R,R).data;let x0=R,y0=R,x1=0,y1=0;
+    for(let y=0;y<R;y+=2)for(let x=0;x<R;x+=2)if(d[(y*R+x)*4+3]>40){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+    if(x1>x0&&y1>y0){ox=x0/dpr;oy=y0/dpr;AW=(x1-x0+2)/dpr;AH=(y1-y0+2)/dpr;}}
   // 조각 모양 정하기: 네모 / 퍼즐(볼록) / 물결, 섞기는 판마다 무작위
-  const pw=B/cols,ph=B/rows,style=S.shape==='mix'?pick(['square','jigsaw','wave']):S.shape;
+  const pw=AW/cols,ph=AH/rows,style=S.shape==='mix'?pick(['square','jigsaw','wave']):S.shape;
   const J={cw:pw,ch:ph,k:Math.min(pw,ph),style,rows,cols,H:[],V:[]};
   for(let r=0;r<rows;r++){J.H[r]=[];J.V[r]=[];for(let c=0;c<cols;c++){J.H[r][c]=Math.random()<.5?1:-1;J.V[r][c]=Math.random()<.5?1:-1;}}
   const mg=style==='jigsaw'?J.k*.34:style==='wave'?J.k*.14:0;
 
   const guide=document.createElement('canvas');guide.width=guide.height=R;guide.className='guide';const g=guide.getContext('2d');
   if(sil){g.drawImage(full,0,0);g.globalCompositeOperation='source-in';g.fillStyle='rgba(35,75,135,.38)';g.fillRect(0,0,R,R);}
+  else if(cm){ // 캐릭터 그림자 + 흐린 그림 + 그 안에만 자르는 점선
+    g.drawImage(full,0,0);g.globalCompositeOperation='source-in';g.fillStyle='rgba(30,80,140,.3)';g.fillRect(0,0,R,R);
+    g.globalCompositeOperation='source-atop';g.globalAlpha=.28;g.drawImage(full,0,0);g.globalAlpha=1;
+    g.scale(dpr,dpr);g.setLineDash([B*.03,B*.022]);g.strokeStyle='rgba(255,255,255,.95)';g.lineWidth=Math.max(2.5,B*.007);
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){g.save();g.translate(ox+c*pw,oy+r*ph);g.stroke(piecePath(r,c,J));g.restore();}}
   else{g.globalAlpha=.24;g.drawImage(full,0,0);g.globalAlpha=1;g.scale(dpr,dpr);g.setLineDash([B*.03,B*.022]);g.strokeStyle='rgba(255,255,255,.95)';g.lineWidth=Math.max(2.5,B*.007);
     for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){g.save();g.translate(c*pw,r*ph);g.stroke(piecePath(r,c,J));g.restore();}}
-  const board=document.createElement('div');board.className='board'+(sil?'':' grid');
+  const board=document.createElement('div');board.className='board'+(sil?'':cm?' charb':' grid');
   Object.assign(board.style,{left:bx+'px',top:by+'px',width:B+'px',height:B+'px'});board.append(guide,full);stage.appendChild(board);
 
   const P=[];
@@ -774,13 +795,17 @@ async function startGame(){
     const path=piecePath(r,c,J),cv=document.createElement('canvas');
     cv.width=Math.round((pw+2*mg)*dpr);cv.height=Math.round((ph+2*mg)*dpr);
     const x=cv.getContext('2d',{willReadFrequently:true});x.scale(dpr,dpr);x.translate(mg,mg);
-    x.save();x.clip(path);x.drawImage(full,-c*pw,-r*ph,B,B);x.restore();
-    x.lineWidth=style==='square'?6:4;x.strokeStyle='rgba(255,255,255,.95)';x.stroke(path);
-    cv.className='piece'+(sil||style!=='square'?'':' grid');cv.style.width=(pw+2*mg)+'px';cv.style.height=(ph+2*mg)+'px';
-    const p={el:cv,tx:bx+c*pw,ty:by+r*ph,w:pw,h:ph,m:mg,path,x:0,y:0,locked:false};cv.__p=p;P.push(p);}
+    x.save();x.clip(path);x.drawImage(full,-(ox+c*pw),-(oy+r*ph),B,B);x.restore();
+    if(!cm){x.lineWidth=style==='square'?6:4;x.strokeStyle='rgba(255,255,255,.95)';x.stroke(path);}
+    cv.className='piece'+(cm?' charp':sil||style!=='square'?'':' grid');cv.style.width=(pw+2*mg)+'px';cv.style.height=(ph+2*mg)+'px';
+    const p={el:cv,tx:bx+ox+c*pw,ty:by+oy+r*ph,w:pw,h:ph,m:mg,path,cm,x:0,y:0,locked:false};cv.__p=p;
+    if(cm){ // 캐릭터가 거의 안 걸린 조각(구석 등)은 처음부터 제자리에 붙여둠
+      const a=x.getImageData(0,0,cv.width,cv.height).data;let n=0;for(let i=3;i<a.length;i+=16)if(a[i]>40)n++;
+      if(n*4<cv.width*cv.height*.06)p.pre=true;}
+    P.push(p);}
   // 판을 피해서 흩어 놓기
   const m=14,placed=[];
-  P.sort(()=>Math.random()-.5).forEach((p,i)=>{let best=[m,top],bs=1e18;
+  P.filter(p=>!p.pre).sort(()=>Math.random()-.5).forEach((p,i)=>{let best=[m,top],bs=1e18;
     // 볼록한 부분(mg)까지 화면 안에 들어오고, 판·다른 조각과 최대한 안 겹치게
     for(let k=0;k<160;k++){const x=m+mg+Math.random()*Math.max(1,W-p.w-2*(m+mg)),y=top+mg+Math.random()*Math.max(1,H-p.h-top-2*mg-m);
       let s=ov(x-mg,y-mg,p.w+2*mg,p.h+2*mg,bx-12,by-12,B+24,B+24)*8;
@@ -788,7 +813,8 @@ async function startGame(){
     p.x=p.hx=best[0];p.y=p.hy=best[1];placed.push(p);});
 
   G={P,board,done:0,W,H,z:10,last:Date.now(),over:false};
-  P.forEach(p=>{const el=p.el;pos(p);stage.appendChild(el);
+  P.forEach(p=>{const el=p.el;if(p.pre){p.x=p.tx;p.y=p.ty;p.locked=true;el.classList.add('locked');el.style.zIndex=2;G.done++;}
+    pos(p);stage.appendChild(el);
     el.addEventListener('pointermove',e=>{if(!p.drag||p.drag.id!==e.pointerId)return;
       p.x=Math.max(-p.w*.4,Math.min(G.W-p.w*.6,e.clientX-p.drag.ox));p.y=Math.max(-p.h*.4,Math.min(G.H-p.h*.6,e.clientY-p.drag.oy));pos(p);});
     const up=e=>{if(!p.drag||p.drag.id!==e.pointerId)return;p.drag=null;el.classList.remove('hold');G.last=Date.now();
@@ -832,7 +858,10 @@ let lastHereSay=0;
 function goHome(p){sfx.drop();const el=p.el;el.classList.add('back');p.x=p.hx;p.y=p.hy;pos(p);
   setTimeout(()=>el.classList.remove('back'),450);
   let h;
-  if(p.m){h=document.createElement('canvas');h.className='slotHint shaped';const d=Math.min(2,devicePixelRatio||1);
+  if(p.cm){h=document.createElement('canvas');h.className='slotHint shaped';h.width=p.el.width;h.height=p.el.height;const x=h.getContext('2d');
+    x.drawImage(p.el,0,0);x.globalCompositeOperation='source-in';x.fillStyle='rgba(255,255,255,.85)';x.fillRect(0,0,h.width,h.height);
+    Object.assign(h.style,{left:(p.tx-p.m)+'px',top:(p.ty-p.m)+'px',width:p.el.style.width,height:p.el.style.height});}
+  else if(p.m){h=document.createElement('canvas');h.className='slotHint shaped';const d=Math.min(2,devicePixelRatio||1);
     h.width=Math.round((p.w+2*p.m)*d);h.height=Math.round((p.h+2*p.m)*d);const x=h.getContext('2d');x.scale(d,d);x.translate(p.m,p.m);
     x.fillStyle='rgba(255,255,255,.55)';x.fill(p.path);x.lineWidth=6;x.strokeStyle='#fff';x.stroke(p.path);
     Object.assign(h.style,{left:(p.tx-p.m)+'px',top:(p.ty-p.m)+'px',width:(p.w+2*p.m)+'px',height:(p.h+2*p.m)+'px'});}
@@ -863,7 +892,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='game'){renderSelect();show('select');}else if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v13';
+const APP_VERSION='v14';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
