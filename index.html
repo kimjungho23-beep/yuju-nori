@@ -292,6 +292,43 @@ img{-webkit-user-drag:none;pointer-events:none}
 /* 칭찬 리본 */
 .dtab.sel{background:#fff;box-shadow:0 0 0 .7vmin #ff8fb8,0 .9vmin 0 rgba(200,80,130,.2)}
 .abtn{background:#fff;color:var(--c);box-shadow:0 0 0 .5vmin var(--c),0 .9vmin 0 rgba(0,0,0,.1)}
+/* ===== 스티커 / 내 바다 ===== */
+.menu{display:flex;flex-wrap:wrap;justify-content:center;max-width:calc(4 * clamp(116px,21vmin,220px) + 3 * 4vmin + 34px)}
+.card .badge{position:absolute;top:.8vmin;right:.8vmin;min-width:4.6vmin;height:4.6vmin;padding:0 1.2vmin;border-radius:99px;background:#ff5a6e;color:#fff;
+  font-style:normal;font-size:clamp(14px,2.8vmin,26px);display:none;place-items:center;box-shadow:0 .4vmin 0 rgba(0,0,0,.12);animation:pop .5s}
+.card .badge.on{display:grid}
+.stk{position:absolute;touch-action:none;transform-origin:50% 60%}
+.stk img,.stk svg{width:100%;height:100%;display:block;pointer-events:none;filter:drop-shadow(0 0 .3vmin #fff) drop-shadow(0 0 .3vmin #fff) drop-shadow(0 .7vmin .6vmin rgba(0,50,100,.25))}
+.stk.shiny img,.stk.shiny svg{filter:drop-shadow(0 0 .5vmin #fff) drop-shadow(0 0 1.1vmin #ffd65a) drop-shadow(0 0 2vmin #ffb347)}
+.stk.shiny::after{content:'✦';position:absolute;right:-6%;top:-6%;color:#fff;font-size:clamp(16px,3.4vmin,32px);text-shadow:0 0 6px #ffd65a;animation:twk .9s ease-in-out infinite alternate}
+.stk.swim{animation:stkSwim 3.2s ease-in-out infinite}
+.stk.bob{animation:stkBob 2.6s ease-in-out infinite}
+@keyframes stkSwim{0%,100%{transform:translate(0,0) rotate(-3deg)}50%{transform:translate(4%,-8%) rotate(3deg)}}
+@keyframes stkBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6%)}}
+.stk.jump{animation:stkJump .6s ease}
+@keyframes stkJump{0%,100%{transform:none}40%{transform:translateY(-22%) scale(1.15) rotate(-8deg)}}
+.stk.held{animation:none;transform:scale(1.15);z-index:60}
+.tray{position:absolute;left:0;right:0;bottom:0;height:clamp(96px,19vmin,170px);background:rgba(255,255,255,.72);border-radius:4vmin 4vmin 0 0;
+  box-shadow:0 -1vmin 3vmin rgba(0,60,120,.15);display:flex;align-items:center;gap:2vmin;padding:0 3vmin;overflow-x:auto;overflow-y:hidden;touch-action:pan-x;z-index:40}
+.tray .ti{position:relative;flex:0 0 auto;width:clamp(70px,14vmin,130px);height:clamp(70px,14vmin,130px);touch-action:pan-x}
+.tray .ti .stk{position:absolute;inset:0;width:100%;height:100%;animation:none}
+.tray .ti.new::before{content:'NEW';position:absolute;z-index:2;top:-1.4vmin;left:50%;transform:translateX(-50%);background:#ff5a6e;color:#fff;font-size:clamp(11px,1.8vmin,16px);
+  padding:.2vmin 1.2vmin;border-radius:99px}
+.tray .empty{width:100%;text-align:center;font-size:clamp(18px,3.6vmin,34px);color:#5b7896}
+.seaCount{align-self:center;background:rgba(255,255,255,.85);border-radius:99px;padding:1vmin 3vmin;font-size:clamp(18px,3.4vmin,32px);box-shadow:0 .6vmin 0 rgba(30,90,140,.15)}
+#reward{position:fixed;inset:0;z-index:160;pointer-events:none;display:none;align-items:center;justify-content:center;flex-direction:column}
+#reward.on{display:flex}
+#reward .rays{position:absolute;width:70vmin;height:70vmin;border-radius:50%;
+  background:repeating-conic-gradient(rgba(255,230,120,.55) 0 12deg,rgba(255,255,255,0) 12deg 24deg);mask:radial-gradient(circle,#000 30%,transparent 70%);
+  -webkit-mask:radial-gradient(circle,#000 30%,transparent 70%);animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#reward .rs{position:relative;width:34vmin;height:34vmin}
+#reward .rs .stk{inset:0;width:100%;height:100%;animation:none}
+#reward b{position:relative;margin-top:2vmin;font-weight:400;font-size:clamp(28px,6vmin,58px);color:#fff;-webkit-text-stroke:.08em #ff6b9a;paint-order:stroke fill}
+#reward.pop .rs,#reward.pop b{animation:rewardIn .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes rewardIn{from{transform:scale(0) rotate(-30deg)}to{transform:none}}
+.rbtn.got{animation:got .6s ease 2}
+@keyframes got{50%{transform:scale(1.25);box-shadow:0 0 0 1vmin #ffd65a}}
 #cheer{position:fixed;left:50%;top:max(14px,3vh);width:min(72vw,620px);aspect-ratio:640/170;z-index:150;pointer-events:none;
   transform:translate(-50%,-180%) scale(.6);transition:transform .55s cubic-bezier(.3,1.5,.5,1);filter:drop-shadow(0 1vmin 1.2vmin rgba(150,30,80,.25))}
 #cheer.on{transform:translate(-50%,0) scale(1)}
@@ -328,6 +365,7 @@ img{-webkit-user-drag:none;pointer-events:none}
       <button class="card" id="goBubble" style="--c:#7ec8ff"><span class="art" data-art="bubble"></span><b>비눗방울</b></button>
       <button class="card" id="goPeek" style="--c:#5ccf95"><span class="art" data-art="peek"></span><b>까꿍</b></button>
       <button class="card" id="goFeed" style="--c:#ff9f43"><span class="art" data-art="feed"></span><b>밥 주기</b></button>
+      <button class="card" id="goSea" style="--c:#4fb3e8"><span class="art" data-art="sea"></span><b>내 바다</b><i class="badge" id="seaBadge"></i></button>
     </div>
   </div>
 </section>
@@ -397,6 +435,13 @@ img{-webkit-user-drag:none;pointer-events:none}
   <div class="area" id="pkArea"></div>
   <div class="topbar"><button class="rbtn" id="pkBack" aria-label="처음으로" data-ic="home"></button><button class="rbtn musicBtn" aria-label="음악"></button></div>
 </section>
+
+<section id="sea" class="screen">
+  <div class="area" id="seaArea"></div>
+  <div class="topbar"><button class="rbtn" id="seaBack" aria-label="처음으로" data-ic="home"></button><div class="seaCount" id="seaCount"></div><button class="rbtn musicBtn" aria-label="음악"></button></div>
+  <div class="tray" id="tray"></div>
+</section>
+<div id="reward"><div class="rays"></div><div class="rs" id="rewardStk"></div><b>스티커!</b></div>
 
 <section id="feed" class="screen">
   <div class="area" id="fdArea"></div>
@@ -812,7 +857,7 @@ async function startGame(){
       placed.forEach(q=>s+=ov(x-mg,y-mg,p.w+2*mg,p.h+2*mg,q.x-mg,q.y-mg,q.w+2*mg,q.h+2*mg));if(s<bs){bs=s;best=[x,y];}}
     p.x=p.hx=best[0];p.y=p.hy=best[1];placed.push(p);});
 
-  G={P,board,done:0,W,H,z:10,last:Date.now(),over:false};
+  G={P,board,done:0,W,H,z:10,last:Date.now(),over:false,it};
   P.forEach(p=>{const el=p.el;if(p.pre){p.x=p.tx;p.y=p.ty;p.locked=true;el.classList.add('locked');el.style.zIndex=2;G.done++;}
     pos(p);stage.appendChild(el);
     el.addEventListener('pointermove',e=>{if(!p.drag||p.drag.id!==e.pointerId)return;
@@ -875,7 +920,7 @@ function lock(p){p.locked=true;p.x=p.tx;p.y=p.ty;p.el.classList.add('locked');p.
 function finish(){G.over=true;const b=G.board,r=b.getBoundingClientRect();
   setTimeout(()=>{b.classList.add('cheer');G.P.forEach(p=>p.el.style.visibility='hidden');sfx.fanfare();
     burst(r.left+r.width/2,r.top+r.height/2,46,Math.min(innerWidth,innerHeight)*.45,true);
-    {const t=rand(['잘했어요!','최고예요!','와, 멋져요!','참 잘했어요!']);say(t);cheer(t);}
+    {const t=rand(['잘했어요!','최고예요!','와, 멋져요!','참 잘했어요!']);say(t);cheer(t);const sk=G&&G.it&&!G.it.photo?'c:'+G.it.id:null;setTimeout(()=>giveSticker(sk),1000);}
     // 축하가 끝나면 다음 그림으로 자연스럽게 넘어가기
     const me=G;setTimeout(()=>{if(S.screen!=='game'||G!==me)return;stage.classList.add('leave');
       setTimeout(()=>{if(S.screen!=='game'||G!==me)return;S.cur++;startGame();},450);},2600);},300);}
@@ -892,7 +937,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='game'){renderSelect();show('select');}else if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v14';
+const APP_VERSION='v15';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1022,7 +1067,7 @@ $('saveBtn').onclick=()=>{if(Date.now()-D.lastSave<3000)return;D.lastSave=Date.n
   c.toBlob(b=>{const a=document.createElement('a'),dt=new Date(),p=n=>String(n).padStart(2,'0');a.href=URL.createObjectURL(b);
     a.download=`유주그림-${dt.getFullYear()}${p(dt.getMonth()+1)}${p(dt.getDate())}-${p(dt.getHours())}${p(dt.getMinutes())}${p(dt.getSeconds())}.png`;
     document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);},'image/png');
-  const f=$('flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');sfx.shutter();say('그림을 저장했어요');};
+  const f=$('flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');sfx.shutter();say('그림을 저장했어요');setTimeout(()=>giveSticker(null,'draw'),1200);};
 
 /* ================= 옷입히기 ================= */
 const SKIN='#ffe2cf',SKIN2='#f5cdb6';
@@ -1226,7 +1271,7 @@ $('dSaveBtn').onclick=async()=>{if(Date.now()-dLastSave<3000)return;dLastSave=Da
   c.toBlob(b=>{const a=document.createElement('a'),dt=new Date(),p=n=>String(n).padStart(2,'0');a.href=URL.createObjectURL(b);
     a.download=`유주옷입히기-${dt.getFullYear()}${p(dt.getMonth()+1)}${p(dt.getDate())}-${p(dt.getHours())}${p(dt.getMinutes())}${p(dt.getSeconds())}.png`;
     document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);},'image/png');
-  sfx.shutter();say('예쁘게 찍었어요');happyFace();drawDoll();};
+  sfx.shutter();say('예쁘게 찍었어요');happyFace();drawDoll();setTimeout(()=>giveSticker(pick(['i:crown','i:heart']),'dress'),1200);};
 $('doll').addEventListener('pointerdown',()=>{sfx.bubble();happyFace();drawDoll();hop();say(pick(['안녕!','나 예뻐?','좋아!']));});
 $('goDress').onclick=()=>{sfx.tap();say('옷 입혀 볼까요?');show('dress');drawDoll();renderCloset();};
 $('dressBack').onclick=()=>{sfx.tap();show('home');};
@@ -1255,7 +1300,7 @@ function bbPop(b){const r=b.getBoundingClientRect(),img=document.createElement('
   if(BB.party)return;
   BB.count++;renderStars('bbStars',BB.count,10);bell(mtof(PENT[Math.min(BB.count-1,8)]),.05,.16,.6);
   if(BB.count<10){say(NUM[BB.count-1]);return;}
-  BB.party=true;say('열! 다 터뜨렸어요!');cheer('다 터뜨렸어요!');sfx.fanfare();
+  BB.party=true;say('열! 다 터뜨렸어요!');cheer('다 터뜨렸어요!');setTimeout(()=>giveSticker(null),1000);sfx.fanfare();
   burst(innerWidth/2,innerHeight/2,50,Math.min(innerWidth,innerHeight)*.45,true);
   setTimeout(()=>{BB.count=0;BB.party=false;if(S.screen==='bubble')renderStars('bbStars',0,10);},3000);}
 $('goBubble').onclick=()=>{sfx.tap();say('비눗방울 놀이해요');bbStart();};
@@ -1293,7 +1338,7 @@ function pkRound(){clearTimeout(PK.hintT);if(S.screen!=='peek')return;const A=$(
 function pkHintLater(){clearTimeout(PK.hintT);PK.hintT=setTimeout(()=>{if(S.screen!=='peek'||PK.busy)return;
   const s=$('pkArea').children[PK.ans];s.classList.remove('peekHint');void s.offsetWidth;s.classList.add('peekHint');sfx.giggle();pkHintLater();},5000);}
 function pkTap(s,i){if(PK.busy)return;
-  if(i===PK.ans){PK.busy=true;clearTimeout(PK.hintT);s.classList.remove('peekHint');s.classList.add('found');sfx.peek();say(`까꿍! ${eul(PK.ch.name)} 찾았어요!`);cheer(`${eul(PK.ch.name)} 찾았어요!`);
+  if(i===PK.ans){PK.busy=true;clearTimeout(PK.hintT);s.classList.remove('peekHint');s.classList.add('found');sfx.peek();say(`까꿍! ${eul(PK.ch.name)} 찾았어요!`);cheer(`${eul(PK.ch.name)} 찾았어요!`);{const sk='c:'+PK.ch.id;setTimeout(()=>giveSticker(sk),1000);}
     const r=s.getBoundingClientRect();setTimeout(()=>burst(r.left+r.width/2,r.top,26,r.width*.8,true),250);
     setTimeout(()=>{if(S.screen!=='peek')return;PK.round++;pkRound();},3000);return;}
   s.classList.remove('nope');void s.offsetWidth;s.classList.add('nope');sfx.drop();
@@ -1359,7 +1404,7 @@ function fdEat(f,m){FD.busy=true;const el=f.el;el.classList.add('eaten');el.styl
   sfx.chomp();FD.fed++;renderStars('fdStars',FD.fed,5);sh.querySelector('svg').style.transform=`scale(${1+FD.fed*.05})`;
   setTimeout(()=>{heartBurst(m.x,m.y);},300);
   if(FD.fed<5){say(pick(['냠냠, 맛있어요!','고마워요!','정말 맛있어요!']));setTimeout(fdRound,1800);return;}
-  setTimeout(()=>{say('배불러요! 고마워요!');cheer('배불러요! 고마워요!');sfx.fanfare();const r=sh.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,46,r.width*.6,true);
+  setTimeout(()=>{say('배불러요! 고마워요!');cheer('배불러요! 고마워요!');setTimeout(()=>giveSticker('fish'),1000);sfx.fanfare();const r=sh.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,46,r.width*.6,true);
     sh.classList.remove('shake');void sh.offsetWidth;sh.classList.add('shake');},700);
   setTimeout(()=>{if(S.screen!=='feed')return;FD.fed=0;renderStars('fdStars',0,5);sh.querySelector('svg').style.transform='';fdRound();},4200);}
 function heartBurst(x,y){for(let i=0;i<8;i++){const s=document.createElement('span');s.className='pt';s.textContent='♥';
@@ -1419,6 +1464,100 @@ document.querySelectorAll('#title span').forEach((s,i)=>s.style.setProperty('--t
 // 칭찬 리본
 let cheerT=0;function cheer(t){const e=$('cheer');$('cheerTxt').textContent=t;e.classList.remove('on');void e.offsetWidth;e.classList.add('on');
   clearTimeout(cheerT);cheerT=setTimeout(()=>e.classList.remove('on'),2300);}
+
+/* ================= 스티커 모으기 + 내 바다 ================= */
+const SITEMS={
+  star:['불가사리',`${star(50,52,42,'#ff9f43')}<g fill="#ffc98a"><circle cx="50" cy="52" r="6"/><circle cx="50" cy="28" r="3.5"/><circle cx="72" cy="46" r="3.5"/><circle cx="28" cy="46" r="3.5"/><circle cx="64" cy="72" r="3.5"/><circle cx="36" cy="72" r="3.5"/></g><circle cx="44" cy="48" r="3" fill="#2b3a55"/><circle cx="56" cy="48" r="3" fill="#2b3a55"/><path d="M45 57 Q50 61 55 57" stroke="#2b3a55" stroke-width="2.5" fill="none" stroke-linecap="round"/>`],
+  shell:['조개',`<path d="M8 84 Q2 30 50 14 Q98 30 92 84 Z" fill="#ffb3c7"/><g stroke="#ff8fb1" stroke-width="4" fill="none" stroke-linecap="round"><path d="M50 18 V80"/><path d="M50 18 Q32 46 26 80"/><path d="M50 18 Q68 46 74 80"/><path d="M50 18 Q16 40 12 76"/><path d="M50 18 Q84 40 88 76"/></g><ellipse cx="50" cy="86" rx="22" ry="7" fill="#ff8fb1"/>`],
+  pearl:['진주',`<path d="M10 70 Q50 96 90 70 Q86 92 50 94 Q14 92 10 70 Z" fill="#ffb3c7"/><circle cx="50" cy="58" r="24" fill="#fffafc" stroke="#f3d6e2" stroke-width="3"/><circle cx="42" cy="50" r="7" fill="#fff"/>`],
+  coral:['산호',`<g fill="#ff8fb8"><rect x="44" y="40" width="12" height="54" rx="6"/><path d="M50 70 Q24 66 22 40" stroke="#ff8fb8" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M50 60 Q76 56 78 28" stroke="#ff8fb8" stroke-width="11" fill="none" stroke-linecap="round"/><circle cx="22" cy="36" r="9"/><circle cx="78" cy="24" r="9"/><circle cx="50" cy="36" r="9"/></g><g fill="#ffc6dc"><circle cx="50" cy="34" r="3"/><circle cx="22" cy="34" r="3"/><circle cx="78" cy="22" r="3"/></g>`],
+  weed:['미역',`<g fill="none" stroke-linecap="round" stroke-width="10"><path d="M36 96 Q22 70 38 50 Q52 30 36 8" stroke="#4cbf7a"/><path d="M62 96 Q76 74 62 56 Q50 40 64 20" stroke="#6fd39a"/></g>`],
+  chest:['보물상자',`<path d="M8 44 Q8 18 50 18 Q92 18 92 44 Z" fill="#c4834d"/><rect x="8" y="38" width="84" height="54" rx="8" fill="#b0713f"/><g fill="#ffd65a"><rect x="8" y="40" width="84" height="7"/><rect x="22" y="20" width="8" height="72" rx="2"/><rect x="70" y="20" width="8" height="72" rx="2"/><rect x="42" y="46" width="16" height="18" rx="4"/></g>${star(50,10,9,'#ffd65a')}`],
+  heart:['하트',`<circle cx="50" cy="50" r="42" fill="rgba(200,235,255,.6)" stroke="#fff" stroke-width="4"/>${heart(50,52,22,'#ff6b9a')}<path d="M28 34 Q34 24 46 22" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>`],
+  crown:['왕관',`<path d="M10 76 L16 28 L34 50 L50 18 L66 50 L84 28 L90 76 Q50 66 10 76 Z" fill="#ffd65a" stroke="#f0b429" stroke-width="4" stroke-linejoin="round"/><circle cx="50" cy="54" r="7" fill="#ff6b9a"/><circle cx="28" cy="62" r="5" fill="#7ec8ff"/><circle cx="72" cy="62" r="5" fill="#7ec8ff"/>`],
+};
+const FISH_COLS=[0,1,2,4,5,6];          // FCOL 색 번호 (빨강,노랑,파랑,분홍,주황,보라)
+function stkName(k){const [t,v]=k.split(':');if(t==='c'){const ch=CHARS.find(c=>c.id===v);return ch?ch.name:'친구';}if(t==='f')return FCOL[+v][2]+' 물고기';return (SITEMS[v]||['스티커'])[0];}
+function stkInner(k){const [t,v]=k.split(':');
+  if(t==='c'){const ch=CHARS.find(c=>c.id===v)||CHARS[0];return `<img src="${charSrc(ch)}" alt="">`;}
+  if(t==='f')return fishSVG(FCOL[+v]);
+  return `<svg viewBox="0 0 100 100">${(SITEMS[v]||SITEMS.star)[1]}</svg>`;}
+const stkSize=k=>k.startsWith('c:')?1.25:k.startsWith('f:')?1:.85;   // 기본 크기 비율
+const ST={list:[],last:{}};
+try{ST.list=JSON.parse(store.get('yj_stickers','[]'))||[];}catch(e){ST.list=[];}
+const saveST=()=>store.set('yj_stickers',JSON.stringify(ST.list));
+function newCount(){return ST.list.filter(s=>!s.placed).length;}
+function syncBadge(){const n=newCount(),b=$('seaBadge');b.textContent=n;b.classList.toggle('on',n>0);}
+
+// 놀이에서 성공하면 호출: kind 없으면 바다 소품 중 하나, 'fish'면 물고기
+function giveSticker(kind,src){
+  if(src){if(Date.now()-(ST.last[src]||0)<90000)return;ST.last[src]=Date.now();}   // 그림 저장·사진은 1분 반에 한 번만
+  if(!kind)kind='i:'+pick(['star','shell','pearl','coral','weed','chest','heart']);
+  if(kind==='fish')kind='f:'+pick(FISH_COLS);
+  const shiny=Math.random()<.15;
+  ST.list.push({k:kind,shiny,placed:false,x:.5,y:.5,id:Date.now()+Math.random()});saveST();syncBadge();
+  const R=$('reward');$('rewardStk').innerHTML=`<div class="stk${shiny?' shiny':''}">${stkInner(kind)}</div>`;
+  R.classList.remove('pop');R.style.opacity=1;R.classList.add('on');void R.offsetWidth;R.classList.add('pop');
+  sfx.fanfare();setTimeout(()=>say(shiny?'반짝반짝 스티커를 받았어요!':`${stkName(kind)} 스티커를 받았어요!`),300);
+  setTimeout(()=>{ // 집 버튼 쪽으로 쏙 날아가기 (첫 화면 '내 바다'에 모여요)
+    const btn=document.querySelector('.screen.on [data-ic="home"]'),rs=$('rewardStk');
+    const a=rs.getBoundingClientRect(),t=btn?btn.getBoundingClientRect():{left:20,top:20,width:60,height:60};
+    const dx=t.left+t.width/2-(a.left+a.width/2),dy=t.top+t.height/2-(a.top+a.height/2);
+    const an=rs.animate([{transform:'none'},{transform:`translate(${dx}px,${dy}px) scale(.15)`}],{duration:650,easing:'ease-in',fill:'forwards'});
+    R.querySelector('b').animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});R.querySelector('.rays').animate([{opacity:1},{opacity:0}],{duration:400,fill:'forwards'});
+    let done=false;const fin=()=>{if(done)return;done=true;R.classList.remove('on','pop');an.cancel();R.querySelectorAll('b,.rays').forEach(el=>el.getAnimations().forEach(x=>x.cancel()));
+      if(btn){btn.classList.remove('got');void btn.offsetWidth;btn.classList.add('got');}sfx.pop();};
+    an.onfinish=fin;setTimeout(fin,1000);},1700);}
+
+// 내 바다 화면
+function seaOpen(){show('sea');seaRender();}
+function seaSize(k){const A=$('seaArea');return Math.min(A.clientWidth,A.clientHeight)*.21*stkSize(k);}
+function seaRender(){const A=$('seaArea');A.innerHTML='';
+  ST.list.filter(s=>s.placed).forEach(s=>A.appendChild(placedEl(s)));renderTray();
+  $('seaCount').textContent=`스티커 ${ST.list.length}개`;syncBadge();}
+function placedEl(s){const A=$('seaArea'),z=seaSize(s.k),el=document.createElement('div');
+  el.className='stk'+(s.shiny?' shiny':'')+(s.k.startsWith('f:')?' swim':s.k.startsWith('c:')?' bob':'');
+  el.style.cssText=`width:${z}px;height:${z}px;left:${s.x*A.clientWidth-z/2}px;top:${s.y*A.clientHeight-z/2}px;animation-delay:-${(s.id%3).toFixed(2)}s`;
+  el.innerHTML=stkInner(s.k);el.__s=s;bindStk(el,s,false);return el;}
+function renderTray(){const T=$('tray');T.innerHTML='';const left=ST.list.filter(s=>!s.placed);
+  if(!left.length){T.innerHTML=`<div class="empty">${ST.list.length?'바다에 다 붙였어요! 놀이를 하면 또 받아요':'놀이를 하면 스티커를 받아요!'}</div>`;return;}
+  left.slice().reverse().forEach(s=>{const w=document.createElement('div');w.className='ti'+(s.seen?'':' new');
+    const el=document.createElement('div');el.className='stk'+(s.shiny?' shiny':'');el.innerHTML=stkInner(s.k);w.appendChild(el);bindStk(w,s,true);T.appendChild(w);});
+  left.forEach(s=>s.seen=true);saveST();}
+// 스티커 끌기: 쟁반에서 위로 끌어 바다에 붙이고, 붙인 것도 다시 옮기거나 쟁반으로 돌려놓기
+function bindStk(el,s,fromTray){let d=null;
+  el.addEventListener('pointerdown',e=>{if(d)return;d={id:e.pointerId,sx:e.clientX,sy:e.clientY,on:false};
+    if(!fromTray){e.preventDefault();try{el.setPointerCapture(e.pointerId);}catch(_){}}});
+  el.addEventListener('pointermove',e=>{if(!d||d.id!==e.pointerId)return;
+    if(!d.on){const dx=e.clientX-d.sx,dy=e.clientY-d.sy;if(Math.hypot(dx,dy)<10)return;
+      if(fromTray&&Math.abs(dx)>Math.abs(dy))return;     // 쟁반에서 옆으로 밀면 스크롤
+      d.on=true;try{el.setPointerCapture(e.pointerId);}catch(_){}
+      const z=seaSize(s.k);d.z=z;d.fl=fromTray?document.createElement('div'):el;
+      if(fromTray){d.fl.className='stk held'+(s.shiny?' shiny':'');d.fl.innerHTML=stkInner(s.k);d.fl.style.cssText=`position:fixed;width:${z}px;height:${z}px;z-index:170`;document.body.appendChild(d.fl);el.style.opacity=.3;}
+      else d.fl.classList.add('held');sfx.pick();}
+    const A=$('seaArea').getBoundingClientRect();
+    if(fromTray){d.fl.style.left=(e.clientX-d.z/2)+'px';d.fl.style.top=(e.clientY-d.z/2)+'px';}
+    else{d.fl.style.left=(e.clientX-A.left-d.z/2)+'px';d.fl.style.top=(e.clientY-A.top-d.z/2)+'px';}});
+  const up=e=>{if(!d||d.id!==e.pointerId)return;const was=d;d=null;
+    if(!was.on){if(!fromTray){el.classList.remove('jump');void el.offsetWidth;el.classList.add('jump');sfx.bubble();say(stkName(s.k));}
+      else{el.querySelector('.stk').animate([{transform:'scale(1)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:300});say(stkName(s.k));}return;}
+    const A=$('seaArea').getBoundingClientRect(),trayTop=$('tray').getBoundingClientRect().top;
+    if(e.clientY<trayTop-10){s.placed=true;s.x=Math.min(.97,Math.max(.03,(e.clientX-A.left)/A.width));s.y=Math.min(.95,Math.max(.12,(e.clientY-A.top)/A.height));
+      tone({f:700,f2:1500,d:.08,v:.2});bell(mtof(84),.05,.12,.5);burst(e.clientX,e.clientY,12,60);}
+    else{s.placed=false;sfx.drop();}
+    saveST();if(was.fl&&fromTray)was.fl.remove();seaRender();};
+  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',e=>{if(d&&!d.on)d=null;else up(e);});}
+addEventListener('resize',()=>{if(S.screen==='sea')seaRender();});
+$('goSea').onclick=()=>{sfx.tap();say('내 바다를 꾸며요');seaOpen();};
+$('seaBack').onclick=()=>{sfx.tap();show('home');syncBadge();};
+syncBadge();
+// '내 바다' 카드 그림
+(()=>{const el=document.querySelector('.card .art[data-art="sea"]');el.style.setProperty('--bgc','#d7f1ff');
+  el.innerHTML=`<svg viewBox="0 0 120 100"><rect x="10" y="14" width="100" height="76" rx="12" fill="#8fd3f7" stroke="#fff" stroke-width="4"/>
+   <path d="M12 78 Q40 70 60 76 T108 74 V86 Q108 88 104 88 H16 Q12 88 12 84 Z" fill="#ffe3a3"/>
+   <g transform="translate(20 66) scale(.22)">${SITEMS.star[1]}</g><g transform="translate(78 64) scale(.2)">${SITEMS.shell[1]}</g>
+   <g transform="translate(50 22) scale(.08)">${charArt(CHARS[0])}</g><g transform="translate(16 30) scale(.2)"><path d="M34 40 L4 14 Q14 40 4 66 Z" fill="#e8b81c"/><ellipse cx="70" cy="40" rx="46" ry="30" fill="#ffd93d"/><circle cx="96" cy="34" r="7" fill="#2b3a55"/></g>
+   ${star(100,10,8,'#ffd65a')}</svg>`;})();
 </script>
 </body>
 </html>
