@@ -251,6 +251,47 @@ img{-webkit-user-drag:none;pointer-events:none}
 .fish.eaten{transition:left .28s ease-in,top .28s ease-in,transform .28s ease-in;transform:scale(.15)}
 .fish.hint .fb{animation:hint 1s}
 
+/* ===== 디자인 다듬기 ===== */
+.ico{width:64%;height:64%;display:block;overflow:visible}
+.rbtn .ico{width:62%;height:62%}
+.abtn .ico{width:1.25em;height:1.25em}
+.dtab .ico{width:70%;height:70%}
+.tbtn .ico{width:72%;height:72%}
+.rbtn,.tbtn,.dtab,.cbtn,.pbtn,.pic,.ditem,.abtn,.card{transition:transform .12s ease,box-shadow .12s ease}
+.rbtn:active,.tbtn:active,.dtab:active,.pbtn:active,.abtn:active{transform:translateY(3px) scale(.95)}
+#scene{position:fixed;inset:0;z-index:0;pointer-events:none}
+#scene svg{width:100%;height:100%;display:block}
+#scene .rays{animation:rays 10s ease-in-out infinite alternate;transform-origin:50% 0}
+@keyframes rays{from{transform:skewX(-3deg)}to{transform:skewX(4deg)}}
+#scene .sw{animation:sw2 3.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
+#scene .sw.b{animation-duration:4.4s;animation-delay:-1.3s}
+@keyframes sw2{from{transform:skewX(-7deg)}to{transform:skewX(7deg)}}
+#scene .school{animation:school 40s linear infinite}
+#scene .school.b{animation-duration:55s;animation-delay:-25s}
+@keyframes school{from{transform:translateX(-260px)}to{transform:translateX(1860px)}}
+/* 첫 화면 */
+.title{color:#fff;-webkit-text-stroke:0;paint-order:stroke fill;filter:drop-shadow(0 .6vmin 0 rgba(30,110,170,.35))}
+.title span{color:var(--tc);-webkit-text-stroke:.09em #fff;paint-order:stroke fill}
+.card{background:#fff;padding:0;overflow:hidden;justify-content:flex-start;gap:0}
+.card .art{display:block;width:100%;height:74%;background:var(--bgc)}
+.card .art svg{width:100%;height:100%;display:block}
+.card b{flex:1;display:grid;place-items:center;width:100%}
+/* 퍼즐 판 */
+.board.grid{background:rgba(255,255,255,.55);box-shadow:0 0 0 1.1vmin #fff,0 0 0 1.6vmin rgba(126,200,255,.6),0 2vmin 3.5vmin rgba(0,60,120,.28)}
+.board.cheer{box-shadow:none}
+/* 칭찬 리본 */
+.dtab.sel{background:#fff;box-shadow:0 0 0 .7vmin #ff8fb8,0 .9vmin 0 rgba(200,80,130,.2)}
+.abtn{background:#fff;color:var(--c);box-shadow:0 0 0 .5vmin var(--c),0 .9vmin 0 rgba(0,0,0,.1)}
+#cheer{position:fixed;left:50%;top:max(14px,3vh);width:min(72vw,620px);aspect-ratio:640/170;z-index:150;pointer-events:none;
+  transform:translate(-50%,-180%) scale(.6);transition:transform .55s cubic-bezier(.3,1.5,.5,1);filter:drop-shadow(0 1vmin 1.2vmin rgba(150,30,80,.25))}
+#cheer.on{transform:translate(-50%,0) scale(1)}
+#cheer svg{width:100%;height:100%;display:block}
+#cheer b{position:absolute;left:12%;right:12%;top:30%;text-align:center;color:#fff;font-weight:400;font-size:clamp(26px,5.4vmin,56px);
+  line-height:1;text-shadow:0 .08em 0 rgba(160,30,80,.4);white-space:nowrap}
+#cheer .cs{position:absolute;font-style:normal;color:#ffd65a;font-size:clamp(26px,5vmin,52px);text-shadow:0 2px 0 rgba(0,0,0,.1);animation:twk 1s ease-in-out infinite alternate}
+#cheer .cs:nth-of-type(2){animation-delay:-.4s;color:#7ec8ff}#cheer .cs:nth-of-type(3){color:#fff;animation-delay:-.7s}
+@keyframes twk{from{transform:scale(.8) rotate(-12deg)}to{transform:scale(1.15) rotate(12deg)}}
+
 .pt{position:fixed;font-size:var(--s);color:var(--c);pointer-events:none;z-index:999;line-height:1;animation:fly .9s cubic-bezier(.2,.7,.4,1) forwards;
   text-shadow:0 2px 0 rgba(255,255,255,.7)}
 .pt.long{animation-duration:1.8s}
@@ -259,28 +300,30 @@ img{-webkit-user-drag:none;pointer-events:none}
 </style>
 </head>
 <body>
+<div id="scene"></div>
 <div id="bubbles"></div>
+<div id="cheer"><svg viewBox="0 0 640 170"><path d="M70 62 L4 46 L30 92 L4 138 L82 124 Z" fill="#e0457a"/><path d="M570 62 L636 46 L610 92 L636 138 L558 124 Z" fill="#e0457a"/><path d="M60 54 Q320 2 580 54 L580 126 Q320 74 60 126 Z" fill="#ff6b9a"/><path d="M60 54 Q320 2 580 54 L580 64 Q320 12 60 64 Z" fill="#fff" opacity=".25"/></svg><b id="cheerTxt"></b><i class="cs" style="left:4%;top:-10%">★</i><i class="cs" style="right:6%;top:-16%">★</i><i class="cs" style="left:44%;top:-34%">♥</i></div>
 <div id="toast"></div>
 
 <section id="home" class="screen on">
-  <div class="topbar"><span></span><button class="rbtn musicBtn" aria-label="음악">🎵</button></div>
+  <div class="topbar"><span></span><button class="rbtn musicBtn" aria-label="음악"></button></div>
   <div class="lane"><div class="swim"><img id="swimImg" alt=""></div></div>
   <span id="ver"></span>
   <div class="homeWrap">
     <h1 class="title" id="title"></h1>
     <div class="menu">
-      <button class="card" id="goPuzzle" style="--c:#ffd65a"><span class="ic">🧩</span><b>퍼즐</b></button>
-      <button class="card" id="goDraw" style="--c:#ff9eb5"><span class="ic">🖍️</span><b>그림</b></button>
-      <button class="card" id="goDress" style="--c:#b8a6ff"><span class="ic">👗</span><b>옷입히기</b></button>
-      <button class="card" id="goBubble" style="--c:#7ec8ff"><span class="ic">🫧</span><b>비눗방울</b></button>
-      <button class="card" id="goPeek" style="--c:#5ccf95"><span class="ic">🙈</span><b>까꿍</b></button>
-      <button class="card" id="goFeed" style="--c:#ff9f43"><span class="ic">🦈</span><b>밥 주기</b></button>
+      <button class="card" id="goPuzzle" style="--c:#ffd65a"><span class="art" data-art="puzzle"></span><b>퍼즐</b></button>
+      <button class="card" id="goDraw" style="--c:#ff9eb5"><span class="art" data-art="draw"></span><b>그림</b></button>
+      <button class="card" id="goDress" style="--c:#b8a6ff"><span class="art" data-art="dress"></span><b>옷입히기</b></button>
+      <button class="card" id="goBubble" style="--c:#7ec8ff"><span class="art" data-art="bubble"></span><b>비눗방울</b></button>
+      <button class="card" id="goPeek" style="--c:#5ccf95"><span class="art" data-art="peek"></span><b>까꿍</b></button>
+      <button class="card" id="goFeed" style="--c:#ff9f43"><span class="art" data-art="feed"></span><b>밥 주기</b></button>
     </div>
   </div>
 </section>
 
 <section id="select" class="screen">
-  <div class="topbar"><button class="rbtn" id="selBack" aria-label="처음으로">🏠</button><button class="rbtn musicBtn" aria-label="음악">🎵</button></div>
+  <div class="topbar"><button class="rbtn" id="selBack" aria-label="처음으로" data-ic="home"></button><button class="rbtn musicBtn" aria-label="음악"></button></div>
   <div class="selWrap">
     <h2 class="subtitle">어떤 그림 맞춰볼까?</h2>
     <div class="picGrid" id="picGrid"></div>
@@ -291,20 +334,20 @@ img{-webkit-user-drag:none;pointer-events:none}
 
 <section id="game" class="screen">
   <div id="stage"></div>
-  <div class="topbar"><button class="rbtn" id="gameBack" aria-label="뒤로">🏠</button><button class="rbtn musicBtn" aria-label="음악">🎵</button></div>
+  <div class="topbar"><button class="rbtn" id="gameBack" aria-label="뒤로" data-ic="home"></button><button class="rbtn musicBtn" aria-label="음악"></button></div>
 </section>
 
 <section id="draw" class="screen">
   <div class="dwrap">
     <div class="dtop">
-      <button class="rbtn" id="drawBack" aria-label="처음으로">🏠</button>
+      <button class="rbtn" id="drawBack" aria-label="처음으로" data-ic="home"></button>
       <span class="sp"></span>
-      <button class="rbtn" id="pageBtn" aria-label="종이 고르기">🖼️</button>
-      <button class="rbtn" id="undoBtn" aria-label="되돌리기">↩️</button>
-      <button class="rbtn" id="clearBtn" aria-label="모두 지우기">🗑️</button>
-      <button class="rbtn" id="saveBtn" aria-label="저장">💾</button>
+      <button class="rbtn" id="pageBtn" aria-label="종이 고르기" data-ic="picture"></button>
+      <button class="rbtn" id="undoBtn" aria-label="되돌리기" data-ic="undo"></button>
+      <button class="rbtn" id="clearBtn" aria-label="모두 지우기" data-ic="trash"></button>
+      <button class="rbtn" id="saveBtn" aria-label="저장" data-ic="save"></button>
       <span class="sp"></span>
-      <button class="rbtn musicBtn" aria-label="음악">🎵</button>
+      <button class="rbtn musicBtn" aria-label="음악"></button>
     </div>
     <div class="tools" id="tools"></div>
     <div class="paperBox" id="paperBox"><div class="paper" id="paper"><canvas id="paintCv"></canvas><canvas id="lineCv"></canvas></div></div>
@@ -315,7 +358,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 </section>
 
 <section id="dress" class="screen">
-  <div class="topbar"><button class="rbtn" id="dressBack" aria-label="처음으로">🏠</button><button class="rbtn musicBtn" aria-label="음악">🎵</button></div>
+  <div class="topbar"><button class="rbtn" id="dressBack" aria-label="처음으로" data-ic="home"></button><button class="rbtn musicBtn" aria-label="음악"></button></div>
   <div class="dsWrap">
     <div class="dollStage" id="dollStage">
       <div class="floor"></div>
@@ -327,9 +370,9 @@ img{-webkit-user-drag:none;pointer-events:none}
       <div class="dtabs" id="dTabs"></div>
       <div class="ditems" id="dItems"></div>
       <div class="dacts">
-        <button class="abtn" id="magicBtn" style="--c:#b8a6ff">🪄<small>마법</small></button>
-        <button class="abtn" id="resetBtn" style="--c:#7ec8ff">🔄<small>처음</small></button>
-        <button class="abtn" id="dSaveBtn" style="--c:#ff8fb8">📷<small>사진</small></button>
+        <button class="abtn" id="magicBtn" style="--c:#b8a6ff" data-ic="wand"><small>마법</small></button>
+        <button class="abtn" id="resetBtn" style="--c:#7ec8ff" data-ic="reset"><small>처음</small></button>
+        <button class="abtn" id="dSaveBtn" style="--c:#ff8fb8" data-ic="camera"><small>사진</small></button>
       </div>
     </div>
   </div>
@@ -337,17 +380,17 @@ img{-webkit-user-drag:none;pointer-events:none}
 
 <section id="bubble" class="screen">
   <div class="area" id="bbArea"></div>
-  <div class="topbar"><button class="rbtn" id="bbBack" aria-label="처음으로">🏠</button><div class="stars" id="bbStars"></div><button class="rbtn musicBtn" aria-label="음악">🎵</button></div>
+  <div class="topbar"><button class="rbtn" id="bbBack" aria-label="처음으로" data-ic="home"></button><div class="stars" id="bbStars"></div><button class="rbtn musicBtn" aria-label="음악"></button></div>
 </section>
 
 <section id="peek" class="screen">
   <div class="area" id="pkArea"></div>
-  <div class="topbar"><button class="rbtn" id="pkBack" aria-label="처음으로">🏠</button><button class="rbtn musicBtn" aria-label="음악">🎵</button></div>
+  <div class="topbar"><button class="rbtn" id="pkBack" aria-label="처음으로" data-ic="home"></button><button class="rbtn musicBtn" aria-label="음악"></button></div>
 </section>
 
 <section id="feed" class="screen">
   <div class="area" id="fdArea"></div>
-  <div class="topbar"><button class="rbtn" id="fdBack" aria-label="처음으로">🏠</button><div class="stars" id="fdStars"></div><button class="rbtn musicBtn" aria-label="음악">🎵</button></div>
+  <div class="topbar"><button class="rbtn" id="fdBack" aria-label="처음으로" data-ic="home"></button><div class="stars" id="fdStars"></div><button class="rbtn musicBtn" aria-label="음악"></button></div>
 </section>
 
 <script>
@@ -442,6 +485,49 @@ const CHARS=[
 CHARS.forEach(ch=>ch.svg=bg=>wrap(ch.art,bg,ch.c));
 const svgURL=s=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
 const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});
+
+/* ================= 아이콘 (캐릭터와 같은 그림체로 직접 그림) ================= */
+const ICONS={
+ home:`<rect x="41" y="10" width="7" height="14" rx="2" fill="#ff7b7b"/><path d="M8 31 L32 10 L56 31 Z" fill="#ff7b7b" stroke="#ff7b7b" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="15" y="29" width="34" height="26" rx="5" fill="#ffd65a"/><rect x="27" y="38" width="10" height="17" rx="4" fill="#c4834d"/><circle cx="21.5" cy="37" r="3.5" fill="#fff"/>`,
+ music:`<path d="M24 46 V15 L50 9 V41" stroke="#8a6cf0" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="17" cy="47" rx="9" ry="7" fill="#8a6cf0"/><ellipse cx="43" cy="42" rx="9" ry="7" fill="#8a6cf0"/>`,
+ crayon:`<g transform="rotate(-40 32 32)"><rect x="24" y="6" width="16" height="42" rx="3" style="fill:var(--ic,#ff5a5f)"/><rect x="24" y="14" width="16" height="5" fill="#fff" opacity=".55"/>
+  <rect x="24" y="37" width="16" height="5" fill="#fff" opacity=".55"/><path d="M24 48 H40 L32 61 Z" fill="#ffe2cf"/><path d="M29 56 H35 L32 61 Z" style="fill:var(--ic,#ff5a5f)"/></g>`,
+ rainbow:`<g fill="none" stroke-width="7" stroke-linecap="round"><path d="M8 46 A24 24 0 0 1 56 46" stroke="#ff5a5f"/><path d="M15 46 A17 17 0 0 1 49 46" stroke="#ffd93d"/>
+  <path d="M22 46 A10 10 0 0 1 42 46" stroke="#4fc3f7"/></g><g fill="#fff" stroke="#d5e4f2" stroke-width="2.5"><ellipse cx="12" cy="49" rx="9" ry="6"/><ellipse cx="52" cy="49" rx="9" ry="6"/></g>`,
+ bucket:`<path d="M38 18 Q53 21 55 34 Q57 46 51 46 Q46 45 48 36 Q48 27 38 23 Z" style="fill:var(--ic,#ff5a5f)"/><path d="M12 24 H46 L42 56 Q29 60 16 56 Z" fill="#7ec8ff"/>
+  <ellipse cx="29" cy="24" rx="17" ry="6" fill="#bfe6ff"/><path d="M13 24 Q29 4 45 24" stroke="#8a98ad" stroke-width="3.5" fill="none"/>`,
+ eraser:`<g transform="rotate(-30 32 34)"><rect x="10" y="22" width="44" height="24" rx="6" fill="#ff9ec9"/><rect x="10" y="22" width="18" height="24" rx="6" fill="#7ec8ff"/></g>
+  <g fill="#ffd65a"><circle cx="50" cy="12" r="3"/><circle cx="57" cy="20" r="2"/></g>`,
+ picture:`<rect x="8" y="12" width="48" height="40" rx="7" fill="#fff" stroke="#ffb3cf" stroke-width="5"/><circle cx="22" cy="26" r="5" fill="#ffd65a"/>
+  <path d="M13 47 L26 33 L35 41 L43 33 L51 42 V47 Z" fill="#5ccf95"/>`,
+ undo:`<path d="M21 17 L10 28 L21 39" fill="none" stroke="#3d7cf0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 28 H38 Q52 28 52 41 Q52 53 38 53 H26" fill="none" stroke="#3d7cf0" stroke-width="7" stroke-linecap="round"/>`,
+ trash:`<rect x="16" y="20" width="32" height="35" rx="6" fill="#a5b2c4"/><rect x="11" y="13" width="42" height="8" rx="4" fill="#7f8ea4"/><rect x="26" y="7" width="12" height="8" rx="3" fill="#7f8ea4"/>
+  <g stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".75"><path d="M26 29 V46"/><path d="M38 29 V46"/></g>`,
+ save:`<path d="M32 8 V35" stroke="#3fbf5c" stroke-width="7" stroke-linecap="round"/><path d="M20 25 L32 37 L44 25" fill="none" stroke="#3fbf5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10 40 V49 Q10 56 17 56 H47 Q54 56 54 49 V40" fill="none" stroke="#3fbf5c" stroke-width="7" stroke-linecap="round"/>`,
+ camera:`<rect x="22" y="11" width="20" height="10" rx="3" fill="#ff8fb8"/><rect x="7" y="17" width="50" height="36" rx="9" fill="#ff8fb8"/>
+  <circle cx="32" cy="35" r="12" fill="#fff"/><circle cx="32" cy="35" r="7" fill="#5b95f0"/><circle cx="34.5" cy="32.5" r="2.2" fill="#fff"/><circle cx="48" cy="25" r="3" fill="#fff"/>`,
+ wand:`<path d="M13 52 L37 28" stroke="#ff8fb8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M43 9 L46.5 17 L55 18 L48.5 23.5 L50.5 32 L43 27.5 L35.5 32 L37.5 23.5 L31 18 L39.5 17 Z" fill="#ffd65a" stroke="#f0b429" stroke-width="2" stroke-linejoin="round"/>
+  <g fill="#b8a6ff"><circle cx="20" cy="22" r="3"/><circle cx="56" cy="40" r="2.5"/><circle cx="27" cy="12" r="2"/></g>`,
+ reset:`<path d="M49 25 A19 19 0 1 0 51 39" fill="none" stroke="#4fb3e8" stroke-width="7" stroke-linecap="round"/>
+  <path d="M51 10 V26 H35" fill="none" stroke="#4fb3e8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`,
+ dress:`<path d="M24 9 L28 17 H36 L40 9 L47 15 L40 26 L53 54 Q32 61 11 54 L24 26 L17 15 Z" fill="#ff8fb8"/><path d="M24 27 H40" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
+  <g fill="#ffd65a"><circle cx="26" cy="44" r="2.5"/><circle cx="38" cy="48" r="2.5"/><circle cx="32" cy="38" r="2"/></g>`,
+ hair:`<g fill="#8a5a3b"><ellipse cx="12" cy="38" rx="7" ry="12" transform="rotate(15 12 38)"/><ellipse cx="52" cy="38" rx="7" ry="12" transform="rotate(-15 52 38)"/></g>
+  <circle cx="32" cy="34" r="18" fill="#ffe2cf"/><path d="M14 33 Q13 12 32 12 Q51 12 50 33 Q47 23 40 24 Q36 18 32 23 Q28 18 24 24 Q17 23 14 33Z" fill="#8a5a3b"/>
+  <g fill="#ff6b9a"><circle cx="16" cy="28" r="3.5"/><circle cx="48" cy="28" r="3.5"/></g><g fill="#2b2b3a"><circle cx="26" cy="37" r="2.6"/><circle cx="38" cy="37" r="2.6"/></g>
+  <path d="M28 44 Q32 47 36 44" stroke="#e0607e" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+ crown:`<path d="M8 48 L12 18 L24 32 L32 11 L40 32 L52 18 L56 48 Q32 42 8 48 Z" fill="#ffd65a" stroke="#f0b429" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="32" cy="35" r="4.5" fill="#ff6b9a"/><circle cx="19" cy="40" r="3" fill="#7ec8ff"/><circle cx="45" cy="40" r="3" fill="#7ec8ff"/>`,
+ shoe:`<path d="M7 40 Q7 29 18 29 L29 33 Q35 21 46 23 Q57 25 57 39 Q57 47 49 47 H14 Q7 47 7 40Z" fill="#ff6b9a"/><rect x="7" y="45" width="50" height="7" rx="3.5" fill="#e0457a"/>
+  <path d="M33 22 L28 15 M41 22 L44 14" stroke="#ff6b9a" stroke-width="3" stroke-linecap="round"/>`,
+ bow:`<path d="M32 32 L9 17 Q2 32 9 47 Z M32 32 L55 17 Q62 32 55 47 Z" fill="#ff6b9a"/><path d="M32 32 L15 23 Q12 32 15 41 Z M32 32 L49 23 Q52 32 49 41 Z" fill="#ff8fb8"/><circle cx="32" cy="32" r="7" fill="#e0457a"/>`,
+};
+function ic(n){return `<svg class="ico" viewBox="0 0 64 64" aria-hidden="true">${ICONS[n]||''}</svg>`;}
 
 /* ================= 소리 (Web Audio로 직접 합성) ================= */
 const AU={ctx:null,master:null,bgm:null};
@@ -567,7 +653,7 @@ const items=()=>[...CHARS.map(c=>({...c,thumb:svgURL(c.svg(true))})),...S.photos
 
 function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingReload){location.reload();return;}
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;}
-function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.textContent='🎵';b.classList.toggle('off',!S.music);
+function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.innerHTML=ic('music');b.classList.toggle('off',!S.music);
   b.setAttribute('aria-label',S.music?'배경음악 끄기':'배경음악 켜기');});}
 let toastT=0;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1800);}
 let unlocked=false;
@@ -666,14 +752,16 @@ async function startGame(){
     cv.width=Math.round((pw+2*mg)*dpr);cv.height=Math.round((ph+2*mg)*dpr);
     const x=cv.getContext('2d',{willReadFrequently:true});x.scale(dpr,dpr);x.translate(mg,mg);
     x.save();x.clip(path);x.drawImage(full,-c*pw,-r*ph,B,B);x.restore();
-    if(style!=='square'){x.lineWidth=2.5;x.strokeStyle='rgba(255,255,255,.9)';x.stroke(path);}
+    x.lineWidth=style==='square'?6:4;x.strokeStyle='rgba(255,255,255,.95)';x.stroke(path);
     cv.className='piece'+(sil||style!=='square'?'':' grid');cv.style.width=(pw+2*mg)+'px';cv.style.height=(ph+2*mg)+'px';
     const p={el:cv,tx:bx+c*pw,ty:by+r*ph,w:pw,h:ph,m:mg,path,x:0,y:0,locked:false};cv.__p=p;P.push(p);}
   // 판을 피해서 흩어 놓기
   const m=14,placed=[];
   P.sort(()=>Math.random()-.5).forEach((p,i)=>{let best=[m,top],bs=1e18;
-    for(let k=0;k<90;k++){const x=m+Math.random()*Math.max(1,W-p.w-2*m),y=top+Math.random()*Math.max(1,H-p.h-top-m);
-      let s=ov(x,y,p.w,p.h,bx,by,B,B)*4;placed.forEach(q=>s+=ov(x,y,p.w,p.h,q.x,q.y,q.w,q.h));if(s<bs){bs=s;best=[x,y];}}
+    // 볼록한 부분(mg)까지 화면 안에 들어오고, 판·다른 조각과 최대한 안 겹치게
+    for(let k=0;k<160;k++){const x=m+mg+Math.random()*Math.max(1,W-p.w-2*(m+mg)),y=top+mg+Math.random()*Math.max(1,H-p.h-top-2*mg-m);
+      let s=ov(x-mg,y-mg,p.w+2*mg,p.h+2*mg,bx-12,by-12,B+24,B+24)*8;
+      placed.forEach(q=>s+=ov(x-mg,y-mg,p.w+2*mg,p.h+2*mg,q.x-mg,q.y-mg,q.w+2*mg,q.h+2*mg));if(s<bs){bs=s;best=[x,y];}}
     p.x=p.hx=best[0];p.y=p.hy=best[1];placed.push(p);});
 
   G={P,board,done:0,W,H,z:10,last:Date.now(),over:false};
@@ -735,7 +823,7 @@ function lock(p){p.locked=true;p.x=p.tx;p.y=p.ty;p.el.classList.add('locked');p.
 function finish(){G.over=true;const b=G.board,r=b.getBoundingClientRect();
   setTimeout(()=>{b.classList.add('cheer');G.P.forEach(p=>p.el.style.visibility='hidden');sfx.fanfare();
     burst(r.left+r.width/2,r.top+r.height/2,46,Math.min(innerWidth,innerHeight)*.45,true);
-    say(rand(['잘했어요!','최고야!','와, 멋지다!','짝짝짝!']));
+    {const t=rand(['잘했어요!','최고야!','와, 멋지다!','짝짝짝!']);say(t);cheer(t);}
     // 축하가 끝나면 다음 그림으로 자연스럽게 넘어가기
     const me=G;setTimeout(()=>{if(S.screen!=='game'||G!==me)return;stage.classList.add('leave');
       setTimeout(()=>{if(S.screen!=='game'||G!==me)return;S.cur++;startGame();},450);},2600);},300);}
@@ -752,7 +840,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='game'){renderSelect();show('select');}else if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v9';
+const APP_VERSION='v10';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -781,7 +869,7 @@ paintCv.width=lineCv.width=PW;paintCv.height=lineCv.height=PH;
 const pctx=paintCv.getContext('2d',{willReadFrequently:true}),lctx=lineCv.getContext('2d',{willReadFrequently:true});
 const COLORS=[['#ff5a5f','빨강'],['#ff9f43','주황'],['#ffd93d','노랑'],['#5ccf6e','초록'],['#4fc3f7','하늘색'],
               ['#3d6ff0','파랑'],['#a77bf3','보라'],['#ff8fc7','분홍'],['#a0673f','갈색'],['#2b3a55','검정']];
-const TOOLS=[['crayon','🖍️','크레용'],['rainbow','🌈','무지개'],['stamp','','도장'],['fill','🪣','물감 붓기'],['eraser','🧽','지우개'],['size','','']];
+const TOOLS=[['crayon','crayon','크레용'],['rainbow','rainbow','무지개'],['stamp','','도장'],['fill','bucket','물감 붓기'],['eraser','eraser','지우개'],['size','','']];
 const SIZES=[16,34,62];
 const D={tool:'crayon',color:COLORS[0][0],size:1,hue:0,stampIdx:0,undo:[],strokes:new Map(),lastPen:0,lineAlpha:null,page:null,lastNote:0,lastSave:0};
 const STAMPS=CHARS.map(c=>{const i=new Image();i.src=svgURL(c.svg(false));return i;});
@@ -789,10 +877,10 @@ const STAMPS=CHARS.map(c=>{const i=new Image();i.src=svgURL(c.svg(false));return
 function fitPaper(){const b=$('paperBox').getBoundingClientRect(),a=PW/PH;let w=b.width,h=w/a;if(h>b.height){h=b.height;w=h*a;}
   paper.style.width=Math.floor(w)+'px';paper.style.height=Math.floor(h)+'px';}
 function renderTools(){const t=$('tools');t.innerHTML='';
-  TOOLS.forEach(([id,ic,name])=>{const b=document.createElement('button');b.className='tbtn'+(D.tool===id?' sel':'');
+  TOOLS.forEach(([id,icn,name])=>{const b=document.createElement('button');b.className='tbtn'+(D.tool===id?' sel':'');
     if(id==='stamp')b.innerHTML=`<img src="${STAMPS[D.stampIdx].src}" alt="">`;
     else if(id==='size'){const s=[16,28,42][D.size];b.innerHTML=`<i class="dot" style="width:${s}%;height:${s}%"></i>`;}
-    else b.innerHTML=ic+((id==='crayon'||id==='fill')?`<i class="bar" style="--cc:${D.color}"></i>`:'');
+    else{b.innerHTML=ic(icn);b.style.setProperty('--ic',D.color);}
     b.onclick=()=>{if(id==='size'){D.size=(D.size+1)%3;sfx.bubble();}else{D.tool=id;sfx.tap();say(name);}renderTools();};t.appendChild(b);});}
 function renderColors(){const c=$('colors');c.innerHTML='';
   COLORS.forEach(([col,name])=>{const b=document.createElement('button');b.className='cbtn'+(D.color===col?' sel':'');b.style.setProperty('--c',col);
@@ -986,7 +1074,7 @@ const DITEMS=[
    ${star(95,300,8,'#fff')}${star(305,300,8,'#fff')}`},
 ];
 const DI=Object.fromEntries(DITEMS.map(i=>[i.id,i]));
-const DCATS=[['dress','👗','옷'],['hair','💇‍♀️','머리'],['head','👑','머리 장식'],['shoes','👠','신발'],['acc','🎀','소품']];
+const DCATS=[['dress','dress','옷'],['hair','hair','머리'],['head','crown','머리 장식'],['shoes','shoe','신발'],['acc','bow','소품']];
 const DDEF={dress:null,hair:'h1',head:null,shoes:null,neck:null,face:null,hand:null,back:null};
 let DS={...DDEF};try{Object.assign(DS,JSON.parse(store.get('yj_doll','{}')));}catch(e){}
 let dTab='dress',dHappy=false,dHappyT=0;
@@ -1023,7 +1111,7 @@ function thumb(it){
   return `<svg viewBox="${it.box}">${it.svg}</svg>`;}
 function renderCloset(){
   const t=$('dTabs');t.innerHTML='';
-  DCATS.forEach(([id,ic,name])=>{const b=document.createElement('button');b.className='dtab'+(dTab===id?' sel':'');b.textContent=ic;
+  DCATS.forEach(([id,icn,name])=>{const b=document.createElement('button');b.className='dtab'+(dTab===id?' sel':'');b.innerHTML=ic(icn);
     b.onclick=()=>{dTab=id;sfx.bubble();say(name);renderCloset();};t.appendChild(b);});
   const g=$('dItems');g.innerHTML='';
   DITEMS.filter(i=>i.cat===dTab).forEach(it=>{const b=document.createElement('button');b.className='ditem'+(DS[slotOf(it)]===it.id?' on':'');
@@ -1079,7 +1167,7 @@ function bbPop(b){const r=b.getBoundingClientRect(),img=document.createElement('
   if(BB.party)return;
   BB.count++;renderStars('bbStars',BB.count,10);bell(mtof(PENT[Math.min(BB.count-1,8)]),.05,.16,.6);
   if(BB.count<10){say(NUM[BB.count-1]);return;}
-  BB.party=true;say('열! 우와, 다 터뜨렸다!');sfx.fanfare();
+  BB.party=true;say('열! 우와, 다 터뜨렸다!');cheer('다 터뜨렸다!');sfx.fanfare();
   burst(innerWidth/2,innerHeight/2,50,Math.min(innerWidth,innerHeight)*.45,true);
   setTimeout(()=>{BB.count=0;BB.party=false;if(S.screen==='bubble')renderStars('bbStars',0,10);},3000);}
 $('goBubble').onclick=()=>{sfx.tap();say('비눗방울 놀이!');bbStart();};
@@ -1106,9 +1194,10 @@ function pkRound(){clearTimeout(PK.hintT);if(S.screen!=='peek')return;const A=$(
   const n=PK.round<2?3:4,W=A.clientWidth,H=A.clientHeight,land=W>=H;
   let ch;do{ch=pick(CHARS);}while(ch===PK.last);PK.last=ch;PK.ch=ch;PK.ans=Math.floor(Math.random()*n);
   const objs=shuffle(HIDES.slice()).slice(0,n);
-  const cols=land?n:2,rows=Math.ceil(n/cols),sz=Math.min(W/cols*.8,(H*.8)/rows*.78);
+  const cols=land?n:2,rows=Math.ceil(n/cols),sz=land?Math.min(W/cols*.8,H*.46):Math.min(W/cols*.8,(H*.8)/rows*.78);
   objs.forEach((o,i)=>{const c=i%cols,r=Math.floor(i/cols),s=document.createElement('div');s.className='spot';
-    const cx=W*(c+.5)/cols,cy=land?H*.62+(n>3?(i%2?-1:1)*H*.05:0):H*(.3+.55*(r+.5)/rows);
+    // 가로 화면: 물건들이 바닥 모래 위에 놓이게
+    const cx=W*(c+.5)/cols,cy=land?H*.94-sz/2-(n>3&&i%2?H*.05:0):H*(.3+.55*(r+.5)/rows);
     s.style.cssText=`left:${cx-sz/2}px;top:${cy-sz/2}px;width:${sz}px;height:${sz}px;animation-delay:${i*.1}s`;
     s.innerHTML=(i===PK.ans?`<img class="hider" src="${charSrc(ch)}" alt="">`:'')+`<div class="obj"><svg viewBox="0 0 200 200">${o}</svg></div>`;
     s.addEventListener('pointerdown',e=>{e.preventDefault();pkTap(s,i);});A.appendChild(s);});
@@ -1116,7 +1205,7 @@ function pkRound(){clearTimeout(PK.hintT);if(S.screen!=='peek')return;const A=$(
 function pkHintLater(){clearTimeout(PK.hintT);PK.hintT=setTimeout(()=>{if(S.screen!=='peek'||PK.busy)return;
   const s=$('pkArea').children[PK.ans];s.classList.remove('peekHint');void s.offsetWidth;s.classList.add('peekHint');sfx.giggle();pkHintLater();},5000);}
 function pkTap(s,i){if(PK.busy)return;
-  if(i===PK.ans){PK.busy=true;clearTimeout(PK.hintT);s.classList.remove('peekHint');s.classList.add('found');sfx.peek();say(`까꿍! ${PK.ch.name} 찾았다!`);
+  if(i===PK.ans){PK.busy=true;clearTimeout(PK.hintT);s.classList.remove('peekHint');s.classList.add('found');sfx.peek();say(`까꿍! ${PK.ch.name} 찾았다!`);cheer(`${PK.ch.name} 찾았다!`);
     const r=s.getBoundingClientRect();setTimeout(()=>burst(r.left+r.width/2,r.top,26,r.width*.8,true),250);
     setTimeout(()=>{if(S.screen!=='peek')return;PK.round++;pkRound();},3000);return;}
   s.classList.remove('nope');void s.offsetWidth;s.classList.add('nope');sfx.drop();
@@ -1182,7 +1271,7 @@ function fdEat(f,m){FD.busy=true;const el=f.el;el.classList.add('eaten');el.styl
   sfx.chomp();FD.fed++;renderStars('fdStars',FD.fed,5);sh.querySelector('svg').style.transform=`scale(${1+FD.fed*.05})`;
   setTimeout(()=>{heartBurst(m.x,m.y);},300);
   if(FD.fed<5){say(pick(['냠냠! 맛있다!','냠냠냠! 고마워!','와, 맛있어!']));setTimeout(fdRound,1800);return;}
-  setTimeout(()=>{say('배불러! 고마워!');sfx.fanfare();const r=sh.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,46,r.width*.6,true);
+  setTimeout(()=>{say('배불러! 고마워!');cheer('배불러! 고마워!');sfx.fanfare();const r=sh.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,46,r.width*.6,true);
     sh.classList.remove('shake');void sh.offsetWidth;sh.classList.add('shake');},700);
   setTimeout(()=>{if(S.screen!=='feed')return;FD.fed=0;renderStars('fdStars',0,5);sh.querySelector('svg').style.transform='';fdRound();},4200);}
 function heartBurst(x,y){for(let i=0;i<8;i++){const s=document.createElement('span');s.className='pt';s.textContent='♥';
@@ -1191,6 +1280,57 @@ function heartBurst(x,y){for(let i=0;i<8;i++){const s=document.createElement('sp
   s.addEventListener('animationend',()=>s.remove());document.body.appendChild(s);}}
 $('goFeed').onclick=()=>{sfx.tap();say('상어 밥 주기!');fdStart();};
 $('fdBack').onclick=()=>{sfx.tap();show('home');};
+
+/* ================= 디자인: 아이콘 채우기, 바다 배경, 첫 화면 그림, 칭찬 리본 ================= */
+document.querySelectorAll('[data-ic]').forEach(e=>e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic)));
+syncMusic();
+
+(function buildScene(){
+  const fish=(x,y,s)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M0 0 Q22 -15 46 0 Q22 15 0 0 Z M44 0 L60 -11 L60 11 Z"/>`;
+  const coral=(x,y,s,c,c2)=>`<g transform="translate(${x} ${y}) scale(${s})"><g fill="${c}"><circle cx="0" cy="-40" r="34"/><circle cx="-38" cy="-12" r="28"/><circle cx="38" cy="-14" r="30"/><circle cx="-14" cy="-78" r="22"/><circle cx="22" cy="-72" r="20"/><rect x="-46" y="-20" width="92" height="30" rx="14"/></g><g fill="${c2}"><circle cx="-10" cy="-46" r="7"/><circle cx="24" cy="-24" r="6"/><circle cx="-34" cy="-14" r="5"/><circle cx="12" cy="-76" r="5"/></g></g>`;
+  const weed=(x,h,c,cls)=>`<path class="sw ${cls||''}" d="M${x} 1000 Q${x-30} ${1000-h*.35} ${x} ${1000-h*.6} Q${x+30} ${1000-h*.85} ${x} ${1000-h}" stroke="${c}" stroke-width="26" stroke-linecap="round" fill="none"/>`;
+  $('scene').innerHTML=`<svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice">
+   <g class="rays" fill="#fff"><path d="M250 -10 H400 L250 1000 H40 Z" opacity=".11"/><path d="M640 -10 H720 L780 1000 H560 Z" opacity=".08"/>
+    <path d="M1020 -10 H1170 L1400 1000 H1120 Z" opacity=".1"/><path d="M1420 -10 H1480 L1640 760 V1000 H1560 Z" opacity=".07"/></g>
+   <g fill="#2f8fc4" opacity=".18"><g class="school">${fish(0,210,1.3)}${fish(80,250,1)}${fish(30,290,1.1)}</g><g class="school b">${fish(0,520,.9)}${fish(60,550,.7)}</g></g>
+   <g opacity=".3">${weed(110,260,'#3ba3d4')}${weed(190,190,'#3ba3d4','b')}${weed(1420,240,'#3ba3d4','b')}${weed(1500,170,'#3ba3d4')}</g>
+   <path d="M0 902 Q180 868 380 892 T800 886 T1220 876 T1600 866 V1000 H0 Z" fill="#ffe3a3"/>
+   <path d="M0 948 Q260 924 560 946 T1100 938 T1600 928 V1000 H0 Z" fill="#f8d48b"/>
+   ${coral(90,930,1.1,'#ff9ec4','#ffc6dc')}${coral(1510,920,1,'#ffb37a','#ffd3ae')}
+   ${weed(40,300,'#4cbf7a')}${weed(175,210,'#5ccf6e','b')}${weed(1430,280,'#4cbf7a','b')}${weed(1565,200,'#5ccf6e')}
+   ${star(470,948,20,'#ff9f43')}${star(1180,958,15,'#ff8fb8')}
+   <g fill="#fff8ec" opacity=".9"><ellipse cx="700" cy="962" rx="16" ry="8"/><ellipse cx="730" cy="968" rx="10" ry="6"/><ellipse cx="1000" cy="955" rx="13" ry="7"/></g>
+  </svg>`;})();
+
+// 첫 화면 제목: 글자마다 다른 색
+document.querySelectorAll('#title span').forEach((s,i)=>s.style.setProperty('--tc',['#ff7ba8','#ffb347','#ffd65a','#6fd39a','#5fb8f0','#a98cf5'][i%6]));
+
+// 첫 화면 카드 그림: 앱 안의 캐릭터를 그대로 써서 그림체 통일
+(function homeArt(){const A={
+  puzzle:['#fff4c9',`<path d="M64 20 H82 C80 9 98 9 96 20 H112 V62 H64 Z" fill="#ffd65a" transform="rotate(8 88 40)"/>
+    <path d="M14 28 H34 C32 16 52 16 50 28 H70 V48 C82 46 82 66 70 64 V90 H14 Z" fill="#bfe8ff" stroke="#fff" stroke-width="3"/>
+    <g transform="translate(13 34) scale(.095)">${CHARS[0].art}</g>`],
+  draw:['#ffe6f0',`<rect x="14" y="12" width="70" height="72" rx="8" fill="#fff" stroke="#ffc9de" stroke-width="3" transform="rotate(-6 49 48)"/>
+    <g fill="none" stroke-width="7" stroke-linecap="round"><path d="M24 64 Q40 30 60 52 T84 44" stroke="#ff7ba8"/><path d="M24 74 Q42 44 62 64" stroke="#5fb8f0"/></g>
+    ${star(40,32,8,'#ffd65a')}<g transform="translate(70 30) scale(.62)">${ICONS.crayon.replace(/var\(--ic,#ff5a5f\)/g,'#a98cf5')}</g>`],
+  dress:['#efe9ff',`<g transform="translate(60 56) scale(.26) translate(-200 -170)"><g fill="${DI.h1.c}">${DI.h1.back}</g>${headSVG(true)}<g fill="${DI.h1.c}">${DI.h1.front}</g>${DI.h1.deco}${DI.a1.svg}</g>`],
+  bubble:['#e2f5ff',`<circle cx="60" cy="50" r="38" fill="rgba(190,235,255,.55)" stroke="#fff" stroke-width="3"/>
+    <g transform="translate(32 22) scale(.095)">${CHARS[3].art}</g><path d="M38 30 Q44 22 54 20" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <g fill="rgba(255,255,255,.75)" stroke="#fff" stroke-width="2"><circle cx="102" cy="26" r="9"/><circle cx="16" cy="78" r="7"/><circle cx="104" cy="74" r="5"/></g>`],
+  peek:['#e3f8ea',`<g transform="translate(24 -12) scale(.13)">${CHARS[1].art}</g>
+    <path d="M6 100 Q2 64 28 54 Q52 44 78 48 Q108 54 114 78 Q118 92 112 100 Z" fill="#9aa7b8"/><ellipse cx="42" cy="70" rx="12" ry="6" fill="#b9c4d2"/>
+    <g fill="#ffd65a"><path d="M96 30 l3 6 6 1 -4.5 4 1 6 -5.5-3 -5.5 3 1-6 -4.5-4 6-1z"/></g>`],
+  feed:['#fff0e0',`<g transform="translate(122 -8) scale(-.19 .19)">${SHARK_BODY}</g>
+    <ellipse cx="33" cy="66" rx="10" ry="8" fill="#7a2338"/>
+    <g transform="translate(2 52) scale(.2)"><path d="M34 40 L4 14 Q14 40 4 66 Z" fill="#d93a44"/><ellipse cx="70" cy="40" rx="46" ry="30" fill="#ff5a5f"/><circle cx="96" cy="34" r="7" fill="#2b3a55"/></g>
+    ${heart(98,20,8,'#ff6b9a')}`],
+ };
+ document.querySelectorAll('.card .art').forEach(el=>{const a=A[el.dataset.art];if(!a)return;el.style.setProperty('--bgc',a[0]);
+   el.innerHTML=`<svg viewBox="0 0 120 100">${a[1]}</svg>`;});})();
+
+// 칭찬 리본
+let cheerT=0;function cheer(t){const e=$('cheer');$('cheerTxt').textContent=t;e.classList.remove('on');void e.offsetWidth;e.classList.add('on');
+  clearTimeout(cheerT);cheerT=setTimeout(()=>e.classList.remove('on'),2300);}
 </script>
 </body>
 </html>
