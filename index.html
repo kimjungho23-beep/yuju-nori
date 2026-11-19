@@ -292,6 +292,19 @@ img{-webkit-user-drag:none;pointer-events:none}
 /* 칭찬 리본 */
 .dtab.sel{background:#fff;box-shadow:0 0 0 .7vmin #ff8fb8,0 .9vmin 0 rgba(200,80,130,.2)}
 .abtn{background:#fff;color:var(--c);box-shadow:0 0 0 .5vmin var(--c),0 .9vmin 0 rgba(0,0,0,.1)}
+/* ===== 퍼즐 여행 진행 표시 + 숲속 배경 ===== */
+.pzProg{align-self:center;display:flex;gap:.6vmin;background:rgba(255,255,255,.75);padding:.8vmin 1.6vmin;border-radius:99px;box-shadow:0 .6vmin 0 rgba(30,90,140,.15)}
+.pzProg img{width:clamp(28px,5.4vmin,50px);height:clamp(28px,5.4vmin,50px);object-fit:contain;opacity:.3;filter:grayscale(1);transition:all .3s}
+.pzProg img.done{opacity:1;filter:none}
+.pzProg img.now{opacity:1;filter:none;animation:bob 1.2s ease-in-out infinite;transform-origin:50% 100%}
+#sceneLand{position:fixed;inset:0;z-index:0;pointer-events:none;display:none}
+#sceneLand svg{width:100%;height:100%;display:block}
+body.land #sceneLand{display:block}
+body.land #scene,body.land #bubbles{display:none}
+#sceneLand .cloud{animation:cloud 60s linear infinite}#sceneLand .cloud.b{animation-duration:85s;animation-delay:-40s}
+@keyframes cloud{from{transform:translateX(-400px)}to{transform:translateX(2000px)}}
+#sceneLand .sunr{animation:spin 30s linear infinite;transform-box:fill-box;transform-origin:center}
+#sceneLand .sw{animation:sw2 3.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
 /* ===== 스티커 / 내 바다 ===== */
 .menu{display:flex;flex-wrap:wrap;justify-content:center;max-width:calc(4 * clamp(116px,21vmin,220px) + 3 * 4vmin + 34px)}
 .card .badge{position:absolute;top:.8vmin;right:.8vmin;min-width:4.6vmin;height:4.6vmin;padding:0 1.2vmin;border-radius:99px;background:#ff5a6e;color:#fff;
@@ -348,6 +361,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 </head>
 <body>
 <div id="scene"></div>
+<div id="sceneLand"></div>
 <div id="bubbles"></div>
 <div id="cheer"><svg viewBox="0 0 640 170"><path d="M70 62 L4 46 L30 92 L4 138 L82 124 Z" fill="#e0457a"/><path d="M570 62 L636 46 L610 92 L636 138 L558 124 Z" fill="#e0457a"/><path d="M60 54 Q320 2 580 54 L580 126 Q320 74 60 126 Z" fill="#ff6b9a"/><path d="M60 54 Q320 2 580 54 L580 64 Q320 12 60 64 Z" fill="#fff" opacity=".25"/></svg><b id="cheerTxt"></b><i class="cs" style="left:4%;top:-10%">★</i><i class="cs" style="right:6%;top:-16%">★</i><i class="cs" style="left:44%;top:-34%">♥</i></div>
 <div id="toast"></div>
@@ -382,7 +396,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 
 <section id="game" class="screen">
   <div id="stage"></div>
-  <div class="topbar"><button class="rbtn" id="gameBack" aria-label="뒤로" data-ic="home"></button><button class="rbtn musicBtn" aria-label="음악"></button></div>
+  <div class="topbar"><button class="rbtn" id="gameBack" aria-label="뒤로" data-ic="home"></button><div class="pzProg" id="pzProg"></div><button class="rbtn musicBtn" aria-label="음악"></button></div>
 </section>
 
 <section id="draw" class="screen">
@@ -547,6 +561,11 @@ const CHARS=[
 // ChatGPT로 만든 그림(chars/chars.js)이 있으면 그걸 쓰고, 없으면 직접 그린 그림. 색칠공부 밑그림은 항상 직접 그린 선 그림
 const charArt=ch=>ch.img?`<image href="${ch.img}" x="18" y="18" width="564" height="564"/>`:ch.art;
 CHARS.forEach(ch=>{ch.img=(window.CHAR_IMG||{})[ch.id]||null;ch.lineSvg=()=>wrap(ch.art,false,ch.c);ch.svg=bg=>wrap(charArt(ch),bg,ch.c);});
+// 숲속(육상) 친구들: 그림만 있음 (퍼즐·스티커에 사용)
+const LAND=[['rabbit','토끼'],['deer','사슴'],['raccoon','라쿤'],['tiger','호랑이'],['puppy','강아지'],['giraffe','기린']]
+  .map(([id,name])=>({id,name,land:true,art:'',c:['#eafbe0','#bfe9a6'],img:(window.CHAR_IMG||{})[id]||null})).filter(ch=>ch.img);
+LAND.forEach(ch=>{ch.svg=()=>wrap(charArt(ch),false,ch.c);});
+const ALLCH=[...CHARS,...LAND];
 const svgURL=s=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
 const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});
 
@@ -724,6 +743,7 @@ try{S.photos=JSON.parse(store.get('yj_photos','[]'))||[];}catch(e){S.photos=[];}
 const items=()=>[...CHARS.map(c=>({...c,thumb:svgURL(c.svg(true))})),...S.photos.map(p=>({id:p.id,photo:true,src:p.src,thumb:p.src}))];
 
 function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingReload){location.reload();return;}
+  if(id!=='game')document.body.classList.remove('land');
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;}
 function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.innerHTML=ic('music');b.classList.toggle('off',!S.music);
   b.setAttribute('aria-label',S.music?'배경음악 끄기':'배경음악 켜기');});}
@@ -750,11 +770,11 @@ function burst(x,y,n=12,spread=120,long=false){const C=['#ffd65a','#ff8fb1','#5c
 /* ================= 홈 ================= */
 $('title').innerHTML=[...'유주 놀이터'].map((ch,i)=>ch===' '?' ':`<span style="animation-delay:${i*.15}s">${ch}</span>`).join('');
 $('swimImg').src=svgURL(CHARS[0].svg(false));
-$('goPuzzle').onclick=()=>{sfx.tap();say('퍼즐 놀이해요');renderSelect();show('select');};
+$('goPuzzle').onclick=()=>{sfx.tap();say(PZ.world==='land'?'숲속 친구들 퍼즐이에요':'바다 친구들 퍼즐이에요');startGame();};
 document.querySelectorAll('[data-soon]').forEach(b=>b.onclick=()=>{sfx.nope();b.classList.remove('wig');void b.offsetWidth;b.classList.add('wig');say('곧 만나요!');});
 
 /* ================= 그림 고르기 ================= */
-const LAYOUT={1:[1,1],2:[2,1],4:[2,2],6:[3,2]};
+const LAYOUT={1:[1,1],2:[2,1],4:[2,2],6:[3,2],9:[3,3]};
 const PLABEL={1:'그림자',2:'2조각',4:'4조각',6:'6조각'};
 function renderSelect(){
   const g=$('picGrid');g.innerHTML='';
@@ -794,21 +814,45 @@ $('photoIn').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!
   catch(err){alert('사진을 불러오지 못했어요');}finally{URL.revokeObjectURL(url);}};
 $('selBack').onclick=()=>{sfx.tap();show('home');};
 
+/* ================= 퍼즐 여행: 바다 친구들 → 숲속 친구들, 풀수록 어려워짐 ================= */
+const PZ=(()=>{let s={};try{s=JSON.parse(store.get('yj_pz','{}'))||{};}catch(e){}
+  return Object.assign({world:'sea',order:[],idx:0,solved:0},s);})();
+const savePZ=()=>store.set('yj_pz',JSON.stringify(PZ));
+function pzList(){return PZ.world==='sea'?CHARS:[...LAND,...S.photos.map(p=>({id:p.id,photo:true,src:p.src,name:''}))];}
+function pzEnsure(){const L=pzList(),ids=L.map(x=>x.id);
+  if(PZ.order.length!==ids.length||PZ.order.some(id=>!ids.includes(id))){PZ.order=shuffle(ids.slice());PZ.idx=Math.min(PZ.idx,0);savePZ();}}
+function pzItem(){pzEnsure();const L=pzList();return L.find(x=>x.id===PZ.order[PZ.idx])||L[0];}
+// 난이도: 처음 3판은 4조각, 그다음 8판은 6조각, 그 뒤로는 6·9조각이 섞여 나옴. 조각 모양도 점점 다양하게(무작위)
+function pzLevel(){const k=PZ.solved;
+  const n=k<3?4:k<11?6:(Math.random()<.35?6:9);
+  const shapes=k<2?['square']:k<5?['square','wave']:['square','wave','jigsaw','jigsaw'];
+  return{n,style:pick(shapes)};}
+function pzAdvance(){PZ.solved++;PZ.idx++;let sw=null;
+  if(PZ.idx>=PZ.order.length){PZ.world=PZ.world==='sea'?'land':'sea';PZ.order=[];PZ.idx=0;sw=PZ.world;}
+  savePZ();return sw;}
+function renderProg(){const L=pzList();pzEnsure();
+  $('pzProg').innerHTML=PZ.order.map((id,i)=>{const ch=L.find(x=>x.id===id);if(!ch)return'';
+    return `<img class="${i<PZ.idx?'done':i===PZ.idx?'now':''}" src="${charSrc(ch)}" alt="">`;}).join('');}
+function worldChange(sw){const toLand=sw==='land';document.body.classList.toggle('land',toLand);
+  const t=toLand?'숲속 친구들을 만나요!':'바다 친구들에게 돌아가요!';cheer(t);say(toLand?'바다 친구들을 다 맞췄어요! 이제 숲속 친구들을 만나요!':'숲속 친구들을 다 맞췄어요! 다시 바다로 가요!');
+  sfx.fanfare();burst(innerWidth/2,innerHeight/2,50,Math.min(innerWidth,innerHeight)*.45,true);stage.innerHTML='';renderProg();
+  setTimeout(()=>{if(S.screen==='game')startGame();},3200);}
+
 /* ================= 퍼즐 게임 ================= */
 const stage=$('stage');let G=null;
 const ov=(x,y,w,h,X,Y,W,H)=>Math.max(0,Math.min(x+w,X+W)-Math.max(x,X))*Math.max(0,Math.min(y+h,Y+H)-Math.max(y,Y));
 
 async function startGame(){
   show('game');G=null;stage.innerHTML='';stage.classList.remove('leave','enter');void stage.offsetWidth;stage.classList.add('enter');
-  const list=items();S.cur=((S.cur%list.length)+list.length)%list.length;const it=list[S.cur];
-  const n=S.pieces,[cols,rows]=LAYOUT[n],sil=n===1&&!it.photo;
+  const it=pzItem(),LV=pzLevel();document.body.classList.toggle('land',PZ.world==='land');renderProg();
+  const n=LV.n,[cols,rows]=LAYOUT[n],sil=false;
   const W=stage.clientWidth,H=stage.clientHeight,land=W>=H,top=Math.min(120,H*.13);
   let B=n===1?(land?Math.min(H*.66,W*.42):Math.min(W*.66,H*.4)):(land?Math.min(H*.62,W*.46):Math.min(W*.74,H*.44));
   B=Math.round(B);
   let bx,by;
   if(n===1&&land){bx=W*.7-B/2;by=(H-B)/2+top*.3;}else if(n===1){bx=(W-B)/2;by=H*.7-B/2;}else{bx=(W-B)/2;by=(H-B)/2+top*.3;}
   const dpr=Math.min(2,window.devicePixelRatio||1),R=Math.round(B*dpr);
-  const cm=!sil&&!it.photo&&S.frame!=='square';   // 캐릭터 모양으로 따기 (배경 없이 캐릭터만)
+  const cm=!it.photo;   // 캐릭터 모양으로 따기 (배경 없이 캐릭터만)
   const src=await loadImg(it.photo?it.src:svgURL(it.svg(!sil&&!cm)));
   const full=document.createElement('canvas');full.width=full.height=R;full.className='full';
   const fctx=full.getContext('2d',{willReadFrequently:cm});fctx.drawImage(src,0,0,R,R);
@@ -818,7 +862,7 @@ async function startGame(){
     for(let y=0;y<R;y+=2)for(let x=0;x<R;x+=2)if(d[(y*R+x)*4+3]>40){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
     if(x1>x0&&y1>y0){ox=x0/dpr;oy=y0/dpr;AW=(x1-x0+2)/dpr;AH=(y1-y0+2)/dpr;}}
   // 조각 모양 정하기: 네모 / 퍼즐(볼록) / 물결, 섞기는 판마다 무작위
-  const pw=AW/cols,ph=AH/rows,style=S.shape==='mix'?pick(['square','jigsaw','wave']):S.shape;
+  const pw=AW/cols,ph=AH/rows,style=LV.style;
   const J={cw:pw,ch:ph,k:Math.min(pw,ph),style,rows,cols,H:[],V:[]};
   for(let r=0;r<rows;r++){J.H[r]=[];J.V[r]=[];for(let c=0;c<cols;c++){J.H[r][c]=Math.random()<.5?1:-1;J.V[r][c]=Math.random()<.5?1:-1;}}
   const mg=style==='jigsaw'?J.k*.34:style==='wave'?J.k*.14:0;
@@ -923,21 +967,21 @@ function finish(){G.over=true;const b=G.board,r=b.getBoundingClientRect();
     {const t=rand(['잘했어요!','최고예요!','와, 멋져요!','참 잘했어요!']);say(t);cheer(t);const sk=G&&G.it&&!G.it.photo?'c:'+G.it.id:null;setTimeout(()=>giveSticker(sk),1000);}
     // 축하가 끝나면 다음 그림으로 자연스럽게 넘어가기
     const me=G;setTimeout(()=>{if(S.screen!=='game'||G!==me)return;stage.classList.add('leave');
-      setTimeout(()=>{if(S.screen!=='game'||G!==me)return;S.cur++;startGame();},450);},2600);},300);}
+      setTimeout(()=>{if(S.screen!=='game'||G!==me)return;const sw=pzAdvance();if(sw)worldChange(sw);else startGame();},450);},2600);},300);}
 // 한동안 안 만지면 조각이 살랑살랑 힌트
 setInterval(()=>{if(S.screen!=='game'||!G||G.over)return;if(Date.now()-G.last<7000)return;G.last=Date.now();
   const free=G.P.filter(p=>!p.locked&&!p.drag);if(!free.length)return;const p=rand(free);
   p.el.classList.remove('hint');void p.el.offsetWidth;p.el.classList.add('hint');sfx.bubble();},1000);
 
-$('gameBack').onclick=()=>{sfx.tap();renderSelect();show('select');};
+$('gameBack').onclick=()=>{sfx.tap();show('home');};
 /* 뒤로가기(제스처·버튼)를 눌러도 앱이 꺼지지 않고 한 화면씩 뒤로 */
 history.pushState({yj:1},'');
 addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if($('pagePick').classList.contains('on')){$('pagePick').classList.remove('on');return;}
-  if(S.screen==='game'){renderSelect();show('select');}else if(S.screen!=='home')show('home');});
+  if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v17';
+const APP_VERSION='v18';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1278,7 +1322,7 @@ $('dressBack').onclick=()=>{sfx.tap();show('home');};
 
 function renderStars(id,n,total){$(id).innerHTML=Array.from({length:total},(_,i)=>`<span class="${i<n?'on':''}">★</span>`).join('');}
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-const charSrc=ch=>STAMPS[CHARS.indexOf(ch)].src;
+const charSrc=ch=>{const i=CHARS.indexOf(ch);return i>=0?STAMPS[i].src:(ch.photo?ch.src:svgURL(ch.svg(false)));};
 
 /* ================= 비눗방울 터뜨리기 ================= */
 const BB={timer:null,count:0,party:false};
@@ -1435,6 +1479,29 @@ syncMusic();
    <g fill="#fff8ec" opacity=".9"><ellipse cx="700" cy="962" rx="16" ry="8"/><ellipse cx="730" cy="968" rx="10" ry="6"/><ellipse cx="1000" cy="955" rx="13" ry="7"/></g>
   </svg>`;})();
 
+// 숲속 친구들 퍼즐용 들판 배경
+(function buildLand(){
+  const cloud=(x,y,s,cls)=>`<g class="cloud ${cls||''}" fill="#fff"><g transform="translate(${x} ${y}) scale(${s})"><circle cx="0" cy="0" r="34"/><circle cx="38" cy="-14" r="44"/><circle cx="82" cy="0" r="34"/><rect x="0" y="0" width="82" height="30" rx="15"/></g></g>`;
+  const tree=(x,s)=>`<g transform="translate(${x} 820) scale(${s})"><rect x="-16" y="-20" width="32" height="130" rx="10" fill="#a0673f"/>
+    <g fill="#5cb85c"><circle cx="0" cy="-90" r="78"/><circle cx="-62" cy="-40" r="58"/><circle cx="62" cy="-40" r="58"/></g><g fill="#6fd36f"><circle cx="-20" cy="-110" r="34"/><circle cx="40" cy="-70" r="24"/></g>
+    <g fill="#ff6b6b"><circle cx="-34" cy="-60" r="10"/><circle cx="30" cy="-110" r="10"/><circle cx="50" cy="-40" r="9"/></g></g>`;
+  let flowers='';const cols=['#ff8fb8','#ffd65a','#fff','#b8a6ff','#ff9f43'];
+  for(let i=0;i<26;i++){const x=40+i*60+((i*37)%25),y=905+((i*53)%70);flowers+=`<g transform="translate(${x} ${y}) scale(${.8+((i*7)%5)/10})"><path d="M0 0 V28" stroke="#4caf50" stroke-width="4"/>${flower(0,0,12,cols[i%5],'#ffd65a')}</g>`;}
+  $('sceneLand').innerHTML=`<svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice">
+   <defs><linearGradient id="lsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9edcff"/><stop offset=".65" stop-color="#e6f7ff"/><stop offset="1" stop-color="#fff9e6"/></linearGradient></defs>
+   <rect width="1600" height="1000" fill="url(#lsky)"/>
+   <g transform="translate(1380 150)"><g class="sunr" fill="#ffe27a" opacity=".55">${Array.from({length:12},(_,i)=>`<rect x="-6" y="-120" width="12" height="40" rx="6" transform="rotate(${i*30})"/>`).join('')}</g>
+    <circle r="66" fill="#ffd54f"/><circle r="52" fill="#ffe27a"/></g>
+   ${cloud(150,140,1.1)}${cloud(700,90,.8,'b')}${cloud(1050,220,.9)}
+   <g fill="none" stroke="#7a8aa0" stroke-width="5" stroke-linecap="round" opacity=".5"><path d="M520 200 q14 -14 28 0 q14 -14 28 0"/><path d="M600 240 q10 -10 20 0 q10 -10 20 0"/></g>
+   <path d="M0 720 Q300 600 620 700 T1200 680 T1600 640 V1000 H0 Z" fill="#c4eba5"/>
+   <path d="M0 800 Q260 720 560 790 T1100 770 T1600 740 V1000 H0 Z" fill="#a5de85"/>
+   ${tree(140,1)}${tree(1470,.9)}
+   <path d="M0 880 Q300 840 640 875 T1240 865 T1600 850 V1000 H0 Z" fill="#8fd36f"/>
+   <g class="sw" fill="none" stroke="#6cc24f" stroke-width="10" stroke-linecap="round">${Array.from({length:14},(_,i)=>`<path d="M${60+i*115} 1000 q-8 -40 6 -70"/>`).join('')}</g>
+   ${flowers}
+  </svg>`;})();
+
 // 첫 화면 제목: 글자마다 다른 색
 document.querySelectorAll('#title span').forEach((s,i)=>s.style.setProperty('--tc',['#ff7ba8','#ffb347','#ffd65a','#6fd39a','#5fb8f0','#a98cf5'][i%6]));
 
@@ -1477,9 +1544,9 @@ const SITEMS={
   crown:['왕관',`<path d="M10 76 L16 28 L34 50 L50 18 L66 50 L84 28 L90 76 Q50 66 10 76 Z" fill="#ffd65a" stroke="#f0b429" stroke-width="4" stroke-linejoin="round"/><circle cx="50" cy="54" r="7" fill="#ff6b9a"/><circle cx="28" cy="62" r="5" fill="#7ec8ff"/><circle cx="72" cy="62" r="5" fill="#7ec8ff"/>`],
 };
 const FISH_COLS=[0,1,2,4,5,6];          // FCOL 색 번호 (빨강,노랑,파랑,분홍,주황,보라)
-function stkName(k){const [t,v]=k.split(':');if(t==='c'){const ch=CHARS.find(c=>c.id===v);return ch?ch.name:'친구';}if(t==='f')return FCOL[+v][2]+' 물고기';return (SITEMS[v]||['스티커'])[0];}
+function stkName(k){const [t,v]=k.split(':');if(t==='c'){const ch=ALLCH.find(c=>c.id===v);return ch?ch.name:'친구';}if(t==='f')return FCOL[+v][2]+' 물고기';return (SITEMS[v]||['스티커'])[0];}
 function stkInner(k){const [t,v]=k.split(':');
-  if(t==='c'){const ch=CHARS.find(c=>c.id===v)||CHARS[0];return `<img src="${charSrc(ch)}" alt="">`;}
+  if(t==='c'){const ch=ALLCH.find(c=>c.id===v)||CHARS[0];return `<img src="${charSrc(ch)}" alt="">`;}
   if(t==='f')return fishSVG(FCOL[+v]);
   return `<svg viewBox="0 0 100 100">${(SITEMS[v]||SITEMS.star)[1]}</svg>`;}
 const stkSize=k=>k.startsWith('c:')?1.25:k.startsWith('f:')?1:.85;   // 기본 크기 비율
