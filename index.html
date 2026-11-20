@@ -33,7 +33,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 .topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:max(14px,2.2vmin);z-index:60;pointer-events:none}
 .rbtn{pointer-events:auto;width:clamp(58px,9vmin,86px);height:clamp(58px,9vmin,86px);border-radius:50%;border:none;background:#fff;
   box-shadow:0 6px 0 rgba(30,90,140,.18);font-size:clamp(28px,4.6vmin,44px);display:grid;place-items:center;transition:transform .1s}
-.rbtn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(30,90,140,.18)}
+.rbtn:active{transform:scale(.94);box-shadow:0 2px 0 rgba(30,90,140,.18)}
 .rbtn.off{opacity:.6}
 .musicBtn{position:relative}
 #ver{position:absolute;right:max(12px,2vmin);bottom:max(8px,1.4vmin);font-size:clamp(12px,1.8vmin,16px);color:rgba(255,255,255,.85);pointer-events:none}
@@ -54,7 +54,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 .card{position:relative;width:clamp(116px,21vmin,220px);aspect-ratio:1;border:none;border-radius:13%;background:#fff;
   box-shadow:0 1.4vmin 0 var(--c),0 2.2vmin 3vmin rgba(0,60,120,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1vmin;
   transition:transform .12s}
-.card:active{transform:translateY(1vmin) scale(.97)}
+.card:active{transform:scale(.97)}
 .card .ic{font-size:clamp(48px,9.5vmin,96px);line-height:1}
 .card b{font-weight:400;font-size:clamp(20px,4.2vmin,42px)}
 .card.soon{opacity:.82}
@@ -206,7 +206,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 .abtn{border:none;background:var(--c);color:#fff;border-radius:99px;padding:1vmin 3vmin;font-size:clamp(26px,4.6vmin,44px);display:flex;align-items:center;gap:1vmin;
   box-shadow:0 .8vmin 0 rgba(0,0,0,.12)}
 .abtn small{font-size:clamp(16px,2.8vmin,26px)}
-.abtn:active{transform:translateY(.6vmin)}
+.abtn:active{transform:scale(.95)}
 @media (orientation:portrait){
   .dsWrap{grid-template-columns:1fr;grid-template-rows:52% 1fr;padding-top:clamp(70px,11vmin,100px)}
   .closet{margin-top:0}
@@ -268,7 +268,7 @@ img{-webkit-user-drag:none;pointer-events:none}
 .dtab .ico{width:70%;height:70%}
 .tbtn .ico{width:72%;height:72%}
 .rbtn,.tbtn,.dtab,.cbtn,.pbtn,.pic,.ditem,.abtn,.card{transition:transform .12s ease,box-shadow .12s ease}
-.rbtn:active,.tbtn:active,.dtab:active,.pbtn:active,.abtn:active{transform:translateY(3px) scale(.95)}
+.rbtn:active,.tbtn:active,.dtab:active,.pbtn:active,.abtn:active{transform:scale(.95)}
 #scene{position:fixed;inset:0;z-index:0;pointer-events:none}
 #scene svg{width:100%;height:100%;display:block}
 #scene .rays{animation:rays 10s ease-in-out infinite alternate;transform-origin:50% 0}
@@ -898,6 +898,19 @@ function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.innerH
 let toastT=0;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1800);}
 let unlocked=false;
 document.addEventListener('pointerdown',()=>{audio();if(!unlocked){unlocked=true;if(S.music)bgmStart();}},true);
+/* 버튼 누르기를 확실하게 (특히 S펜): 브라우저의 click은 버튼이 눌리며 살짝 움직이거나 펜이 조금만 흔들려도 취소돼요.
+   그래서 '누른 버튼'을 기억했다가, 뗀 곳이 그 버튼 근처(여유 28px)이고 크게 끌지 않았으면 직접 눌러줘요. */
+let tapB=null,fastFiring=false;
+document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('button');
+  tapB=b&&!b.disabled&&(e.button===0||e.pointerType!=='mouse')?{b,id:e.pointerId,x:e.clientX,y:e.clientY,r:b.getBoundingClientRect()}:null;},true);
+document.addEventListener('pointerup',e=>{const t=tapB;if(!t||t.id!==e.pointerId)return;tapB=null;
+  const T=28,r=t.r,near=e.clientX>r.left-T&&e.clientX<r.right+T&&e.clientY>r.top-T&&e.clientY<r.bottom+T;
+  if(!near||Math.hypot(e.clientX-t.x,e.clientY-t.y)>40||!document.contains(t.b))return;
+  t.b.__tapAt=Date.now();fastFiring=true;try{t.b.click();}finally{fastFiring=false;}},true);
+document.addEventListener('pointercancel',e=>{if(tapB&&tapB.id===e.pointerId)tapB=null;},true);
+// 브라우저가 뒤늦게 보내는 원래 click은 막아서 두 번 눌리지 않게
+document.addEventListener('click',e=>{if(fastFiring)return;const b=e.target.closest&&e.target.closest('button');
+  if(b&&b.__tapAt&&Date.now()-b.__tapAt<700){e.stopPropagation();e.preventDefault();}},true);
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('visibilitychange',()=>{if(!AU.ctx)return;document.hidden?AU.ctx.suspend():AU.ctx.resume();});
 document.querySelectorAll('.musicBtn').forEach(b=>b.onclick=()=>{S.music=!S.music;store.set('yj_music',S.music?'1':'0');
@@ -1183,7 +1196,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v25';
+const APP_VERSION='v26';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
