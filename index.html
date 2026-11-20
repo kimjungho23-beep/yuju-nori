@@ -292,6 +292,15 @@ img{-webkit-user-drag:none;pointer-events:none}
 /* 칭찬 리본 */
 .dtab.sel{background:#fff;box-shadow:0 0 0 .7vmin #ff8fb8,0 .9vmin 0 rgba(200,80,130,.2)}
 .abtn{background:#fff;color:var(--c);box-shadow:0 0 0 .5vmin var(--c),0 .9vmin 0 rgba(0,0,0,.1)}
+/* ===== 친구 꾸미기 ===== */
+#doll{animation:breathe 2.8s ease-in-out infinite;transform-origin:50% 95%}
+#doll .fr{position:absolute;object-fit:contain;filter:drop-shadow(0 1.6vmin 1.4vmin rgba(150,40,90,.18));transform-origin:50% 90%}
+#doll .fr.squish{animation:squish .55s ease}
+#doll .acc{position:absolute;pointer-events:none}
+#doll .acc svg,.ditem svg,.dragItem svg{width:100%;height:100%;display:block;overflow:visible;animation:none}
+#doll .acc svg{filter:drop-shadow(0 .5vmin .5vmin rgba(0,0,0,.12))}
+#doll .acc.pop{animation:pop .5s ease}
+body.land #dress{background:linear-gradient(180deg,#e6f7ff,#eafbe0 60%,#c9efb0)}
 /* ===== 부모님 설정 / 잘 시간 ===== */
 #parent{position:fixed;inset:0;z-index:190;background:rgba(25,60,100,.55);display:none;align-items:center;justify-content:center;padding:16px}
 #parent.on{display:flex;animation:fadein .2s}
@@ -670,6 +679,10 @@ const ICONS={
  shoe:`<path d="M7 40 Q7 29 18 29 L29 33 Q35 21 46 23 Q57 25 57 39 Q57 47 49 47 H14 Q7 47 7 40Z" fill="#ff6b9a"/><rect x="7" y="45" width="50" height="7" rx="3.5" fill="#e0457a"/>
   <path d="M33 22 L28 15 M41 22 L44 14" stroke="#ff6b9a" stroke-width="3" stroke-linecap="round"/>`,
  bow:`<path d="M32 32 L9 17 Q2 32 9 47 Z M32 32 L55 17 Q62 32 55 47 Z" fill="#ff6b9a"/><path d="M32 32 L15 23 Q12 32 15 41 Z M32 32 L49 23 Q52 32 49 41 Z" fill="#ff8fb8"/><circle cx="32" cy="32" r="7" fill="#e0457a"/>`,
+ glasses:`<g fill="rgba(255,255,255,.4)" stroke="#8a6cf0" stroke-width="5"><circle cx="18" cy="34" r="12"/><circle cx="46" cy="34" r="12"/></g><path d="M29 32 Q32 28 35 32" stroke="#8a6cf0" stroke-width="5" fill="none"/>`,
+ wings:`<g fill="#d6c9ff" stroke="#fff" stroke-width="3"><ellipse cx="17" cy="24" rx="15" ry="11" transform="rotate(-30 17 24)"/><ellipse cx="47" cy="24" rx="15" ry="11" transform="rotate(30 47 24)"/>
+  <ellipse cx="21" cy="44" rx="10" ry="8" transform="rotate(25 21 44)"/><ellipse cx="43" cy="44" rx="10" ry="8" transform="rotate(-25 43 44)"/></g>`,
+ skirt:`<path d="M20 22 H44 L58 48 L52 46 L50 54 L44 48 L40 56 L34 49 L32 57 L30 49 L24 56 L20 48 L14 54 L12 46 L6 48 Z" fill="#ff9ec9"/><rect x="18" y="18" width="28" height="7" rx="3.5" fill="#ff6b9a"/>`,
 };
 function ic(n){return `<svg class="ico" viewBox="0 0 64 64" aria-hidden="true">${ICONS[n]||''}</svg>`;}
 
@@ -1043,7 +1056,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v20';
+const APP_VERSION='v21';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1716,6 +1729,131 @@ function openParent(){const P=$('parent');P.classList.add('on');
     b.onclick=()=>{store.set('yj_voice',v.name);KO_VOICE=v;say('안녕! 나는 유주 놀이터 친구야. 같이 놀자!');openParent();};vl.appendChild(b);});}
 longPress($('title'),2000,()=>{sfx.tap();openParent();});
 $('parentClose').onclick=()=>$('parent').classList.remove('on');
+/* ================= 친구 꾸미기 (옷입히기 자리) ================= */
+// 친구 그림 안에서 머리 위(h)·눈(e)·목(n)·배(b)의 위치(가로, 세로, 폭)와 손(p) 자리. 그림 크기에 대한 비율(0~1)
+const ANCH={
+ shark:{h:[.42,.17,.55],e:[.39,.43,.5],n:[.4,.68,.42],b:[.45,.76,.5],p:[.04,.8]},
+ penguin:{h:[.46,.12,.6],e:[.48,.41,.48],n:[.44,.63,.42],b:[.44,.78,.48],p:[.93,.62]},
+ whale:{h:[.4,.24,.55],e:[.39,.52,.45],n:[.38,.72,.42],b:[.4,.8,.5],p:[.9,.86]},
+ octo:{h:[.48,.06,.6],e:[.48,.36,.45],n:[.47,.58,.38],b:[.47,.7,.55],p:[.95,.58]},
+ turtle:{h:[.42,.09,.58],e:[.39,.37,.45],n:[.4,.6,.35],b:[.64,.62,.55],p:[.04,.62]},
+ crab:{h:[.5,.28,.52],e:[.5,.43,.4],n:[.5,.63,.4],b:[.5,.7,.55],p:[.96,.3]},
+ fish:{h:[.33,.2,.52],e:[.35,.46,.45],n:[.33,.72,.38],b:[.5,.62,.5],p:[.04,.74]},
+ dolphin:{h:[.38,.12,.56],e:[.35,.41,.45],n:[.33,.62,.38],b:[.45,.72,.48],p:[.94,.62]},
+ rabbit:{h:[.45,.25,.55],e:[.45,.48,.42],n:[.43,.7,.38],b:[.45,.8,.48],p:[.88,.64]},
+ deer:{h:[.57,.2,.55],e:[.58,.48,.42],n:[.55,.68,.34],b:[.5,.8,.48],p:[.95,.82]},
+ raccoon:{h:[.44,.1,.65],e:[.47,.43,.45],n:[.47,.63,.38],b:[.48,.8,.48],p:[.93,.62]},
+ tiger:{h:[.46,.08,.65],e:[.48,.41,.46],n:[.45,.66,.38],b:[.45,.8,.44],p:[.92,.6]},
+ puppy:{h:[.52,.07,.6],e:[.53,.37,.46],n:[.55,.6,.34],b:[.5,.8,.48],p:[.88,.62]},
+ giraffe:{h:[.53,.16,.5],e:[.57,.47,.38],n:[.55,.68,.3],b:[.55,.83,.42],p:[.95,.84]},
+};
+// 소품: 지금은 직접 그린 그림(3D 그림이 오면 바꿀 예정). k=크기(기준 폭에 대한 배율), sink=머리에 얹을 때 아래로 내려오는 정도
+const FSLOTS=[['friend','친구'],['head','머리'],['face','얼굴'],['neck','목'],['body','치마'],['back','날개'],['hand','손']];
+const FITEMS=[
+ {id:'crown',slot:'head',name:'왕관',src:'a1',k:.8,sink:.22},{id:'bow',slot:'head',name:'리본',src:'a2',k:.7,sink:.3},
+ {id:'flower',slot:'head',name:'꽃 머리띠',src:'a3',k:1.05,sink:.42},{id:'ears',slot:'head',name:'토끼 머리띠',src:'a4',k:1,sink:.22},
+ {id:'hat',slot:'head',name:'밀짚모자',src:'a5',k:1.3,sink:.42},
+ {id:'hglass',slot:'face',name:'하트 안경',src:'f1',k:1.5},{id:'rglass',slot:'face',name:'동그란 안경',src:'f2',k:1.5},
+ {id:'pearl',slot:'neck',name:'진주 목걸이',src:'n1',k:1.1},{id:'heartn',slot:'neck',name:'하트 목걸이',src:'n2',k:1},
+ {id:'bowtie',slot:'neck',name:'나비넥타이',box:'165 280 70 40',k:.75,svg:`<path d="M200 300 L168 282 L168 318 Z M200 300 L232 282 L232 318 Z" fill="#ff5a6e"/><circle cx="200" cy="300" r="8" fill="#e04e44"/>`},
+ {id:'tutu',slot:'body',name:'보라 튜튜',box:'90 395 220 120',k:1.02,svg:''},{id:'tutup',slot:'body',name:'분홍 튜튜',box:'90 395 220 120',k:1.02,svg:''},
+ {id:'wings',slot:'back',name:'요정 날개',src:'b1',k:2.2},
+ {id:'wand',slot:'hand',name:'요술봉',src:'w1',k:.42,hang:'bottom'},{id:'bag',slot:'hand',name:'핸드백',src:'w4',k:.4,hang:'top'},
+ {id:'balloon',slot:'hand',name:'풍선',box:'262 250 86 180',k:.36,hang:'bottom',svg:`<path d="M305 425 Q296 390 306 342" stroke="#9aa7b8" stroke-width="3" fill="none"/><ellipse cx="305" cy="300" rx="38" ry="46" fill="#ff6b9a"/><path d="M299 344 L311 344 L305 352 Z" fill="#e0457a"/><ellipse cx="292" cy="284" rx="9" ry="14" fill="#fff" opacity=".5"/>`},
+];
+FITEMS.forEach(f=>{if(f.src){const d=DI[f.src];f.box=d.box;f.svg=d.svg;}});
+{const tut=(a,b)=>`<path d="M150 398 L250 398 L310 478 L290 474 L285 500 L262 484 L250 508 L228 488 L212 512 L200 490 L188 512 L172 488 L150 508 L138 484 L115 500 L110 474 L90 478 Z" fill="${a}"/><path d="M155 398 L245 398 L290 462 L268 462 L258 482 L238 468 L222 488 L200 470 L178 488 L162 468 L142 482 L132 462 L110 462 Z" fill="${b}"/><rect x="148" y="392" width="104" height="14" rx="7" fill="${a}"/>`;
+ FITEMS.find(f=>f.id==='tutu').svg=tut('#b8a6ff','#e3dbff');FITEMS.find(f=>f.id==='tutup').svg=tut('#ff8fb8','#ffd1e3');}
+const FI=Object.fromEntries(FITEMS.map(f=>[f.id,f]));
+const FS=(()=>{let s={};try{s=JSON.parse(store.get('yj_friend','{}'))||{};}catch(e){}return Object.assign({friend:'shark',out:{}},s);})();
+const saveFS=()=>store.set('yj_friend',JSON.stringify(FS));
+let fTab='friend';
+const curFriend=()=>ALLCH.find(c=>c.id===FS.friend)||CHARS[0];
+const outfit=()=>FS.out[FS.friend]||(FS.out[FS.friend]={});
+const accSVG=f=>`<svg viewBox="${f.box}" preserveAspectRatio="xMidYMid meet">${f.svg}</svg>`;
+// 친구 그림이 놓이는 정사각형과, 소품이 붙을 자리 계산 (#doll 안의 좌표)
+function fBox(){const d=$('doll'),W=d.clientWidth,H=d.clientHeight,Z=Math.min(W*.94,H*.82);return{x:(W-Z)/2,y:H-Z-H*.03,Z};}
+function accRect(f,id){const A=ANCH[id]||ANCH.shark,B=fBox(),[bw,bh]=f.box.split(' ').slice(2).map(Number),ar=bh/bw;
+  let w,cx,cy,top;
+  if(f.slot==='head'){w=A.h[2]*B.Z*f.k;cx=A.h[0];const h=w*ar;top=A.h[1]*B.Z-h*(1-f.sink);return{x:B.x+cx*B.Z-w/2,y:B.y+top,w,h};}
+  if(f.slot==='face'){w=A.e[2]*B.Z*f.k;cx=A.e[0];cy=A.e[1];}
+  else if(f.slot==='neck'){w=A.n[2]*B.Z*f.k;cx=A.n[0];cy=A.n[1];}
+  else if(f.slot==='body'){w=A.b[2]*B.Z*f.k;cx=A.b[0];cy=A.b[1];}
+  else if(f.slot==='back'){w=A.b[2]*B.Z*f.k;cx=A.b[0];cy=A.b[1]-A.b[2]*.55;}
+  else{w=A.h[2]*B.Z*f.k;cx=A.p[0];const h=w*ar;   // 손 소품: 손 위치에 손잡이(아래)나 끈(위)이 오게
+    const y=f.hang==='bottom'?A.p[1]*B.Z-h*.95:f.hang==='top'?A.p[1]*B.Z-h*.15:A.p[1]*B.Z-h/2;return{x:B.x+cx*B.Z-w/2,y:B.y+y,w,h};}
+  const h=w*ar;return{x:B.x+cx*B.Z-w/2,y:B.y+cy*B.Z-h/2,w,h};}
+const ZORD={back:1,body:3,neck:4,face:5,head:6,hand:7};
+function fsRender(pop){const d=$('doll'),ch=curFriend(),B=fBox(),o=outfit();d.innerHTML='';
+  const fr=document.createElement('img');fr.className='fr';fr.src=charSrc(ch);fr.alt='';fr.style.zIndex=2;
+  Object.assign(fr.style,{left:B.x+'px',top:B.y+'px',width:B.Z+'px',height:B.Z+'px'});d.appendChild(fr);
+  Object.entries(o).forEach(([slot,id])=>{const f=FI[id];if(!f)return;const r=accRect(f,ch.id),a=document.createElement('div');
+    a.className='acc'+(pop===slot?' pop':'');a.innerHTML=accSVG(f);Object.assign(a.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px',zIndex:ZORD[slot]});d.appendChild(a);});}
+function friendSquish(){const fr=$('doll').querySelector('.fr');if(!fr)return;fr.classList.remove('squish');void fr.offsetWidth;fr.classList.add('squish');}
+function renderFriendCloset(){
+  const t=$('dTabs');t.innerHTML='';
+  FSLOTS.forEach(([id,name])=>{const b=document.createElement('button');b.className='dtab'+(fTab===id?' sel':'');
+    b.innerHTML=id==='friend'?`<img src="${charSrc(curFriend())}" alt="" style="width:78%;height:78%;object-fit:contain">`:ic({head:'crown',face:'glasses',neck:'bow',body:'skirt',back:'wings',hand:'wand'}[id]);
+    b.onclick=()=>{fTab=id;sfx.bubble();say(name);renderFriendCloset();};t.appendChild(b);});
+  const g=$('dItems');g.innerHTML='';
+  if(fTab==='friend'){g.style.gridTemplateColumns='repeat(5,1fr)';
+    ALLCH.forEach(ch=>{const b=document.createElement('button');b.className='ditem'+(ch.id===FS.friend?' on':'');
+      b.innerHTML=`<img src="${charSrc(ch)}" alt="" style="width:100%;height:100%;object-fit:contain">`;
+      b.onclick=()=>{FS.friend=ch.id;saveFS();sfx.tap();say(ch.name);document.body.classList.toggle('land',!!ch.land);fsRender();friendSquish();renderFriendCloset();};g.appendChild(b);});return;}
+  const list=FITEMS.filter(f=>f.slot===fTab);g.style.gridTemplateColumns='repeat(4,1fr)';
+  list.forEach(f=>{const b=document.createElement('button');b.className='ditem'+(outfit()[f.slot]===f.id?' on':'');b.innerHTML=accSVG(f);fsBind(f,b);g.appendChild(b);});}
+// 끌어서 친구에게 붙이기 (가까이 가면 딱), 톡 누르면 날아가서 붙기, 입은 걸 톡 누르면 벗기
+let FG=null;
+function fgSet(x,y,w,h,dur){const el=FG.el;el.style.transition=dur?`all ${dur}s cubic-bezier(.3,1.2,.5,1)`:'none';Object.assign(el.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});}
+function fsBind(f,tile){
+  tile.addEventListener('pointerdown',e=>{if(FG)return;e.preventDefault();try{tile.setPointerCapture(e.pointerId);}catch(_){}
+    const tr=tile.getBoundingClientRect(),dr=$('doll').getBoundingClientRect(),r=accRect(f,FS.friend);
+    const T={x:dr.left+r.x,y:dr.top+r.y,w:r.w,h:r.h},k=Math.min(tr.width/T.w,tr.height/T.h)*.85,hw=T.w*k,hh=T.h*k;
+    const el=document.createElement('div');el.className='dragItem';el.innerHTML=accSVG(f);document.body.appendChild(el);
+    FG={f,tile,el,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false,T,home:{x:tr.left+tr.width/2-hw/2,y:tr.top+tr.height/2-hh/2,w:hw,h:hh},dr};
+    el.style.transform='none';fgSet(FG.home.x,FG.home.y,hw,hh,0);tile.classList.add('lift');sfx.pick();});
+  tile.addEventListener('pointermove',e=>{if(!FG||FG.id!==e.pointerId)return;if(!FG.moved&&Math.hypot(e.clientX-FG.sx,e.clientY-FG.sy)<12)return;
+    const first=!FG.moved;FG.moved=true;fgSet(e.clientX-FG.T.w/2,e.clientY-FG.T.h/2,FG.T.w,FG.T.h,first?.15:0);
+    $('dollStage').classList.toggle('near',inDoll(e));});
+  const up=e=>{if(!FG||FG.id!==e.pointerId)return;const d=FG,worn=outfit()[f.slot]===f.id;$('dollStage').classList.remove('near');
+    if(!d.moved){if(worn){delete outfit()[f.slot];saveFS();fsRender();sfx.drop();fgSet(d.T.x,d.T.y,d.T.w,d.T.h,0);requestAnimationFrame(()=>{fgSet(d.home.x,d.home.y,d.home.w,d.home.h,.38);setTimeout(()=>fgEnd(d),400);});}
+      else fsSnap(d,.5);}
+    else if(inDoll(e))fsSnap(d,.22);
+    else{sfx.drop();fgSet(d.home.x,d.home.y,d.home.w,d.home.h,.32);d.el.style.opacity=.2;setTimeout(()=>fgEnd(d),330);}};
+  tile.addEventListener('pointerup',up);tile.addEventListener('pointercancel',up);}
+function inDoll(e){const r=FG.dr;return e.clientX>r.left+r.width*.06&&e.clientX<r.right-r.width*.06&&e.clientY>r.top+r.height*.04&&e.clientY<r.bottom-r.height*.02;}
+function fsSnap(d,dur){fgSet(d.T.x,d.T.y,d.T.w,d.T.h,dur);setTimeout(()=>{outfit()[d.f.slot]=d.f.id;saveFS();
+    tone({f:700,f2:1500,d:.08,v:.2});sparkle();say(d.f.name);fsRender(d.f.slot);friendSquish();
+    burst(d.T.x+d.T.w/2,d.T.y+d.T.h/2,16,Math.max(d.T.w,d.T.h)*.6);fgEnd(d);renderFriendCloset();},dur*1000);}
+function fgEnd(d){d.el.remove();d.tile.classList.remove('lift');if(FG===d)FG=null;}
+// 기존 인형 화면 대신 친구 꾸미기로 연결
+{const old=$('doll'),nd=old.cloneNode(false);old.replaceWith(nd);
+ nd.addEventListener('pointerdown',()=>{sfx.bubble();friendSquish();say(pick(['안녕!','나 예뻐?','좋아!','고마워!']));});}
+drawDoll=()=>{};renderCloset=renderFriendCloset;
+$('goDress').onclick=()=>{sfx.tap();say('친구를 꾸며 볼까요?');show('dress');document.body.classList.toggle('land',!!curFriend().land);fsRender();renderFriendCloset();};
+$('magicBtn').onclick=()=>{const o={},pk=s=>pick(FITEMS.filter(f=>f.slot===s)).id;
+  o.head=pk('head');if(Math.random()<.4)o.face=pk('face');if(Math.random()<.55)o.neck=pk('neck');if(Math.random()<.45)o.body=pk('body');
+  if(Math.random()<.35)o.back=pk('back');if(Math.random()<.45)o.hand=pk('hand');FS.out[FS.friend]=o;saveFS();
+  sfx.fanfare();say('마법으로 꾸몄어요');fsRender('head');friendSquish();const r=$('doll').getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height*.45,40,r.width*.45);renderFriendCloset();};
+$('resetBtn').onclick=()=>{FS.out[FS.friend]={};saveFS();sfx.whoosh();fsRender();renderFriendCloset();};
+$('dSaveBtn').onclick=async()=>{if(Date.now()-dLastSave<3000)return;dLastSave=Date.now();
+  const d=$('doll'),W=d.clientWidth,H=d.clientHeight,k=2,c=document.createElement('canvas');c.width=W*k;c.height=H*k;const x=c.getContext('2d');x.scale(k,k);
+  const g=x.createRadialGradient(W/2,H*.35,10,W/2,H*.35,Math.max(W,H)*.7);g.addColorStop(0,'#fff');g.addColorStop(1,'#ffc9de');x.fillStyle=g;x.fillRect(0,0,W,H);
+  const B=fBox(),o=outfit(),ch=curFriend(),layers=Object.entries(o).filter(([,id])=>FI[id]).sort((a,b)=>ZORD[a[0]]-ZORD[b[0]]);
+  const draw=async(src,r)=>{try{const im=await loadImg(src);x.drawImage(im,r.x,r.y,r.w,r.h);}catch(e){}};
+  for(const [s,id] of layers.filter(l=>l[0]==='back'))await draw(svgURL(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${FI[id].box}" width="400" height="400" preserveAspectRatio="xMidYMid meet">${FI[id].svg}</svg>`),accRect(FI[id],ch.id));
+  await draw(charSrc(ch),{x:B.x,y:B.y,w:B.Z,h:B.Z});
+  for(const [s,id] of layers.filter(l=>l[0]!=='back'))await draw(svgURL(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${FI[id].box}" width="400" height="400" preserveAspectRatio="xMidYMid meet">${FI[id].svg}</svg>`),accRect(FI[id],ch.id));
+  c.toBlob(b=>{const a=document.createElement('a'),dt=new Date(),p=n=>String(n).padStart(2,'0');a.href=URL.createObjectURL(b);
+    a.download=`유주꾸미기-${dt.getFullYear()}${p(dt.getMonth()+1)}${p(dt.getDate())}-${p(dt.getHours())}${p(dt.getMinutes())}${p(dt.getSeconds())}.png`;
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);},'image/png');
+  sfx.shutter();say('예쁘게 찍었어요');friendSquish();setTimeout(()=>giveSticker(pick(['i:crown','i:heart']),'dress'),1200);};
+addEventListener('resize',()=>{if(S.screen==='dress')fsRender();});
+$('goDress').querySelector('b').textContent='꾸미기';
+{const el=document.querySelector('.card .art[data-art="dress"]');if(el){const f=FI.crown;
+  el.innerHTML=`<svg viewBox="0 0 120 100"><image href="${charSrc(CHARS[1])}" x="22" y="18" width="78" height="78"/><svg x="36" y="2" width="44" height="30" viewBox="${f.box}">${f.svg}</svg>
+   <svg x="6" y="40" width="34" height="46" viewBox="${FI.balloon.box}">${FI.balloon.svg}</svg></svg>`;}}
+
 $('pzReset').onclick=()=>{Object.assign(PZ,{world:'sea',order:[],idx:0,solved:0});savePZ();$('pzReset').textContent='처음부터 다시 시작해요 ✓';};
 $('goSea').onclick=()=>{sfx.tap();say('내 바다를 꾸며요');seaOpen();};
 $('seaBack').onclick=()=>{sfx.tap();show('home');syncBadge();};
