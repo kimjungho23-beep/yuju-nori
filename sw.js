@@ -1,5 +1,6 @@
 // 유주 놀이터 오프라인 저장소. 앱을 고치면 VERSION 숫자를 올려주세요 (index.html의 APP_VERSION도 같이).
-const VERSION = 'yuju-v22';
+const MUSIC_CACHE = 'yuju-music-1';
+const VERSION = 'yuju-v23';
 const CORE = ['./', './index.html', './manifest.json', './chars/chars.js',
   './chars/bg_land.webp', './chars/bg_sea.webp', './chars/crab.webp', './chars/deer.webp', './chars/dolphin.webp',
   './chars/dress_blue.webp', './chars/dress_pink.webp', './chars/dress_yellow.webp', './chars/fish.webp', './chars/fish0.webp',
@@ -25,7 +26,7 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys()
-    .then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+    .then(keys => Promise.all(keys.filter(k => k !== VERSION && k !== MUSIC_CACHE).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 
@@ -47,6 +48,19 @@ self.addEventListener('fetch', e => {
   }
 
   if (url.origin !== location.origin) return;
+
+  // 배경음악: 한 번 받으면 계속 저장본으로 (음악 재생은 일부분씩 요청해서 전체 파일로 받아 저장)
+  if (url.pathname.includes('/music/')) {
+    e.respondWith(caches.open(MUSIC_CACHE).then(async c => {
+      const key = new Request(url.href);
+      const hit = await c.match(key);
+      if (hit) return hit;
+      const res = await fetch(url.href);
+      if (res.status === 200) c.put(key, res.clone());
+      return res;
+    }));
+    return;
+  }
 
   // 앱 화면(index.html): 인터넷이 되면 항상 최신으로, 안 되면(3.5초) 저장본으로
   const isPage = req.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');

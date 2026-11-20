@@ -525,6 +525,7 @@ body.land #scene,body.land #bubbles{display:none}
   <div class="prow"><b>오늘 논 시간</b><span id="todayTime"></span></div>
   <div class="prow col"><b>목소리 <small>(눌러서 들어보고 고르기)</small></b><div class="vlist" id="voiceList"></div></div>
   <div class="prow"><b>말 빠르기</b><div class="seg" id="rateSeg"></div></div>
+  <div class="prow"><b>배경음악 크기</b><div class="seg" id="volSeg"></div></div>
   <div class="prow"><b>퍼즐 여행</b><button class="pb" id="pzReset">처음부터 다시</button></div>
   <button class="pb main" id="parentClose">닫기</button>
 </div></div>
@@ -801,10 +802,24 @@ function bgmTick(){const c=AU.ctx,h=c.currentTime+.35;
     if(PL.idx>=PL.ev.length){PL.start+=PL.len*PL.spb;PL.loop++;
       if(PL.loop>=2){PL.loop=0;PL.song=(PL.song+1)%SONGS.length;PL.start+=PL.spb*2;}loadSeg();continue;}
     const e=PL.ev[PL.idx],at=PL.start+e.t*PL.spb;if(at>h)break;bgmNote(e,at);PL.idx++;}}
-function bgmStart(){const c=audio();if(!c||bgmTimer)return;AU.bgm.gain.cancelScheduledValues(c.currentTime);AU.bgm.gain.setValueAtTime(BGM_VOL,c.currentTime);
+function synthStart(){const c=audio();if(!c||bgmTimer)return;AU.bgm.gain.cancelScheduledValues(c.currentTime);AU.bgm.gain.setValueAtTime(BGM_VOL,c.currentTime);
   PL.loop=0;loadSeg();PL.start=c.currentTime+.15;bgmTick();bgmTimer=setInterval(bgmTick,90);}
-function bgmStop(){if(!bgmTimer)return;clearInterval(bgmTimer);bgmTimer=null;const c=AU.ctx;
+function synthStop(){if(!bgmTimer)return;clearInterval(bgmTimer);bgmTimer=null;const c=AU.ctx;
   AU.bgm.gain.setTargetAtTime(0,c.currentTime,.05);}
+// 배경음악: 받은 노래 3곡을 돌아가며. 파일을 못 읽으면 직접 만든 오르골 음악으로
+const SONGS_FILE=['music/kids.mp3','music/baby.mp3','music/lofi.mp3'];
+let BGA=null,bgaIdx=Math.floor(Math.random()*SONGS_FILE.length),bgaFail=0,bgaOn=false;
+const bgaVol=()=>+store.get('yj_bgmvol','.22')||.22;
+function bgmStart(){if(bgaOn)return;audio();
+  if(bgaFail>=SONGS_FILE.length){synthStart();return;}
+  if(!BGA){BGA=new Audio();BGA.preload='auto';
+    BGA.addEventListener('ended',()=>{bgaIdx=(bgaIdx+1)%SONGS_FILE.length;BGA.src=SONGS_FILE[bgaIdx];if(bgaOn)BGA.play().catch(()=>{});});
+    BGA.addEventListener('error',()=>{bgaFail++;if(bgaFail>=SONGS_FILE.length){bgaOn=false;synthStart();return;}
+      bgaIdx=(bgaIdx+1)%SONGS_FILE.length;BGA.src=SONGS_FILE[bgaIdx];if(bgaOn)BGA.play().catch(()=>{});});
+    BGA.src=SONGS_FILE[bgaIdx];}
+  bgaOn=true;BGA.volume=bgaVol();BGA.play().catch(()=>{});}
+function bgmStop(){bgaOn=false;if(BGA)BGA.pause();synthStop();}
+document.addEventListener('visibilitychange',()=>{if(!BGA)return;if(document.hidden)BGA.pause();else if(bgaOn)BGA.play().catch(()=>{});});
 
 // 말하기: 목소리를 너무 높이지 않고(어색한 기계음 방지) 조금 천천히. 갤럭시는 삼성 목소리, 없으면 구글 한국어 목소리를 우선 사용
 let KO_VOICE=null;
@@ -1066,7 +1081,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v22';
+const APP_VERSION='v23';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1762,6 +1777,8 @@ function openParent(){const P=$('parent');P.classList.add('on');
   const r=playRec();$('todayTime').textContent=`${Math.floor(r.s/60)}분`+(r.extra?` (10분씩 ${r.extra/10}번 더 줌)`:'');
   const rs=$('rateSeg');rs.innerHTML='';const cur=store.get('yj_rate','.9');[['.8','천천히'],['.9','보통'],['1','조금 빠르게']].forEach(([v,t])=>{const b=document.createElement('button');
     b.textContent=t;b.className=cur===v?'sel':'';b.onclick=()=>{store.set('yj_rate',v);openParent();say('이 빠르기로 말할게요');};rs.appendChild(b);});
+  const vs2=$('volSeg');vs2.innerHTML='';const cv=store.get('yj_bgmvol','.22');[['.12','작게'],['.22','보통'],['.35','크게']].forEach(([v,t])=>{const b=document.createElement('button');
+    b.textContent=t;b.className=cv===v?'sel':'';b.onclick=()=>{store.set('yj_bgmvol',v);if(BGA)BGA.volume=+v;openParent();};vs2.appendChild(b);});
   const vl=$('voiceList');vl.innerHTML='';let vs=[];try{vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));}catch(e){}
   if(!vs.length)vl.innerHTML='<div class="none">탭에 한국어 목소리가 없어요. 설정 → 일반 → 텍스트 음성 변환에서 받을 수 있어요.</div>';
   vs.forEach(v=>{const b=document.createElement('button');b.textContent='▶ '+v.name.replace(/\s*\(.*?\)\s*/g,' ').trim();b.className=KO_VOICE&&KO_VOICE.name===v.name?'sel':'';
