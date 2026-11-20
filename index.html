@@ -292,6 +292,44 @@ img{-webkit-user-drag:none;pointer-events:none}
 /* 칭찬 리본 */
 .dtab.sel{background:#fff;box-shadow:0 0 0 .7vmin #ff8fb8,0 .9vmin 0 rgba(200,80,130,.2)}
 .abtn{background:#fff;color:var(--c);box-shadow:0 0 0 .5vmin var(--c),0 .9vmin 0 rgba(0,0,0,.1)}
+/* ===== 부모님 설정 / 잘 시간 ===== */
+#parent{position:fixed;inset:0;z-index:190;background:rgba(25,60,100,.55);display:none;align-items:center;justify-content:center;padding:16px}
+#parent.on{display:flex;animation:fadein .2s}
+.pbox{background:#fff;border-radius:3vmin;padding:3vmin 4vmin;width:min(680px,100%);max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:2vmin;font-size:clamp(16px,2.6vmin,22px)}
+.pbox h3{font-weight:400;font-size:clamp(22px,4vmin,34px);text-align:center}
+.prow{display:flex;align-items:center;justify-content:space-between;gap:2vmin;flex-wrap:wrap}
+.prow.col{flex-direction:column;align-items:stretch}
+.prow b{font-weight:400}.prow small{color:#7a8aa0}
+.seg{display:flex;gap:1vmin;flex-wrap:wrap}
+.seg button,.pb,.vlist button{border:none;border-radius:99px;padding:1vmin 2.4vmin;background:#eef4fb;font-size:inherit}
+.seg button.sel,.vlist button.sel{background:#ff8fb8;color:#fff}
+.pb.main{background:#4fb3e8;color:#fff;padding:1.4vmin;margin-top:1vmin}
+.vlist{display:flex;flex-direction:column;gap:1vmin;max-height:34vh;overflow:auto}
+.vlist button{text-align:left;border-radius:2vmin}
+.vlist .none{color:#7a8aa0}
+#sleep{position:fixed;inset:0;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2vmin;color:#fff;
+  background:radial-gradient(ellipse at 50% 30%,#3b4f8f,#1d2752 70%)}
+#sleep.on{display:flex;animation:fadein .6s}
+#sleep .sl{position:relative;width:38vmin;height:38vmin}
+#sleep .sl img{width:100%;height:100%;object-fit:contain;animation:breathe 3.2s ease-in-out infinite;filter:brightness(.85)}
+#sleep .sl i{position:absolute;right:4%;top:6%;font-style:normal;font-size:7vmin;opacity:0;animation:zz 3s ease-in infinite}
+#sleep .sl i:nth-of-type(2){animation-delay:1s;font-size:5vmin}#sleep .sl i:nth-of-type(3){animation-delay:2s;font-size:4vmin}
+@keyframes zz{0%{transform:translate(0,0);opacity:0}20%{opacity:1}100%{transform:translate(6vmin,-12vmin);opacity:0}}
+#sleep b{font-weight:400;font-size:clamp(30px,7vmin,64px)}#sleep span{font-size:clamp(20px,4vmin,36px);opacity:.85}
+#sleep .hold{position:absolute;right:2vmin;bottom:2vmin;font-size:clamp(12px,1.8vmin,16px);opacity:.45;padding:1.4vmin 2vmin;border:1px dashed rgba(255,255,255,.5);border-radius:2vmin;touch-action:none}
+#sleep .hold.ing{opacity:1;background:rgba(255,255,255,.15)}
+/* ===== 캐릭터 생동감: 숨쉬듯 말랑, 누르면 꿀렁 ===== */
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.035,.965)}}
+@keyframes squish{0%,100%{transform:scale(1)}25%{transform:scale(1.16,.84)}55%{transform:scale(.92,1.08)}80%{transform:scale(1.03,.97)}}
+.card .art svg{animation:breathe 2.6s ease-in-out infinite;transform-origin:50% 90%}
+.card:nth-child(2n) .art svg{animation-delay:-.9s}.card:nth-child(3n) .art svg{animation-delay:-1.7s}
+.bbw img{animation:breathe 2.2s ease-in-out infinite;transform-origin:50% 80%}
+.shark .sb img{animation:breathe 2.4s ease-in-out infinite;transform-origin:50% 85%}
+.shark.squish .sb img{animation:squish .55s ease}
+.piece.locked.squish{animation:squish .45s ease}
+.spot.found .hider{animation:foundJump .7s .55s ease-in-out 3}
+@keyframes foundJump{0%,100%{transform:translateY(-95%) scale(1.35)}45%{transform:translateY(-118%) scale(1.3,1.42)}70%{transform:translateY(-92%) scale(1.45,1.25)}}
+.fish.hold img{animation:squish .45s ease}
 /* ===== 받은 그림으로 바꾼 상어·물고기·숨는 곳 ===== */
 .shark .sb{position:absolute;inset:0;transition:transform .6s cubic-bezier(.3,1.5,.5,1);transform-origin:50% 60%}
 .shark .sb img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 1.4vmin 1.4vmin rgba(0,60,120,.22))}
@@ -464,6 +502,21 @@ body.land #scene,body.land #bubbles{display:none}
   <div class="tray" id="tray"></div>
 </section>
 <div id="reward"><div class="rays"></div><div class="rs" id="rewardStk"></div><b>스티커!</b></div>
+
+<!-- 부모님 설정: 첫 화면 제목을 2초 꾹 누르면 열림 -->
+<div id="parent"><div class="pbox">
+  <h3>부모님 설정</h3>
+  <div class="prow"><b>하루 놀이 시간</b><div class="seg" id="limitSeg"></div></div>
+  <div class="prow"><b>오늘 논 시간</b><span id="todayTime"></span></div>
+  <div class="prow col"><b>목소리 <small>(눌러서 들어보고 고르기)</small></b><div class="vlist" id="voiceList"></div></div>
+  <div class="prow"><b>말 빠르기</b><div class="seg" id="rateSeg"></div></div>
+  <div class="prow"><b>퍼즐 여행</b><button class="pb" id="pzReset">처음부터 다시</button></div>
+  <button class="pb main" id="parentClose">닫기</button>
+</div></div>
+
+<!-- 놀이 시간이 끝나면 -->
+<div id="sleep"><div class="sl"><img src="chars/shark_closed.webp" alt=""><i>Z</i><i>z</i><i>z</i></div>
+  <b>오늘은 여기까지!</b><span>내일 또 같이 놀자</span><div class="hold" id="sleepHold">부모님: 여기를 3초 꾹 누르면 10분 더</div></div>
 
 <section id="feed" class="screen">
   <div class="area" id="fdArea"></div>
@@ -733,10 +786,11 @@ function bgmStop(){if(!bgmTimer)return;clearInterval(bgmTimer);bgmTimer=null;con
 // 말하기: 목소리를 너무 높이지 않고(어색한 기계음 방지) 조금 천천히. 갤럭시는 삼성 목소리, 없으면 구글 한국어 목소리를 우선 사용
 let KO_VOICE=null;
 function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));
+  const want=store.get('yj_voice','');if(want){const v=vs.find(v=>v.name===want);if(v){KO_VOICE=v;return;}}   // 부모님이 고른 목소리 우선
   KO_VOICE=vs.find(v=>/samsung/i.test(v.name))||vs.find(v=>/google/i.test(v.name))||vs.find(v=>v.localService)||vs[0]||null;}catch(e){}}
 try{pickVoice();speechSynthesis.addEventListener('voiceschanged',pickVoice);}catch(e){}
 function say(txt){try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(txt);
-  u.lang='ko-KR';u.pitch=1.12;u.rate=.9;u.volume=1;if(!KO_VOICE)pickVoice();if(KO_VOICE)u.voice=KO_VOICE;s.speak(u);}catch(e){}}
+  u.lang='ko-KR';u.pitch=1.12;u.rate=+store.get('yj_rate','.9')||.9;u.volume=1;if(!KO_VOICE)pickVoice();if(KO_VOICE)u.voice=KO_VOICE;s.speak(u);}catch(e){}}
 // 받침에 따라 조사 고르기: 문어를 / 펭귄을
 const hasBatchim=w=>{const c=w.charCodeAt(w.length-1)-0xAC00;return c>=0&&c<11172&&c%28!==0;};
 const eul=w=>w+(hasBatchim(w)?'을':'를');
@@ -751,7 +805,7 @@ try{S.photos=JSON.parse(store.get('yj_photos','[]'))||[];}catch(e){S.photos=[];}
 const items=()=>[...CHARS.map(c=>({...c,thumb:svgURL(c.svg(true))})),...S.photos.map(p=>({id:p.id,photo:true,src:p.src,thumb:p.src}))];
 
 function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingReload){location.reload();return;}
-  if(id!=='game')document.body.classList.remove('land');
+  if(id!=='game'&&id!=='bubble')document.body.classList.remove('land');
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;}
 function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.innerHTML=ic('music');b.classList.toggle('off',!S.music);
   b.setAttribute('aria-label',S.music?'배경음악 끄기':'배경음악 켜기');});}
@@ -966,7 +1020,7 @@ function goHome(p){sfx.drop();const el=p.el;el.classList.add('back');p.x=p.hx;p.
     Object.assign(h.style,{left:p.tx+'px',top:p.ty+'px',width:p.w+'px',height:p.h+'px'});}
   h.addEventListener('animationend',()=>h.remove());stage.appendChild(h);
   if(Date.now()-lastHereSay>4000){lastHereSay=Date.now();setTimeout(()=>say('여기에 놓아요'),250);}}
-function lock(p){p.locked=true;p.x=p.tx;p.y=p.ty;p.el.classList.add('locked');p.el.style.zIndex=2;pos(p);
+function lock(p){p.locked=true;p.x=p.tx;p.y=p.ty;p.el.classList.add('locked');p.el.style.zIndex=2;pos(p);setTimeout(()=>{p.el.classList.remove('squish');void p.el.offsetWidth;p.el.classList.add('squish');},230);
   sfx.snap(G.done++);burst(p.tx+p.w/2,p.ty+p.h/2,14,Math.min(p.w,p.h)*.7);
   if(G.done===G.P.length)finish();}
 function finish(){G.over=true;const b=G.board,r=b.getBoundingClientRect();
@@ -989,7 +1043,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v19';
+const APP_VERSION='v20';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1330,17 +1384,17 @@ $('dressBack').onclick=()=>{sfx.tap();show('home');};
 
 function renderStars(id,n,total){$(id).innerHTML=Array.from({length:total},(_,i)=>`<span class="${i<n?'on':''}">★</span>`).join('');}
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-const charSrc=ch=>{const i=CHARS.indexOf(ch);return i>=0?STAMPS[i].src:(ch.photo?ch.src:svgURL(ch.svg(false)));};
+const charSrc=ch=>{const i=CHARS.indexOf(ch);if(i>=0)return STAMPS[i].src;if(ch.photo)return ch.src;return ch._src||(ch._src=svgURL(ch.svg(false)));};
 
 /* ================= 비눗방울 터뜨리기 ================= */
-const BB={timer:null,count:0,party:false};
+const BB={timer:null,count:0,party:false,world:'sea'};
 const NUM=['하나','둘','셋','넷','다섯','여섯','일곱','여덟','아홉','열'];
-function bbStart(){show('bubble');BB.count=0;BB.party=false;renderStars('bbStars',0,10);$('bbArea').innerHTML='';
+function bbStart(){show('bubble');BB.count=0;BB.party=false;document.body.classList.toggle('land',BB.world==='land');renderStars('bbStars',0,10);$('bbArea').innerHTML='';
   clearInterval(BB.timer);BB.timer=setInterval(bbTick,700);for(let i=0;i<3;i++)setTimeout(bbSpawn,i*400);}
 function bbTick(){if(S.screen!=='bubble'){clearInterval(BB.timer);BB.timer=null;return;}
   if($('bbArea').querySelectorAll('.bb').length<6&&Math.random()<.75)bbSpawn();}
 function bbSpawn(){if(S.screen!=='bubble')return;const A=$('bbArea'),W=A.clientWidth,H=A.clientHeight,s=Math.min(W,H)*(.21+Math.random()*.08);
-  const ch=pick(CHARS),b=document.createElement('div');b.className='bb';
+  const ch=pick(BB.world==='land'&&LAND.length?LAND:CHARS),b=document.createElement('div');b.className='bb';
   b.style.cssText=`left:${Math.random()*(W-s)}px;width:${s}px;height:${s}px;--dur:${7+Math.random()*4}s;--rise:${H+s*1.2}px`;
   b.innerHTML=`<div class="bbw" style="animation-delay:-${(Math.random()*3).toFixed(2)}s"><img src="${charSrc(ch)}" alt=""></div>`;
   b.addEventListener('pointerdown',e=>{e.preventDefault();bbPop(b);});
@@ -1354,7 +1408,10 @@ function bbPop(b){const r=b.getBoundingClientRect(),img=document.createElement('
   if(BB.count<10){say(NUM[BB.count-1]);return;}
   BB.party=true;say('열! 다 터뜨렸어요!');cheer('다 터뜨렸어요!');setTimeout(()=>giveSticker(null),1000);sfx.fanfare();
   burst(innerWidth/2,innerHeight/2,50,Math.min(innerWidth,innerHeight)*.45,true);
-  setTimeout(()=>{BB.count=0;BB.party=false;if(S.screen==='bubble')renderStars('bbStars',0,10);},3000);}
+  setTimeout(()=>{BB.count=0;BB.party=false;if(S.screen!=='bubble')return;renderStars('bbStars',0,10);
+    // 다 터뜨리면 바다 ↔ 숲속 번갈아
+    if(LAND.length){BB.world=BB.world==='sea'?'land':'sea';document.body.classList.toggle('land',BB.world==='land');$('bbArea').innerHTML='';
+      say(BB.world==='land'?'이번엔 숲속 친구들 비눗방울이에요!':'다시 바다 친구들 비눗방울이에요!');}},3000);}
 $('goBubble').onclick=()=>{sfx.tap();say('비눗방울 놀이해요');bbStart();};
 $('bbBack').onclick=()=>{sfx.tap();show('home');};
 
@@ -1428,6 +1485,7 @@ function fdBuild(){const A=$('fdArea');A.innerHTML='';const W=A.clientWidth,H=A.
   sh.innerHTML=`<div class="sb"><img class="sc" src="chars/shark_closed.webp" alt=""><img class="so" src="chars/shark_open.webp" alt=""><i class="mHit"></i></div>`;
   const sx=land?W-Sz-W*.03:(W-Sz)/2,sy=land?(H-Sz)/2+H*.08:H-Sz-H*.03;
   Object.assign(sh.style,{left:sx+'px',top:sy+'px',width:Sz+'px',height:Sz+'px'});A.appendChild(sh);FD.shark=sh;
+  sh.addEventListener('pointerdown',()=>{if(FD.busy)return;sh.classList.remove('squish');void sh.offsetWidth;sh.classList.add('squish');sfx.giggle();FD.last=Date.now();});
   FD.region=land?{x:W*.03,y:Math.min(130,H*.16),w:sx-W*.06,h:H-Math.min(130,H*.16)-H*.04}:{x:W*.04,y:Math.min(130,H*.14),w:W*.92,h:sy-Math.min(130,H*.14)-H*.04};
   const ask=document.createElement('div');ask.className='ask';ask.id='fdAsk';A.appendChild(ask);
   Object.assign(ask.style,land?{left:(sx-Sz*.05)+'px',top:Math.max(Math.min(130,H*.16)-H*.04,sy-Sz*.08)+'px'}:{left:(W*.5)+'px',top:(sy-H*.02)+'px',transform:'translateX(-50%)'});}
@@ -1629,6 +1687,36 @@ function bindStk(el,s,fromTray){let d=null;
     saveST();if(was.fl&&fromTray)was.fl.remove();seaRender();};
   el.addEventListener('pointerup',up);el.addEventListener('pointercancel',e=>{if(d&&!d.on)d=null;else up(e);});}
 addEventListener('resize',()=>{if(S.screen==='sea')seaRender();});
+
+/* ================= 부모님 설정 + 하루 놀이 시간 ================= */
+function longPress(el,ms,fn,onState){let t=0;const start=e=>{e.preventDefault();clearTimeout(t);onState&&onState(true);t=setTimeout(()=>{onState&&onState(false);fn();},ms);};
+  const stop=()=>{clearTimeout(t);onState&&onState(false);};
+  el.addEventListener('pointerdown',start);['pointerup','pointercancel','pointerleave'].forEach(ev=>el.addEventListener(ev,stop));}
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;};
+function playRec(){let r={};try{r=JSON.parse(store.get('yj_time','{}'))||{};}catch(e){}if(r.d!==today())r={d:today(),s:0,extra:0};return r;}
+const limitMin=()=>+store.get('yj_limit','0')||0;
+function isOver(){const L=limitMin();if(!L)return false;const r=playRec();return r.s>=(L+r.extra)*60;}
+let sleeping=false;
+function showSleep(){if(sleeping)return;sleeping=true;$('sleep').classList.add('on');bgmStop();try{speechSynthesis.cancel();}catch(e){}
+  setTimeout(()=>say('오늘은 여기까지! 내일 또 같이 놀자'),600);}
+setInterval(()=>{if(document.hidden||!unlocked||sleeping)return;const r=playRec();r.s+=10;store.set('yj_time',JSON.stringify(r));if(isOver())showSleep();},10000);
+longPress($('sleepHold'),3000,()=>{const r=playRec();r.extra+=10;store.set('yj_time',JSON.stringify(r));sleeping=false;$('sleep').classList.remove('on');
+  if(S.music&&unlocked)bgmStart();sfx.tap();},on=>$('sleepHold').classList.toggle('ing',on));
+if(isOver())showSleep();
+
+function openParent(){const P=$('parent');P.classList.add('on');
+  const ls=$('limitSeg');ls.innerHTML='';[[0,'끄기'],[15,'15분'],[20,'20분'],[30,'30분'],[45,'45분']].forEach(([m,t])=>{const b=document.createElement('button');
+    b.textContent=t;b.className=limitMin()===m?'sel':'';b.onclick=()=>{store.set('yj_limit',m);openParent();};ls.appendChild(b);});
+  const r=playRec();$('todayTime').textContent=`${Math.floor(r.s/60)}분`+(r.extra?` (10분씩 ${r.extra/10}번 더 줌)`:'');
+  const rs=$('rateSeg');rs.innerHTML='';const cur=store.get('yj_rate','.9');[['.8','천천히'],['.9','보통'],['1','조금 빠르게']].forEach(([v,t])=>{const b=document.createElement('button');
+    b.textContent=t;b.className=cur===v?'sel':'';b.onclick=()=>{store.set('yj_rate',v);openParent();say('이 빠르기로 말할게요');};rs.appendChild(b);});
+  const vl=$('voiceList');vl.innerHTML='';let vs=[];try{vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));}catch(e){}
+  if(!vs.length)vl.innerHTML='<div class="none">탭에 한국어 목소리가 없어요. 설정 → 일반 → 텍스트 음성 변환에서 받을 수 있어요.</div>';
+  vs.forEach(v=>{const b=document.createElement('button');b.textContent='▶ '+v.name.replace(/\s*\(.*?\)\s*/g,' ').trim();b.className=KO_VOICE&&KO_VOICE.name===v.name?'sel':'';
+    b.onclick=()=>{store.set('yj_voice',v.name);KO_VOICE=v;say('안녕! 나는 유주 놀이터 친구야. 같이 놀자!');openParent();};vl.appendChild(b);});}
+longPress($('title'),2000,()=>{sfx.tap();openParent();});
+$('parentClose').onclick=()=>$('parent').classList.remove('on');
+$('pzReset').onclick=()=>{Object.assign(PZ,{world:'sea',order:[],idx:0,solved:0});savePZ();$('pzReset').textContent='처음부터 다시 시작해요 ✓';};
 $('goSea').onclick=()=>{sfx.tap();say('내 바다를 꾸며요');seaOpen();};
 $('seaBack').onclick=()=>{sfx.tap();show('home');syncBadge();};
 syncBadge();
