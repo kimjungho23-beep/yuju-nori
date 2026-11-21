@@ -1116,7 +1116,22 @@ function bgmTick(){const c=AU.ctx,h=c.currentTime+.35;
     if(PL.idx>=PL.ev.length){PL.start+=PL.len*PL.spb;PL.loop++;
       if(PL.loop>=2){PL.loop=0;PL.song=(PL.song+1)%SONGS.length;PL.start+=PL.spb*2;}loadSeg();continue;}
     const e=PL.ev[PL.idx],at=PL.start+e.t*PL.spb;if(at>h)break;bgmNote(e,at);PL.idx++;}}
-function synthStart(){const c=audio();if(!c||bgmTimer)return;AU.bgm.gain.cancelScheduledValues(c.currentTime);AU.bgm.gain.setValueAtTime(BGM_VOL,c.currentTime);
+// 배경음악 쉬기: 노래가 나오는 놀이(악단·생일 케이크·목욕 자장가)에서는 배경음악이 저절로 쉬었다가 나오면 다시 나와요
+const BGM_HOLD=new Set();
+const bgmHushed=()=>BGM_HOLD.size>0;
+let bgaFadeT=0;
+function bgaFade(to,ms,done){if(!BGA)return;clearInterval(bgaFadeT);const from=BGA.volume,t0=Date.now();
+  bgaFadeT=setInterval(()=>{const k=Math.min(1,(Date.now()-t0)/ms);try{BGA.volume=Math.max(0,Math.min(1,from+(to-from)*k));}catch(e){}
+    if(k>=1){clearInterval(bgaFadeT);done&&done();}},40);}
+function bgmApply(){const hush=bgmHushed(),c=AU.ctx;
+  if(bgmTimer&&c){AU.bgm.gain.cancelScheduledValues(c.currentTime);AU.bgm.gain.setTargetAtTime(hush?0:BGM_VOL,c.currentTime,hush?.08:.4);}
+  if(!BGA||!bgaOn)return;
+  if(hush)bgaFade(0,450,()=>{if(bgmHushed())BGA.pause();});
+  else{clearInterval(bgaFadeT);BGA.volume=0;BGA.play().then(()=>bgaFade(bgaVol(),900)).catch(()=>{});}}
+// 화면이 바뀔 때: 악단과 생일 케이크 화면에서는 쉬어요 (다른 이유로 쉬던 것은 화면을 나가면 풀어요)
+function bgmHoldScreen(id){const was=bgmHushed();BGM_HOLD.clear();if(id==='music'||id==='cake')BGM_HOLD.add('screen');if(was!==bgmHushed())bgmApply();}
+function bgmHold(k,on){const was=bgmHushed();on?BGM_HOLD.add(k):BGM_HOLD.delete(k);if(was!==bgmHushed())bgmApply();}
+function synthStart(){const c=audio();if(!c||bgmTimer)return;AU.bgm.gain.cancelScheduledValues(c.currentTime);AU.bgm.gain.setValueAtTime(bgmHushed()?0:BGM_VOL,c.currentTime);
   PL.loop=0;loadSeg();PL.start=c.currentTime+.15;bgmTick();bgmTimer=setInterval(bgmTick,90);}
 function synthStop(){if(!bgmTimer)return;clearInterval(bgmTimer);bgmTimer=null;const c=AU.ctx;
   AU.bgm.gain.setTargetAtTime(0,c.currentTime,.05);}
@@ -1127,13 +1142,13 @@ const bgaVol=()=>+store.get('yj_bgmvol','.12')||.12;
 function bgmStart(){if(bgaOn)return;audio();
   if(bgaFail>=SONGS_FILE.length){synthStart();return;}
   if(!BGA){BGA=new Audio();BGA.preload='auto';
-    BGA.addEventListener('ended',()=>{bgaIdx=(bgaIdx+1)%SONGS_FILE.length;BGA.src=SONGS_FILE[bgaIdx];if(bgaOn)BGA.play().catch(()=>{});});
+    BGA.addEventListener('ended',()=>{bgaIdx=(bgaIdx+1)%SONGS_FILE.length;BGA.src=SONGS_FILE[bgaIdx];if(bgaOn&&!bgmHushed())BGA.play().catch(()=>{});});
     BGA.addEventListener('error',()=>{bgaFail++;if(bgaFail>=SONGS_FILE.length){bgaOn=false;synthStart();return;}
-      bgaIdx=(bgaIdx+1)%SONGS_FILE.length;BGA.src=SONGS_FILE[bgaIdx];if(bgaOn)BGA.play().catch(()=>{});});
+      bgaIdx=(bgaIdx+1)%SONGS_FILE.length;BGA.src=SONGS_FILE[bgaIdx];if(bgaOn&&!bgmHushed())BGA.play().catch(()=>{});});
     BGA.src=SONGS_FILE[bgaIdx];}
-  bgaOn=true;BGA.volume=bgaVol();BGA.play().catch(()=>{});}
-function bgmStop(){bgaOn=false;if(BGA)BGA.pause();synthStop();}
-document.addEventListener('visibilitychange',()=>{if(!BGA)return;if(document.hidden)BGA.pause();else if(bgaOn)BGA.play().catch(()=>{});});
+  bgaOn=true;clearInterval(bgaFadeT);BGA.volume=bgaVol();if(!bgmHushed())BGA.play().catch(()=>{});}   // 쉬는 중이면 켜 두기만 하고 나중에 틀어요
+function bgmStop(){bgaOn=false;clearInterval(bgaFadeT);if(BGA)BGA.pause();synthStop();}
+document.addEventListener('visibilitychange',()=>{if(!BGA)return;if(document.hidden)BGA.pause();else if(bgaOn&&!bgmHushed())BGA.play().catch(()=>{});});
 
 // 말하기: 목소리를 너무 높이지 않고(어색한 기계음 방지) 조금 천천히. 갤럭시는 삼성 목소리, 없으면 구글 한국어 목소리를 우선 사용
 let KO_VOICE=null;
@@ -1172,7 +1187,7 @@ function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingRel
   if(typeof S!=='undefined'&&S.screen&&S.screen!==id&&unlocked)bubbleWipe();
   sweepFloats(true);
   if(id!=='game'&&id!=='bubble')document.body.classList.remove('land');
-  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;}
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;bgmHoldScreen(id);}
 function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.innerHTML=ic('music');b.classList.toggle('off',!S.music);
   b.setAttribute('aria-label',S.music?'배경음악 끄기':'배경음악 켜기');});}
 let toastT=0;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1800);}
@@ -1195,7 +1210,7 @@ document.addEventListener('click',e=>{if(fastFiring)return;const b=e.target.clos
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('visibilitychange',()=>{if(!AU.ctx)return;document.hidden?AU.ctx.suspend():AU.ctx.resume();});
 document.querySelectorAll('.musicBtn').forEach(b=>b.onclick=()=>{S.music=!S.music;store.set('yj_music',S.music?'1':'0');
-  S.music?bgmStart():bgmStop();syncMusic();sfx.tap();toast(S.music?'🎵 배경음악 켜짐':'🎵 배경음악 꺼짐 (효과음은 그대로)');});
+  S.music?bgmStart():bgmStop();syncMusic();sfx.tap();toast(S.music?(bgmHushed()?'🎵 배경음악 켜짐 (노래 놀이에서는 쉬었다가 나와요)':'🎵 배경음악 켜짐'):'🎵 배경음악 꺼짐 (효과음은 그대로)');});
 syncMusic();
 
 /* 거품 */
@@ -1499,7 +1514,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v40';
+const APP_VERSION='v41';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -3181,7 +3196,7 @@ function baGeo(){const A=$('baArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H;
   const top=Math.max(90,H*.11),fz=Math.min(tw*.7,ty+th*.24-top),fx=W/2-fz/2,fy=ty+th*.24-fz;   // 친구 아래쪽만 욕조 거품에 살짝 묻혀요
   const sz=Math.min(fz*.55,land?H*.3:W*.3),sx=Math.min(W-sz-8,fx+fz*.78),sy=Math.max(top*.9,fy-sz*.55);
   return{W,H,land,tw,th,tx,ty,fz,fx,fy,sz,sx,sy,dz:tw*.17};}
-function baRound(){if(S.screen!=='bath')return;busHush('ba');baSponge(null,false);const g=++BA.gen,A=$('baArea'),G=baGeo();   // 문지르던 손가락은 놓아요
+function baRound(){if(S.screen!=='bath')return;busHush('ba');bgmHold('lullaby',false);baSponge(null,false);const g=++BA.gen,A=$('baArea'),G=baGeo();   // 문지르던 손가락은 놓아요
   Object.assign(BA,{G,stage:'load',last:Date.now(),lp:null,pid:null,st:0,kind:BA.round%2?'paint':'mud'});
   const ch=pick(friendPool(Math.floor(BA.round/2)%2===1,4,true).filter(c=>c!==BA.who))||CHARS[0];BA.who=ch;
   A.innerHTML=`<div class="bafloor" style="height:${G.H-(G.ty+G.th*.78)}px"></div>`;
@@ -3271,7 +3286,7 @@ function baDry(g){if(BA.gen!==g||S.screen!=='bath')return;BA.stage='dry';baProg(
   [0,1,2].forEach(i=>tone({f:1100-i*150,f2:600,t:i*.16,d:.1,v:.12}));   // 똑 똑 똑
   say('어머, 몸이 다 젖었어요! 수건으로 쓱쓱 닦아 줘요!');}
 // 4단계: 밤이 되면 침대에 누워요 → 토닥토닥 세 번 → 자장가
-function baSleep(){const g=BA.gen,A=$('baArea'),G=BA.G;BA.stage='sleepy';baProg();BA.cv.style.transition='opacity .5s';BA.cv.style.opacity=0;
+function baSleep(){const g=BA.gen,A=$('baArea'),G=BA.G;BA.stage='sleepy';bgmHold('lullaby',true);baProg();BA.cv.style.transition='opacity .5s';BA.cv.style.opacity=0;
   $('sponge').style.display='none';sparkle();cheer('뽀송뽀송!');say('뽀송뽀송! 이제 코 자러 가요');
   setTimeout(()=>{if(BA.gen!==g||S.screen!=='bath')return;
     const n=document.createElement('div');n.className='banight';
