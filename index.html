@@ -1050,7 +1050,9 @@ function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^ko/i.t
   const want=store.get('yj_voice','');if(want){const v=vs.find(v=>v.name===want);if(v){KO_VOICE=v;return;}}   // 부모님이 고른 목소리 우선
   KO_VOICE=vs.find(v=>/samsung/i.test(v.name))||vs.find(v=>/google/i.test(v.name))||vs.find(v=>v.localService)||vs[0]||null;}catch(e){}}
 try{pickVoice();speechSynthesis.addEventListener('voiceschanged',pickVoice);}catch(e){}
-function say(txt){try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(txt);
+// 화면 글씨의 기호(~ ♪ ★)는 소리 내어 읽지 않게 빼요. "후~"는 "후우"로 길게
+const sayText=t=>String(t).replace(/후~+/g,'후우').replace(/[~♪♫♬★☆♥♡…]+/g,' ').replace(/\s+/g,' ').trim();
+function say(txt){try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(sayText(txt));
   u.lang='ko-KR';u.pitch=1.12;u.rate=+store.get('yj_rate','.9')||.9;u.volume=1;if(!KO_VOICE)pickVoice();if(KO_VOICE)u.voice=KO_VOICE;s.speak(u);}catch(e){}}
 // 받침에 따라 조사 고르기: 문어를 / 펭귄을
 const hasBatchim=w=>{const c=w.charCodeAt(w.length-1)-0xAC00;return c>=0&&c<11172&&c%28!==0;};
@@ -1383,7 +1385,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v35';
+const APP_VERSION='v36';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
