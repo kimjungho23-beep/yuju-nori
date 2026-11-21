@@ -395,7 +395,7 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 #muStars{position:absolute;left:50%;transform:translateX(-50%);top:calc(max(14px,2.2vmin)*2 + clamp(26px,4.6vmin,44px) + 2.6vmin);z-index:59;pointer-events:none}
 .songs.pick button{animation:hint 1.2s ease-in-out infinite;box-shadow:0 0 0 .5vmin #fff,0 0 3vmin #fff8b0}
 .munight{position:absolute;inset:0;background:rgba(18,22,58,.6);pointer-events:none;animation:fadein .8s}
-.munight .lite{position:absolute;bottom:0;left:50%;width:34vmin;margin-left:-17vmin;height:100%;background:radial-gradient(ellipse 50% 75% at 50% 100%,rgba(255,250,210,.85),rgba(255,248,200,.3) 55%,transparent 78%);transition:left .22s ease-out}
+.munight .lite{position:absolute;top:0;bottom:0;left:50%;width:30vmin;margin-left:-15vmin;background:linear-gradient(rgba(255,250,215,.75),rgba(255,248,200,.35) 70%,rgba(255,248,200,.1));clip-path:polygon(38% 0,62% 0,100% 100%,0 100%);transition:left .22s ease-out}   /* 위에서 내려오는 조명 */
 .pzparty{display:flex;align-items:center;gap:.6vmin;margin-left:.8vmin;padding-left:1.2vmin;border-left:.3vmin dashed rgba(30,90,140,.25)}
 .pzparty b{width:1.7vmin;height:1.7vmin;border-radius:50%;background:rgba(30,90,140,.18)}
 .pzparty b.on{background:#ffd65a;box-shadow:0 0 0 .3vmin #fff}
@@ -1499,7 +1499,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v39';
+const APP_VERSION='v40';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
