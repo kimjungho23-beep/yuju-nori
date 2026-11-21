@@ -893,7 +893,9 @@ const items=()=>[...CHARS.map(c=>({...c,thumb:svgURL(c.svg(true))})),...S.photos
 function sweepFloats(all){document.querySelectorAll('body > .stkFloat, body > .dragItem, body > .gcarry, body > .ghand, body > .runner, body > .bbChar'+(all?', body > .dancer':'')).forEach(e=>e.remove());
   if(typeof FG!=='undefined'&&FG){FG.tile&&FG.tile.classList.remove('lift');FG=null;}}
 let lastPtr=Date.now();['pointerdown','pointermove'].forEach(t=>document.addEventListener(t,()=>{lastPtr=Date.now();},true));
-setInterval(()=>{if(Date.now()-lastPtr>3000)document.querySelectorAll('body > .stkFloat, body > .dragItem').forEach(e=>e.remove());},1500);   // 3초 동안 아무도 안 만지면 떠 있는 것 정리
+setInterval(()=>{if(Date.now()-lastPtr<=3000)return;const left=document.querySelectorAll('body > .stkFloat, body > .dragItem');if(!left.length)return;
+  left.forEach(e=>e.remove());if(typeof FG!=='undefined'&&FG){FG.tile&&FG.tile.classList.remove('lift');FG=null;}
+  if(S.screen==='sea')seaRender();},1500);   // 3초 동안 아무도 안 만지면 떠 있는 것 정리 (쟁반도 새로 그려서 다시 잡을 수 있게)   // 3초 동안 아무도 안 만지면 떠 있는 것 정리
 function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingReload){location.reload();return;}
   sweepFloats(true);
   if(id!=='game'&&id!=='bubble')document.body.classList.remove('land');
@@ -1201,7 +1203,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v28';
+const APP_VERSION='v29';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1932,7 +1934,7 @@ function renderTray(){const T=$('tray');T.innerHTML='';const left=ST.list.filter
   left.forEach(s=>s.seen=true);saveST();}
 // 스티커 끌기: 쟁반에서 위로 끌어 바다에 붙이고, 붙인 것도 다시 옮기거나 쟁반으로 돌려놓기
 function bindStk(el,s,fromTray){let d=null;
-  el.addEventListener('pointerdown',e=>{if(d)return;d={id:e.pointerId,sx:e.clientX,sy:e.clientY,on:false};
+  el.addEventListener('pointerdown',e=>{if(d&&d.id===e.pointerId)return;if(d&&d.fl&&fromTray)d.fl.remove();d=null;d={id:e.pointerId,sx:e.clientX,sy:e.clientY,on:false};
     if(!fromTray){e.preventDefault();try{el.setPointerCapture(e.pointerId);}catch(_){}}});
   el.addEventListener('pointermove',e=>{if(!d||d.id!==e.pointerId)return;
     if(!d.on){const dx=e.clientX-d.sx,dy=e.clientY-d.sy;if(Math.hypot(dx,dy)<10)return;
