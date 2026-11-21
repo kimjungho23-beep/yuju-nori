@@ -18,6 +18,8 @@ body{font-family:'Jua',system-ui,sans-serif;color:var(--ink);background:linear-g
   user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}
 button{font-family:inherit;color:inherit;cursor:pointer}
 img{-webkit-user-drag:none;pointer-events:none}
+/* 그림 자체를 누르는 것들은 다시 누를 수 있게 (그림자 놀이 친구, 생일 친구·선물, 목욕 오리) */
+img.shf,img.ckfr,img.baduck{pointer-events:auto}
 
 /* 배경 거품 */
 #bubbles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
@@ -513,12 +515,33 @@ body.land #scene,body.land #bubbles{display:none}
 .train .tc img,.train .te img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;filter:var(--tint,hue-rotate(0deg)) drop-shadow(0 .8vmin .6vmin rgba(0,50,100,.2))}
 .train .tc img.body{z-index:2;clip-path:inset(15.5% 0 0 0)}   /* 앞쪽 벽만 친구 앞에 → 친구가 칸 안에 앉은 것처럼 */
 .train .tc img.bk{z-index:0}
-.train .rider{position:absolute;z-index:1;object-fit:contain;transform-origin:50% 100%}
+.train .tc img.rider{position:absolute;z-index:1;object-fit:contain;transform-origin:50% 100%;filter:drop-shadow(0 .5vmin .4vmin rgba(0,50,100,.2))}   /* 칸 색(--tint)이 친구 얼굴에 묻지 않게 */
 .train .rider.jump{animation:keyJump .5s ease-out}
 .train.go .tc,.train.go .te{animation:chug .32s ease-in-out infinite}
 .train.go .tc:nth-child(2n){animation-delay:-.16s}
 @keyframes chug{50%{transform:translateY(-2.5%)}}
 .train .te.toot{animation:toot .5s ease}
+/* 기차 여행 장면 소품 */
+.trp{position:absolute;z-index:1}
+.trp img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.2))}
+.trp.tun{z-index:6;pointer-events:none}
+.trp.sig{touch-action:none;transform-origin:50% 100%}
+.trp.sig .lamp{position:absolute;left:25%;width:50%;aspect-ratio:1;border-radius:50%;opacity:0;transition:opacity .25s}
+.trp.sig .lamp.r{top:12%;background:radial-gradient(circle at 35% 30%,#fff 0 7%,#ff8a8a 24%,#f03a3a 62%,#c61f2a);box-shadow:0 0 4vmin 1.4vmin rgba(255,70,70,.6)}
+.trp.sig .lamp.g{top:37%;background:radial-gradient(circle at 35% 30%,#fff 0 7%,#9dffa8 24%,#2fd35a 62%,#16a341);box-shadow:0 0 4vmin 1.4vmin rgba(60,230,110,.6)}
+.trp.sig .lamp.on{opacity:1}
+.trnight{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 70%,rgba(45,50,90,.9),rgba(8,10,28,.97));transition:opacity 2.4s ease}
+.trnight.lit{opacity:0}
+.train{transition:filter 1.2s}
+.train.dim{filter:brightness(.5)}
+.train .te.glow img{animation:engGlow 1s ease-in-out infinite}
+@keyframes engGlow{50%{filter:brightness(1.9) drop-shadow(0 0 3vmin #ffe27a)}}
+.train .te .beam{position:absolute;left:92%;top:30%;width:140%;height:62%;pointer-events:none;animation:popin .3s;
+  background:linear-gradient(90deg,rgba(255,238,150,.95),rgba(255,238,150,0));clip-path:polygon(0 40%,100% 0,100% 100%,0 60%)}
+#trStars{gap:1.8vmin;align-items:center}
+#trStars img{height:clamp(26px,5vmin,46px);width:auto;opacity:.35;filter:grayscale(.9);transition:transform .3s}
+#trStars img.on{opacity:1;filter:drop-shadow(0 .4vmin .3vmin rgba(0,60,120,.25))}
+#trStars img.now{transform:scale(1.3)}
 @keyframes toot{40%{transform:scale(1.06,.95)}}
 .wt{animation:popin .45s backwards}
 .wt .bobw{width:100%;height:100%;animation:bob 1.6s ease-in-out infinite}
@@ -582,7 +605,8 @@ body.land #scene,body.land #bubbles{display:none}
 .batub{position:absolute;z-index:4;object-fit:contain;filter:drop-shadow(0 1.2vmin 1vmin rgba(0,60,120,.18))}
 .foam{position:absolute;z-index:3;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle at 32% 28%,#fff 0 22%,rgba(255,255,255,.92) 45%,rgba(220,240,255,.85) 80%,rgba(190,225,255,.7));
-  box-shadow:inset 0 0 .6vmin rgba(150,200,240,.6);animation:popsoft .25s}
+  box-shadow:inset 0 0 .6vmin rgba(150,200,240,.6);opacity:.8;animation:popsoft .25s,foamFade .6s ease-in 1.5s forwards}   /* 조금 있다 저절로 사라져서 친구를 가리지 않아요 */
+@keyframes foamFade{to{opacity:0;transform:scale(1.3) translateY(-1.5vmin)}}
 .foam.bye{transition:transform .4s ease-in,opacity .4s ease-in;transform:scale(1.4);opacity:0}
 .sponge{position:fixed;left:0;top:0;z-index:90;pointer-events:none;object-fit:contain;display:none;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.3))}
 .bashow{position:absolute;z-index:6;touch-action:none;transform-origin:85% 15%}
@@ -857,7 +881,9 @@ const CHARS=[
 const charArt=ch=>ch.img?`<image href="${ch.img}" x="18" y="18" width="564" height="564"/>`:ch.art;
 CHARS.forEach(ch=>{ch.img=(window.CHAR_IMG||{})[ch.id]||null;ch.lineSvg=()=>wrap(ch.art,false,ch.c);ch.svg=bg=>wrap(charArt(ch),bg,ch.c);});
 // 숲속(육상) 친구들: 그림만 있음 (퍼즐·스티커에 사용)
-const LAND=[['rabbit','토끼'],['deer','사슴'],['raccoon','라쿤'],['tiger','호랑이'],['puppy','강아지'],['giraffe','기린']]
+const LAND=[['rabbit','토끼'],['deer','사슴'],['raccoon','라쿤'],['tiger','호랑이'],['puppy','강아지'],['giraffe','기린'],
+  ['cat','고양이'],['bear','곰'],['panda','판다'],['elephant','코끼리'],['lion','사자'],['monkey','원숭이'],
+  ['fox','여우'],['squirrel','다람쥐'],['chick','병아리'],['pig','돼지'],['sheep','양'],['koala','코알라']]
   .map(([id,name])=>({id,name,land:true,art:'',c:['#eafbe0','#bfe9a6'],img:(window.CHAR_IMG||{})[id]||null})).filter(ch=>ch.img);
 LAND.forEach(ch=>{ch.svg=()=>wrap(charArt(ch),false,ch.c);});
 const ALLCH=[...CHARS,...LAND];
@@ -1089,17 +1115,18 @@ let unlocked=false;
 document.addEventListener('pointerdown',()=>{audio();if(!unlocked){unlocked=true;if(S.music)bgmStart();}},true);
 /* 버튼 누르기를 확실하게 (특히 S펜): 브라우저의 click은 버튼이 눌리며 살짝 움직이거나 펜이 조금만 흔들려도 취소돼요.
    그래서 '누른 버튼'을 기억했다가, 뗀 곳이 그 버튼 근처(여유 28px)이고 크게 끌지 않았으면 직접 눌러줘요. */
-let tapB=null,fastFiring=false;
+let tapB=null,fastFiring=false,fastAt=0,fastX=0,fastY=0;
 document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('button');
   tapB=b&&!b.disabled&&(e.button===0||e.pointerType!=='mouse')?{b,id:e.pointerId,x:e.clientX,y:e.clientY,r:b.getBoundingClientRect()}:null;},true);
 document.addEventListener('pointerup',e=>{const t=tapB;if(!t||t.id!==e.pointerId)return;tapB=null;
   const T=28,r=t.r,near=e.clientX>r.left-T&&e.clientX<r.right+T&&e.clientY>r.top-T&&e.clientY<r.bottom+T;
   if(!near||Math.hypot(e.clientX-t.x,e.clientY-t.y)>40||!document.contains(t.b))return;
-  t.b.__tapAt=Date.now();fastFiring=true;try{t.b.click();}finally{fastFiring=false;}},true);
+  t.b.__tapAt=fastAt=Date.now();fastX=e.clientX;fastY=e.clientY;fastFiring=true;try{t.b.click();}finally{fastFiring=false;}},true);
 document.addEventListener('pointercancel',e=>{if(tapB&&tapB.id===e.pointerId)tapB=null;},true);
-// 브라우저가 뒤늦게 보내는 원래 click은 막아서 두 번 눌리지 않게
+// 브라우저가 뒤늦게 보내는 원래 click은 막아서 두 번 눌리지 않게.
+// 누르면 버튼을 새로 그리는 곳(노래 고르기·옷장)은 손가락이면 원래 click이 '새' 버튼에 와서, 같은 자리 click도 막아요
 document.addEventListener('click',e=>{if(fastFiring)return;const b=e.target.closest&&e.target.closest('button');
-  if(b&&b.__tapAt&&Date.now()-b.__tapAt<700){e.stopPropagation();e.preventDefault();}},true);
+  if(b&&((b.__tapAt&&Date.now()-b.__tapAt<700)||(Date.now()-fastAt<700&&Math.hypot(e.clientX-fastX,e.clientY-fastY)<40))){e.stopPropagation();e.preventDefault();}},true);
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('visibilitychange',()=>{if(!AU.ctx)return;document.hidden?AU.ctx.suspend():AU.ctx.resume();});
 document.querySelectorAll('.musicBtn').forEach(b=>b.onclick=()=>{S.music=!S.music;store.set('yj_music',S.music?'1':'0');
@@ -1340,7 +1367,10 @@ function lock(p){p.locked=true;p.x=p.tx;p.y=p.ty;p.el.classList.add('locked');p.
 const INTRO={shark:'나는 아기 상어야! 바다에서 헤엄치는 걸 좋아해',penguin:'나는 펭귄이야! 뒤뚱뒤뚱 걸어',whale:'나는 고래야! 머리에서 물을 뿜어',
   octo:'나는 문어야! 다리가 여덟 개야',turtle:'나는 거북이야! 등에 단단한 집이 있어',crab:'나는 꽃게야! 옆으로 걸어',fish:'나는 물고기야! 줄무늬가 예쁘지',
   dolphin:'나는 돌고래야! 점프를 잘해',rabbit:'나는 토끼야! 당근을 좋아해',deer:'나는 사슴이야! 머리에 뿔이 있어',raccoon:'나는 라쿤이야! 꼬리에 줄무늬가 있어',
-  tiger:'나는 호랑이야! 어흥!',puppy:'나는 강아지야! 멍멍!',giraffe:'나는 기린이야! 목이 아주 길어'};
+  tiger:'나는 호랑이야! 어흥!',puppy:'나는 강아지야! 멍멍!',giraffe:'나는 기린이야! 목이 아주 길어',
+  cat:'나는 고양이야! 야옹!',bear:'나는 곰이야! 꿀을 좋아해',panda:'나는 판다야! 대나무를 냠냠 먹어',elephant:'나는 코끼리야! 코가 아주 길어',
+  lion:'나는 사자야! 갈기가 멋지지? 어흥!',monkey:'나는 원숭이야! 바나나를 좋아해',fox:'나는 여우야! 꼬리가 복슬복슬해',squirrel:'나는 다람쥐야! 도토리를 모아',
+  chick:'나는 병아리야! 삐약삐약!',pig:'나는 돼지야! 꿀꿀!',sheep:'나는 양이야! 털이 몽글몽글해',koala:'나는 코알라야! 나무에 매달려 자는 걸 좋아해'};
 const iyeot=w=>w+(hasBatchim(w)?'이었어요':'였어요');
 function finish(){G.over=true;const b=G.board,r=b.getBoundingClientRect(),it=G.it,me=G,nm=it&&!it.photo?it.name:'';
   if(nm){PZ.album=PZ.album||{};PZ.album[it.id]=(PZ.album[it.id]||0)+1;savePZ();}
@@ -1385,7 +1415,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v36';
+const APP_VERSION='v37';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -2007,15 +2037,20 @@ function shRound(){if(S.screen!=='shadow')return;SH.gen++;const A=$('shArea');A.
     it.f=f;it.hx=it.x=W*(i+.5)/n-z/2;it.hy=it.y=H*.76-z/2;Object.assign(f.style,{left:it.x+'px',top:it.y+'px',width:z+'px',height:z+'px'});A.appendChild(f);shDrag(it);});
   renderStars('shStars',0,n);
   setTimeout(()=>{if(S.screen==='shadow')say(SH.round===0?'친구를 자기 그림자에 쏙 넣어줘요!':'누구 그림자일까요?');},500);}
-function shDrag(it){const el=it.f;let d=null;
-  el.addEventListener('pointerdown',e=>{if(it.ok)return;e.preventDefault();try{el.setPointerCapture(e.pointerId);}catch(_){}
-    d={id:e.pointerId,ox:e.clientX-it.x,oy:e.clientY-it.y};it.drag=true;el.classList.remove('back');el.classList.add('hold');el.style.zIndex=20;sfx.pick();SH.last=Date.now();});
-  el.addEventListener('pointermove',e=>{if(!d||d.id!==e.pointerId)return;it.x=e.clientX-d.ox;it.y=e.clientY-d.oy;el.style.left=it.x+'px';el.style.top=it.y+'px';});
-  const up=e=>{if(!d||d.id!==e.pointerId)return;d=null;it.drag=false;el.classList.remove('hold');el.style.zIndex='';SH.last=Date.now();
-    const cx=it.x+it.z/2,cy=it.y+it.z/2,near=SH.items.filter(t=>!t.ok).map(t=>({t,dd:Math.hypot(cx-(t.sx+t.z/2),cy-(t.sy+t.z/2))})).sort((a,b)=>a.dd-b.dd)[0];
-    if(near&&near.dd<it.z*.55){if(near.t===it)shMatch(it);else shWrong(it,near.t);}else shHome(it);};
-  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
-  el.addEventListener('lostpointercapture',e=>{if(d&&d.id===e.pointerId){d=null;it.drag=false;el.classList.remove('hold');el.style.zIndex='';shHome(it);}});}
+// 끌어서 맞추거나, 톡 누르면 자기 그림자로 폴짝 날아가요 (아기는 끌기보다 톡을 먼저 해요)
+function shDrag(it){const el=it.f;let ox=0,oy=0;
+  const rel=()=>{it.drag=false;el.classList.remove('hold');el.style.zIndex='';SH.last=Date.now();};
+  dragTap(el,{can:()=>!it.ok&&!it.fly,
+    down:e=>{ox=e.clientX-it.x;oy=e.clientY-it.y;el.classList.remove('back');sfx.pick();SH.last=Date.now();},
+    start:()=>{it.drag=true;el.classList.add('hold');el.style.zIndex=20;},
+    move:e=>{it.x=e.clientX-ox;it.y=e.clientY-oy;el.style.left=it.x+'px';el.style.top=it.y+'px';},
+    tap:()=>shFly(it),
+    drop:()=>{rel();const cx=it.x+it.z/2,cy=it.y+it.z/2,near=SH.items.filter(t=>!t.ok).map(t=>({t,dd:Math.hypot(cx-(t.sx+t.z/2),cy-(t.sy+t.z/2))})).sort((a,b)=>a.dd-b.dd)[0];
+      if(near&&near.dd<it.z*.55){if(near.t===it)shMatch(it);else shWrong(it,near.t);}else shHome(it);},
+    lost:()=>{rel();shHome(it);}});}
+function shFly(it){const el=it.f,g=SH.gen;it.fly=true;el.style.zIndex=20;SH.last=Date.now();tone({f:500,f2:1100,d:.18,v:.14});
+  hopTo(el,it.sx-it.x,it.sy-it.y,1,600,80).then(()=>{it.fly=false;if(SH.gen!==g)return;el.style.zIndex='';
+    el.style.left=it.sx+'px';el.style.top=it.sy+'px';el.getAnimations().forEach(a=>a.cancel());shMatch(it);});}
 function shHome(it){sfx.drop();it.f.classList.add('back');it.x=it.hx;it.y=it.hy;it.f.style.left=it.x+'px';it.f.style.top=it.y+'px';}
 let shNo=0;
 function shWrong(it,t){sfx.nope();t.shd.animate([{transform:'none'},{transform:'rotate(-6deg)'},{transform:'rotate(6deg)'},{transform:'none'}],{duration:450});
@@ -2046,9 +2081,12 @@ const MU_SONGS=[
  {id:'boat',name:'노 젓기',seq:[0,0,0,1,2, 2,1,2,3,4, 7,7,7,4,4,4,2,2,2,0,0,0, 4,3,2,1,0]},
 ];
 const MU={song:null,pos:0,keys:[],lastNo:0,idleT:0,world:'sea'};
-const muBand=()=>MU.world==='land'&&LAND.length?[...LAND,...(GIRL?[GIRL]:[]),CHARS[4]].slice(0,8):CHARS.slice(0,8);
+// 숲속 악단: 친구가 많아져서 들어올 때마다 여섯 명을 새로 뽑아요(+ 유주, 거북이)
+let muLandBand=null;
+const muBand=()=>{if(!(MU.world==='land'&&LAND.length))return CHARS.slice(0,8);
+  if(!muLandBand)muLandBand=[...shuffle(LAND.slice()).slice(0,GIRL?6:7),...(GIRL?[GIRL]:[]),CHARS[4]];return muLandBand;};
 function muNote(i,t=0){const f=mtof(MU_NOTES[i]);tone({f,t,d:.55,v:.24});tone({f:f*2,t,d:.25,v:.06});tone({f:f*4,t,d:.06,v:.05});}
-function muStart(){show('music');document.body.classList.toggle('land',MU.world==='land');muBuild();muSongs();muWorldBtn();}
+function muStart(){muLandBand=null;show('music');document.body.classList.toggle('land',MU.world==='land');muBuild();muSongs();muWorldBtn();}
 function muWorldBtn(){const other=MU.world==='land'?CHARS[0]:(LAND[0]||CHARS[1]);$('muWorld').innerHTML=`<img src="${charSrc(other)}" alt="" style="width:80%;height:80%;object-fit:contain">`;}
 function muBuild(){const A=$('muArea');A.innerHTML='';MU.keys=[];const W=A.clientWidth,H=A.clientHeight,cw=W*.94/8,x0=W*.03;
   muBand().forEach((ch,i)=>{const k=document.createElement('div');k.className='key';const bh=H*(.36-i*.022),fz=Math.min(cw*.98,H*.27);
@@ -2446,7 +2484,7 @@ syncBadge();
 
 /* ================= v34 새 놀이 공통 ================= */
 // 코덱스로 만든 그림의 가로:세로 비율
-const IMG_AR={tr_car:1.928,tr_engine:1.261,tree:.819,basket:1.485,cake:1.06,candle:.228,tub:1.366,sponge:1.149,shower:.985,duck:1.047,gift:.869};
+const IMG_AR={tr_signal:.433,tr_tunnel:1.911,tr_station:1.682,tr_car:1.928,tr_engine:1.261,tree:.819,basket:1.485,cake:1.06,candle:.228,tub:1.366,sponge:1.149,shower:.985,duck:1.047,gift:.869};
 const ga=w=>w+(hasBatchim(w)?'이':'가');
 const ieyo=w=>w+(hasBatchim(w)?'이에요':'예요');
 const KNUM=['','한','두','세','네','다섯'];
@@ -2481,16 +2519,20 @@ const ngMark=()=>{ngWH=[innerWidth,innerHeight];};
 addEventListener('resize',()=>{clearTimeout(ngRT);ngRT=setTimeout(()=>{const [w,h]=ngWH;if(Math.abs(innerWidth-w)<40&&Math.abs(innerHeight-h)<40)return;ngMark();
   if(S.screen==='train')trRound();else if(S.screen==='fruit')ftRound();else if(S.screen==='cake')ckRound();else if(S.screen==='bath')baRound();},300);});
 
-/* ================= 기차 태우기: 친구들을 칸에 태우면 칙칙폭폭 출발 ================= */
-const TR={round:0,gen:0,n:2,cars:[],wait:[],busy:true,last:0,el:null,eng:null,G:null,drag:0};
+/* ================= 기차 여행: 친구 태우기 → 빨간 신호등 → 깜깜한 터널 → 기차역 도착 (4단계 이야기) ================= */
+const TR={round:0,gen:0,n:2,cars:[],wait:[],busy:true,last:0,el:null,eng:null,G:null,drag:0,stage:'board',act:false,off:0,sig:null,door:null};
 const CAR_TINT=['hue-rotate(0deg)','hue-rotate(140deg)','hue-rotate(-95deg)','hue-rotate(60deg)'];
+const TR_STEP=['board','signal','tunnel','arrive'],TR_ICON=['tr_car','tr_signal','tr_tunnel','tr_station'];
 function trStart(){show('train');ngMark();TR.round=0;trRound();}
 function trGeo(){const A=$('trArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H,n=TR.n;
   const cw=Math.min(W*.94/(n*1.03+1.2),H*(land?.36:.24)),ch=cw/IMG_AR.tr_car,ew=cw*1.2,eh=ew/IMG_AR.tr_engine;
   const ry=H*(land?.9:.84),tw=n*cw*1.03+ew,x0=(W-tw)/2;
   return{W,H,land,n,cw,ch,ew,eh,ry,tw,x0,top:ry-eh,rz:cw*.68};}
+// 위쪽 이야기 진행: 태우기 · 신호등 · 터널 · 기차역
+function trProg(){const k=TR.stage==='done'?3:TR_STEP.indexOf(TR.stage);
+  $('trStars').innerHTML=TR_ICON.map((s,i)=>`<img class="${i<=k?'on':''}${i===k&&TR.stage!=='done'?' now':''}" src="chars/${s}.webp" alt="">`).join('');}
 function trRound(){if(S.screen!=='train')return;busHush('tr');const g=++TR.gen,A=$('trArea');A.innerHTML='';
-  TR.n=TR.round<2?2:TR.round<5?3:4;const G=trGeo();Object.assign(TR,{G,busy:true,last:Date.now(),cars:[],wait:[],drag:0});
+  TR.n=TR.round<2?2:TR.round<5?3:4;const G=trGeo();Object.assign(TR,{G,busy:true,last:Date.now(),cars:[],wait:[],drag:0,stage:'board',act:false,off:0,sig:null,door:null});
   document.body.classList.add('land');
   const rail=document.createElement('div');rail.className='rail';rail.style.top=(G.ry-G.eh*.01)+'px';A.appendChild(rail);
   const tr=document.createElement('div');tr.className='train';TR.el=tr;
@@ -2500,15 +2542,21 @@ function trRound(){if(S.screen!=='train')return;busHush('tr');const g=++TR.gen,A
     Object.assign(c.style,{left:(i*G.cw*1.03)+'px',top:(G.eh-G.ch)+'px',width:G.cw+'px',height:G.ch+'px'});
     c.innerHTML='<img class="bk" src="chars/tr_car.webp" alt=""><img class="body" src="chars/tr_car.webp" alt="">';
     const car={el:c,i,ch:null,rd:null};TR.cars.push(car);tr.appendChild(c);
-    c.addEventListener('pointerdown',e=>{if(!car.rd)return;e.preventDefault();car.rd.classList.remove('jump');void car.rd.offsetWidth;car.rd.classList.add('jump');sfx.giggle();});}
+    c.addEventListener('pointerdown',e=>{if(!car.rd)return;e.preventDefault();if(TR.stage==='arrive'&&TR.act){trGetOff(car);return;}
+      car.rd.classList.remove('jump');void car.rd.offsetWidth;car.rd.classList.add('jump');sfx.giggle();});}
   const en=document.createElement('div');en.className='te';TR.eng=en;
   Object.assign(en.style,{left:(G.n*G.cw*1.03)+'px',top:'0px',width:G.ew+'px',height:G.eh+'px'});en.innerHTML='<img src="chars/tr_engine.webp" alt="">';
-  en.addEventListener('pointerdown',e=>{e.preventDefault();trToot();});tr.appendChild(en);A.appendChild(tr);
-  renderStars('trStars',0,G.n);
-  // 기차가 왼쪽에서 칙칙폭폭 들어와요
-  tr.classList.add('go');trChug(2.1);const pf=setInterval(()=>{if(TR.gen!==g){clearInterval(pf);return;}trPuff();},300);
-  tr.animate([{transform:`translateX(${-(G.x0+G.tw+30)}px)`},{transform:'none'}],{duration:2300,easing:'cubic-bezier(.25,.7,.35,1)'}).finished.then(()=>{clearInterval(pf);
-    if(TR.gen!==g||S.screen!=='train')return;tr.classList.remove('go');trToot(true);trFriends(TR.round%2===1,g);});}
+  en.addEventListener('pointerdown',e=>{e.preventDefault();if(TR.stage==='tunnel'&&TR.act){trLight();return;}trToot();});tr.appendChild(en);A.appendChild(tr);
+  trProg();
+  trEnter(g,()=>{trToot(true);trFriends(TR.round%2===1,g);});}
+// 기차 움직이기: 왼쪽에서 들어와 TR.off 자리에 멈추기 / 오른쪽으로 떠나기 / 멈추지 않고 지나가기
+function trMove(g,from,to,dur,ease,cb){const tr=TR.el;tr.getAnimations().forEach(a=>a.cancel());tr.classList.add('go');trChug(dur/1000-.2);
+  const pf=setInterval(()=>{if(TR.gen!==g){clearInterval(pf);return;}trPuff();},dur>3000?240:300);
+  tr.animate([{transform:`translateX(${from}px)`},{transform:`translateX(${to}px)`}],{duration:dur,easing:ease,fill:'forwards'}).finished.then(()=>{clearInterval(pf);
+    if(TR.gen!==g||S.screen!=='train')return;tr.classList.remove('go');cb();}).catch(()=>{});}
+const trEnter=(g,cb)=>{const G=TR.G;trMove(g,-(G.x0+G.tw+30),TR.off,2300,'cubic-bezier(.25,.7,.35,1)',cb);};
+const trLeave=(g,cb)=>{const G=TR.G;TR.act=false;trMove(g,TR.off,G.W-G.x0+30,3600,'cubic-bezier(.55,0,.75,.7)',cb);};
+const trPass=(g,cb)=>{const G=TR.G;trMove(g,-(G.x0+G.tw+30),G.W-G.x0+30,5200,'cubic-bezier(.3,.45,.7,.55)',cb);};
 function trFriends(land,g){const G=TR.G,A=$('trArea'),chs=friendPool(land,G.n,true);
   const cols=G.land?G.n:Math.min(G.n,2),rows=Math.ceil(G.n/cols),y1=G.top-G.H*.01,y0=Math.min(Math.max(96,G.H*.12),y1*.5),rh=(y1-y0)/rows,wz=Math.min(G.W/cols*.5,rh*.9);
   chs.forEach((ch,i)=>{const c=i%cols,r=Math.floor(i/cols),cx=G.W*(c+.5)/cols,cy=y0+rh*(r+.5);
@@ -2536,15 +2584,50 @@ function trBoard(w,car){if(!car||w.going){trHome(w);return;}w.going=true;car.ch=
     const rd=document.createElement('img');rd.className='rider';rd.src=charSrc(w.ch);rd.alt='';
     Object.assign(rd.style,{left:((G.cw-rz)/2)+'px',top:(G.ch*.155-rz*.62)+'px',width:rz+'px',height:rz+'px'});car.el.appendChild(rd);car.rd=rd;
     car.el.classList.remove('empty','glow');car.el.animate([{transform:'none'},{transform:'scale(1.04,.94)'},{transform:'none'}],{duration:300});
-    const done=TR.cars.filter(k=>k.rd).length;tone({f:700,f2:1500,d:.08,v:.2});bell(mtof(PENT[Math.min(done+1,8)]),.05,.2,.6);renderStars('trStars',done,G.n);
+    const done=TR.cars.filter(k=>k.rd).length;tone({f:700,f2:1500,d:.08,v:.2});bell(mtof(PENT[Math.min(done+1,8)]),.05,.2,.6);
     if(done<G.n){say(`${ga(w.ch.name)} 탔어요!`);return;}
     trDepart(g);});}
-function trDepart(g){TR.busy=true;const G=TR.G;
+function trDepart(g){TR.busy=true;
   setTimeout(()=>{if(TR.gen!==g)return;say('모두 탔어요! 칙칙폭폭 출발!');cheer('칙칙폭폭 출발!');trToot();},350);
-  setTimeout(()=>{if(TR.gen!==g||S.screen!=='train')return;const tr=TR.el;tr.classList.add('go');trChug(3.6);
-    const pf=setInterval(()=>{if(TR.gen!==g){clearInterval(pf);return;}trPuff();},240);
-    tr.animate([{transform:'none'},{transform:`translateX(${G.W-G.x0+30}px)`}],{duration:3600,easing:'cubic-bezier(.55,0,.75,.7)',fill:'forwards'}).finished.then(()=>{
-      clearInterval(pf);if(TR.gen!==g||S.screen!=='train')return;TR.round++;trRound();});},2300);}
+  setTimeout(()=>{if(TR.gen!==g||S.screen!=='train')return;trLeave(g,()=>trScene('signal',g));},2300);}
+function trProp(cls,x,y,w,h,img){const p=document.createElement('div');p.className='trp '+cls;Object.assign(p.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});
+  p.innerHTML=`<img src="chars/${img}.webp" alt="">`;$('trArea').appendChild(p);return p;}
+// 다음 장면: 소품을 바꾸고 기차가 다시 들어와요
+function trScene(st,g){if(TR.gen!==g||S.screen!=='train')return;const A=$('trArea'),G=TR.G,top=Math.max(90,G.H*.1);
+  TR.stage=st;TR.act=false;TR.off=0;trProg();A.querySelectorAll('.trp,.trnight').forEach(e=>e.remove());TR.el.classList.remove('dim');
+  if(st==='signal'){const by=G.ry-G.eh*.35,h=Math.min(G.H*(G.land?.55:.4),by-top),w=h*IMG_AR.tr_signal,x=G.W-w-G.W*.03;
+    const p=trProp('sig',x,by-h,w,h,'tr_signal');p.insertAdjacentHTML('beforeend','<i class="lamp r on"></i><i class="lamp g"></i>');TR.sig=p;
+    p.addEventListener('pointerdown',e=>{e.preventDefault();trGreen();});
+    TR.off=Math.min(0,x+w*.2-(G.x0+G.tw));   // 기관차가 신호등 바로 앞에 멈춰요
+    trEnter(g,()=>{TR.act=true;TR.last=Date.now();say('앗, 빨간불이에요! 멈춰요. 신호등을 톡 눌러서 초록불로 바꿔 줘요!');});}
+  else if(st==='tunnel'){const h=G.eh*1.4,w=h*IMG_AR.tr_tunnel;trProp('tun',G.W-w*.72,G.ry+G.eh*.06-h,w,h,'tr_tunnel');
+    setTimeout(()=>{if(TR.gen===g)say('저기 터널이 있어요! 칙칙폭폭 들어가요!');},900);
+    trPass(g,()=>trDark(g));}   // 멈추지 않고 터널 속으로 쏙
+  else{const by=G.top+G.eh*.2,w=Math.min(G.W*.5,(by-top)*IMG_AR.tr_station),h=w/IMG_AR.tr_station;
+    trProp('sta',(G.W-w)/2,by-h,w,h,'tr_station');TR.door={x:G.W/2,y:by-h*.26};
+    trEnter(g,()=>{TR.act=true;TR.last=Date.now();trToot(true);say('기차역에 도착했어요! 친구들을 톡 눌러서 내려 줘요!');});}}
+function trGreen(){if(TR.stage!=='signal'||!TR.act)return;TR.act=false;const g=TR.gen,p=TR.sig;TR.last=Date.now();
+  p.querySelector('.r').classList.remove('on');p.querySelector('.g').classList.add('on');bell(mtof(84),0,.22,.8);bell(mtof(88),.16,.2,.8);
+  p.animate([{transform:'none'},{transform:'scale(1.06)'},{transform:'none'}],{duration:350});say('초록불이에요! 출발해요!');
+  setTimeout(()=>{if(TR.gen!==g)return;trTootT=0;trToot();trLeave(g,()=>trScene('tunnel',g));},1400);}
+// 터널 속: 깜깜해지고, 기관차를 톡 누르면 불이 켜져요
+function trDark(g){if(TR.gen!==g||S.screen!=='train')return;const A=$('trArea');A.querySelectorAll('.trp').forEach(e=>e.remove());
+  const nt=document.createElement('div');nt.className='trnight';A.appendChild(nt);TR.el.classList.add('dim');TR.off=0;say('깜깜한 터널 속이에요!');
+  trEnter(g,()=>{TR.act=true;TR.last=Date.now();TR.eng.classList.add('glow');say('깜깜해요! 기차를 톡 눌러서 불을 켜 줘요!');});}
+function trLight(){if(!TR.act)return;TR.act=false;const g=TR.gen,A=$('trArea');TR.last=Date.now();TR.eng.classList.remove('glow');
+  TR.eng.insertAdjacentHTML('beforeend','<i class="beam"></i>');tone({f:880,f2:1760,d:.25,v:.15});sparkle();trTootT=0;trToot();
+  TR.el.classList.remove('dim');const nt=A.querySelector('.trnight');nt&&nt.classList.add('lit');say('반짝! 불이 켜졌어요! 터널을 빠져나가요!');
+  setTimeout(()=>{if(TR.gen!==g)return;trLeave(g,()=>{const b=TR.eng.querySelector('.beam');b&&b.remove();trScene('arrive',g);});},1700);}
+// 기차역: 친구를 톡 누르면 폴짝 내려서 역으로 쏙
+function trGetOff(car){const rd=car.rd;if(!rd||!TR.act)return;car.rd=null;const g=TR.gen,G=TR.G,c=ctr(rd),a=$('trArea').getBoundingClientRect(),d=TR.door,ch=car.ch;
+  TR.last=Date.now();rd.classList.remove('jump');rd.style.zIndex=5;tone({f:500,f2:1100,d:.18,v:.14});
+  hopTo(rd,a.left+d.x-c.x,a.top+d.y-c.y,.45,650,G.H*.1).then(()=>{if(TR.gen!==g)return;rd.remove();heartBurst(a.left+d.x,a.top+d.y-20);
+    const left=TR.cars.filter(k=>k.rd).length;bell(mtof(PENT[Math.min(G.n-left+1,8)]),0,.2,.6);
+    if(left>0){say(`${ga(ch.name)} 내렸어요!`);return;}trFinale(g);});}
+function trFinale(g){TR.act=false;TR.stage='done';trProg();
+  setTimeout(()=>{if(TR.gen!==g)return;cheer('즐거운 기차 여행!');say('모두 도착했어요! 즐거운 기차 여행이었어요!');sfx.fanfare();
+    [0,500].forEach(t=>setTimeout(()=>burst(innerWidth*(.3+Math.random()*.4),innerHeight*.35,40,Math.min(innerWidth,innerHeight)*.4,true),t));},400);
+  setTimeout(()=>{if(TR.gen!==g||S.screen!=='train')return;TR.round++;trRound();},4800);}
 let trTootT=0;
 function trToot(quiet){if(!TR.eng||Date.now()-trTootT<600)return;trTootT=Date.now();const e=TR.eng;e.classList.remove('toot');void e.offsetWidth;e.classList.add('toot');
   const out=busOut('tr');[[0,.42],[.5,.6]].forEach(([t,d])=>{const v=quiet?.6:1;tone({f:740,t,d,v:.13*v,type:'triangle',a:.03,out});tone({f:932,t,d,v:.1*v,type:'triangle',a:.03,out});tone({f:1110,t,d,v:.04*v,a:.03,out});});
@@ -2552,10 +2635,15 @@ function trToot(quiet){if(!TR.eng||Date.now()-trTootT<600)return;trTootT=Date.no
 function trPuff(){if(!TR.eng||!TR.eng.isConnected)return;const r=TR.eng.getBoundingClientRect(),a=$('trArea').getBoundingClientRect();
   puffAt($('trArea'),r.left-a.left+r.width*.7,r.top-a.top+r.height*.04,r.width*.26);}
 function trChug(dur){const out=busOut('tr');for(let t=0;t<dur;t+=.34){noise({t,f:2600,d:.08,v:.09,type:'highpass',out});noise({t:t+.17,f:1900,d:.06,v:.05,type:'highpass',out});}}
-// 가만히 있으면 손가락이 친구를 기차로 데려가 보여줘요
-setInterval(()=>{if(S.screen!=='train'||TR.busy||TR.drag>0||Date.now()-Math.max(lastTouch,TR.last)<6000)return;TR.last=Date.now();
-  const w=TR.wait.find(w=>!w.going),car=w&&trNearCar(w.el);if(!w||!car)return;const a=ctr(w.el),b=ctr(car.el);
-  car.el.classList.add('glow');setTimeout(()=>car.el.classList.remove('glow'),2400);ghostHand(a.x,a.y,b.x,b.y-b.h*.3,{src:charSrc(w.ch),w:a.w,h:a.h});},1000);
+// 가만히 있으면 손가락이 지금 할 일을 보여줘요
+setInterval(()=>{if(S.screen!=='train'||TR.drag>0||Date.now()-Math.max(lastTouch,TR.last)<6000)return;
+  if(TR.stage==='board'){if(TR.busy)return;TR.last=Date.now();
+    const w=TR.wait.find(w=>!w.going),car=w&&trNearCar(w.el);if(!w||!car)return;const a=ctr(w.el),b=ctr(car.el);
+    car.el.classList.add('glow');setTimeout(()=>car.el.classList.remove('glow'),2400);ghostHand(a.x,a.y,b.x,b.y-b.h*.3,{src:charSrc(w.ch),w:a.w,h:a.h});return;}
+  if(!TR.act)return;TR.last=Date.now();
+  const el=TR.stage==='signal'?TR.sig.querySelector('.r'):TR.stage==='tunnel'?TR.eng:(TR.cars.find(k=>k.rd)||{}).rd;if(!el)return;const c=ctr(el);
+  ghostHand(c.x+c.w*.8,c.y+c.h*.6,c.x,c.y,null);
+  say(TR.stage==='signal'?'신호등을 톡 눌러요!':TR.stage==='tunnel'?'기차를 톡 눌러서 불을 켜요!':'친구를 톡 눌러서 내려 줘요!');},1000);
 $('goTrain').onclick=()=>{sfx.tap();say('기차 놀이해요! 칙칙폭폭');trStart();};
 $('trBack').onclick=()=>{sfx.tap();TR.gen++;busHush('tr');show('home');};
 
@@ -2730,7 +2818,7 @@ const BA={round:0,gen:0,stage:'load',last:0,who:null,cv:null,cx:null,N:0,init:1,
 function baStart(){show('bath');ngMark();baRound();}
 function baGeo(){const A=$('baArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H;
   const tw=land?Math.min(W*.5,H*.72*IMG_AR.tub):Math.min(W*.86,H*.36*IMG_AR.tub),th=tw/IMG_AR.tub,tx=(W-tw)/2,ty=H-th-H*.03;
-  const top=Math.max(90,H*.11),fz=Math.min(tw*.7,ty+th*.42-top),fx=W/2-fz/2,fy=ty+th*.42-fz;
+  const top=Math.max(90,H*.11),fz=Math.min(tw*.7,ty+th*.24-top),fx=W/2-fz/2,fy=ty+th*.24-fz;   // 친구 아래쪽만 욕조 거품에 살짝 묻혀요
   const sz=Math.min(fz*.55,land?H*.3:W*.3),sx=Math.min(W-sz-8,fx+fz*.78),sy=Math.max(top*.9,fy-sz*.55);
   return{W,H,land,tw,th,tx,ty,fz,fx,fy,sz,sx,sy,dz:tw*.17};}
 function baRound(){if(S.screen!=='bath')return;busHush('ba');baSponge(null,false);const g=++BA.gen,A=$('baArea'),G=baGeo();   // 문지르던 손가락은 놓아요
@@ -2775,8 +2863,8 @@ function baRub(e){if(BA.stage!=='rub')return;const r=BA.cv.getBoundingClientRect
   if(BA.dist>34){BA.dist=0;baFoam(e.clientX,e.clientY);}
   const now=Date.now();if(now-BA.lastSnd>110){BA.lastSnd=now;noise({f:2200+Math.random()*600,d:.09,v:.07,q:1.2});if(Math.random()<.25)sfx.bubble();}
   if(now-BA.chk>300){BA.chk=now;baCheck();}}
-function baFoam(x,y){const A=$('baArea');if(A.querySelectorAll('.foam').length>90)return;const a=A.getBoundingClientRect();
-  for(let i=0;i<2;i++){const s=BA.G.fz*(.05+Math.random()*.07),f=document.createElement('i');f.className='foam';
+function baFoam(x,y){const A=$('baArea');if(A.querySelectorAll('.foam').length>24)return;const a=A.getBoundingClientRect();
+  for(let i=0;i<1;i++){const s=BA.G.fz*(.04+Math.random()*.05),f=document.createElement('i');f.className='foam';f.addEventListener('animationend',e=>{if(e.animationName==='foamFade')f.remove();});
     f.style.cssText=`left:${x-a.left-s/2+(Math.random()-.5)*s*1.4}px;top:${y-a.top-s/2+(Math.random()-.5)*s*1.4}px;width:${s}px;height:${s}px`;A.appendChild(f);}}
 function baCheck(){if(BA.stage!=='rub')return;const left=baCount()/BA.init,st=Math.min(5,Math.floor((1-left)*5/.88));
   if(st!==BA.st){BA.st=st;renderStars('baStars',st,5);}

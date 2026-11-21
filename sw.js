@@ -1,6 +1,6 @@
 // 유주 놀이터 오프라인 저장소. 앱을 고치면 VERSION 숫자를 올려주세요 (index.html의 APP_VERSION도 같이).
 const MUSIC_CACHE = 'yuju-music-1';
-const VERSION = 'yuju-v36';
+const VERSION = 'yuju-v37';
 const CORE = ['./', './index.html', './manifest.json', './chars/chars.js',
   './chars/bg_land.webp', './chars/bg_sea.webp', './chars/crab.webp', './chars/deer.webp', './chars/dolphin.webp',
   './chars/dress_blue.webp', './chars/dress_pink.webp', './chars/dress_yellow.webp', './chars/fish.webp', './chars/fish0.webp',
@@ -17,6 +17,7 @@ const CORE = ['./', './index.html', './manifest.json', './chars/chars.js',
   './chars/st_sun.webp', './chars/tiger.webp', './chars/turtle.webp', './chars/whale.webp', './chars/yuju.webp',
   './chars/tr_engine.webp', './chars/tr_car.webp', './chars/tree.webp', './chars/basket.webp', './chars/cake.webp', './chars/candle.webp',
   './chars/fr_strawberry.webp', './chars/gift.webp', './chars/tub.webp', './chars/sponge.webp', './chars/shower.webp', './chars/duck.webp',
+  './chars/tr_signal.webp', './chars/tr_tunnel.webp', './chars/tr_station.webp',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
 
 self.addEventListener('install', e => {
