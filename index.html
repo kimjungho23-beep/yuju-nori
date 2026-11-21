@@ -1203,7 +1203,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v29';
+const APP_VERSION='v30';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1256,8 +1256,22 @@ function inkFor(e,d){const er=D.tool==='eraser'||(e.buttons&32);pctx.globalCompo
   const base=SIZES[D.size]*(er?1.8:1);pctx.lineWidth=e.pointerType==='pen'?base*(.35+Math.min(1,e.pressure||.5)*1.3):base;
   if(D.tool==='rainbow'&&!er){D.hue=(D.hue+d*.35)%360;pctx.strokeStyle=pctx.fillStyle=`hsl(${D.hue},92%,60%)`;}else pctx.strokeStyle=pctx.fillStyle=D.color;
   pctx.lineCap='round';pctx.lineJoin='round';return er;}
-function note(y,er){const now=performance.now();if(now-D.lastNote<85)return;D.lastNote=now;
-  if(er){sfx.rub();return;}const i=Math.max(0,Math.min(PENT.length-1,Math.floor((1-y/PH)*PENT.length)));bell(mtof(PENT[i]),0,.06,.35);}
+// 그릴 때 소리: 실로폰 대신 크레용이 종이에 스치는 '사각사각' (빨리 그리면 조금 커지고, 멈추면 바로 조용)
+// 무지개 붓은 가끔 아주 작게 반짝 소리만
+function note(y,er){const now=performance.now();if(now-D.lastNote<240)return;D.lastNote=now;
+  if(D.tool==='rainbow'&&!er)bell(mtof(PENT[(Math.random()*PENT.length)|0]+12),0,.018,.28);}
+const SCR={src:null,g:null,f:null,stopT:0,kill:0};
+function scribble(speed,er){if(!isFinite(speed))return;const c=audio();if(!c)return;clearTimeout(SCR.kill);
+  if(!SCR.src){if(!NB){NB=c.createBuffer(1,c.sampleRate,c.sampleRate);const a=NB.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;}
+    const src=c.createBufferSource(),f=c.createBiquadFilter(),f2=c.createBiquadFilter(),g=c.createGain();src.buffer=NB;src.loop=true;
+    f.type='bandpass';f.Q.value=.9;f2.type='lowpass';f2.frequency.value=4200;g.gain.value=0;
+    src.connect(f);f.connect(f2);f2.connect(g);g.connect(AU.master);src.start();Object.assign(SCR,{src,g,f});}
+  const t=c.currentTime,v=er?Math.min(.035,.006+speed*.0007):Math.min(.045,.007+speed*.0009);
+  SCR.g.gain.cancelScheduledValues(t);SCR.g.gain.setTargetAtTime(v*(.8+Math.random()*.4),t,.025);   // 살짝 흔들려야 크레용 같아요
+  SCR.f.frequency.setTargetAtTime(er?800:1500+Math.min(1400,speed*22),t,.05);
+  clearTimeout(SCR.stopT);SCR.stopT=setTimeout(scribbleOff,90);}
+function scribbleOff(){if(!SCR.g)return;const t=AU.ctx.currentTime;SCR.g.gain.cancelScheduledValues(t);SCR.g.gain.setTargetAtTime(0,t,.04);
+  clearTimeout(SCR.kill);SCR.kill=setTimeout(()=>{if(SCR.src){try{SCR.src.stop();}catch(e){}SCR.src.disconnect();SCR.src=null;}},700);}
 
 function hsl2hex(h,sa,l){sa/=100;l/=100;const k=n=>(n+h/30)%12,a=sa*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,9-k(n),1));
   return '#'+[f(0),f(8),f(4)].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('');}
@@ -1280,11 +1294,11 @@ paper.addEventListener('pointermove',e=>{const s=D.strokes.get(e.pointerId);if(!
     const mid={x:(s.last.x+p.x)/2,y:(s.last.y+p.y)/2},er=inkFor(ce,d);
     pctx.beginPath();pctx.moveTo(s.mid.x,s.mid.y);pctx.quadraticCurveTo(s.last.x,s.last.y,mid.x,mid.y);pctx.stroke();
     if(D.tool==='rainbow'&&!er&&Math.random()<.6)sprinkle(p,Math.ceil(d/16));
-    s.last=p;s.mid=mid;s.ink+=d;if(s.ink>100){s.ink=0;note(p.y,er);}}});
+    scribble(d,er);s.last=p;s.mid=mid;s.ink+=d;if(s.ink>100){s.ink=0;note(p.y,er);}}});
 const endStroke=e=>{const s=D.strokes.get(e.pointerId);if(!s)return;D.strokes.delete(e.pointerId);
   if(s.pending){if(Date.now()-s.t0<900)floodFill(s.start,e,D.tool==='rainbow'?hsl2hex((D.hue=(D.hue+47)%360),90,62):D.color);}
   else{pctx.beginPath();pctx.moveTo(s.mid.x,s.mid.y);pctx.lineTo(s.last.x,s.last.y);pctx.stroke();}
-  pctx.globalCompositeOperation='source-over';if(!D.strokes.size)setTimeout(checkColoring,300);};
+  pctx.globalCompositeOperation='source-over';if(!D.strokes.size){scribbleOff();setTimeout(checkColoring,300);}};
 paper.addEventListener('pointerup',endStroke);paper.addEventListener('pointercancel',endStroke);
 
 function stampAt(p,e){const img=STAMPS[D.stampIdx],s=PH*.26;pctx.globalCompositeOperation='source-over';
@@ -1346,7 +1360,7 @@ async function openPagePick(){const g=$('pageGrid');g.innerHTML='';
   const imgs=g.querySelectorAll('.pic:not(.blank) img');
   for(let i=0;i<CHARS.length;i++){const c=await lineArt(CHARS[i]);imgs[i].src=c.toDataURL();}}
 
-$('goDraw').onclick=()=>{sfx.tap();show('draw');renderTools();renderColors();requestAnimationFrame(fitPaper);
+$('goDraw').onclick=()=>{sfx.tap();show('draw');renderTools();renderColors();fitPaper();requestAnimationFrame(fitPaper);
   if(!D.started){D.started=true;const ch=pick(CHARS);setPage(ch);say(`${eul(ch.name)} 예쁘게 칠해 볼까요? 톡 누르면 칠해져요`);}else say('그림 그려요');};
 $('drawBack').onclick=()=>{sfx.tap();show('home');};
 $('pageBtn').onclick=()=>{sfx.tap();openPagePick();};
