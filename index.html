@@ -344,9 +344,13 @@ img{-webkit-user-drag:none;pointer-events:none}
 @keyframes wipePop{0%{transform:scale(1.15);opacity:1}35%{transform:scale(1.2);opacity:1}70%{transform:scale(1.45);opacity:.6}100%{transform:scale(1.8);opacity:0}}
 /* ===== 친구 악단 ===== */
 .songs{display:flex;gap:1.4vmin;align-self:center;pointer-events:none}
-.songs button{pointer-events:auto;border:none;background:#fff;border-radius:99px;padding:.8vmin 2vmin .8vmin 1vmin;display:flex;align-items:center;gap:1vmin;
-  font-size:clamp(16px,2.8vmin,26px);box-shadow:0 .6vmin 0 rgba(30,90,140,.15)}
-.songs button img,.songs button svg{width:clamp(30px,5.4vmin,50px);height:clamp(30px,5.4vmin,50px);object-fit:contain}
+.songs button{pointer-events:auto;border:none;background:#fff;border-radius:99px;padding:.6vmin 1.6vmin .6vmin .8vmin;display:flex;align-items:center;gap:.8vmin;white-space:nowrap;
+  font-size:clamp(14px,2.4vmin,22px);box-shadow:0 .6vmin 0 rgba(30,90,140,.15)}
+.songs button img,.songs button svg{width:clamp(26px,4.6vmin,44px);height:clamp(26px,4.6vmin,44px);object-fit:contain}
+@media (orientation:portrait){   /* 세로 화면: 노래 버튼은 버튼 줄 아래 한 줄 더 */
+  #music .topbar{flex-wrap:wrap;row-gap:1.6vmin}
+  #music .songs{order:3;flex-basis:100%;justify-content:center;flex-wrap:wrap}
+}
 .songs button.sel{background:#ffd65a}
 .key{position:absolute;touch-action:none}
 .key .bar{position:absolute;left:8%;right:8%;bottom:0;border-radius:2.4vmin;background:var(--c);box-shadow:inset 0 -1.4vmin 0 rgba(0,0,0,.12),0 1vmin 0 rgba(0,0,0,.08)}
@@ -361,6 +365,13 @@ img{-webkit-user-drag:none;pointer-events:none}
 @keyframes nextGlow{0%,100%{box-shadow:0 0 0 .6vmin #fff,0 0 3vmin #fff,inset 0 -1.4vmin 0 rgba(0,0,0,.12)}50%{box-shadow:0 0 0 1.2vmin #fff,0 0 6vmin #fff8b0,inset 0 -1.4vmin 0 rgba(0,0,0,.12)}}
 .mnote{position:fixed;z-index:60;pointer-events:none;font-size:clamp(26px,5vmin,48px);color:var(--c);text-shadow:0 2px 0 #fff;animation:noteUp 1.1s ease-out forwards}
 @keyframes noteUp{0%{transform:translate(-50%,0) scale(.5);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),-22vh) scale(1.2) rotate(var(--r));opacity:0}}
+/* ===== 그림자 맞추기 ===== */
+.shd{position:absolute;object-fit:contain;filter:brightness(0) opacity(.3);transition:filter .45s ease}
+.shd.lit{filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.22));animation:pop .5s ease}
+.shd.cheer{animation:keyJump .5s ease}
+.shf{position:absolute;object-fit:contain;touch-action:none;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.25));transition:transform .15s}
+.shf.hold{transform:scale(1.12)}
+.shf.back{transition:left .38s cubic-bezier(.3,1.35,.5,1),top .38s cubic-bezier(.3,1.35,.5,1),transform .15s}
 /* ===== 친구 꾸미기 ===== */
 #doll{animation:breathe 2.8s ease-in-out infinite;transform-origin:50% 95%}
 #doll .fr{position:absolute;object-fit:contain;filter:drop-shadow(0 1.6vmin 1.4vmin rgba(150,40,90,.18));transform-origin:50% 90%}
@@ -504,6 +515,7 @@ body.land #scene,body.land #bubbles{display:none}
       <button class="card" id="goPeek" style="--c:#5ccf95"><span class="art" data-art="peek"></span><b>까꿍</b></button>
       <button class="card" id="goFeed" style="--c:#ff9f43"><span class="art" data-art="feed"></span><b>밥 주기</b></button>
       <button class="card" id="goMusic" style="--c:#b8a6ff"><span class="art" data-art="music"></span><b>악단</b></button>
+      <button class="card" id="goShadow" style="--c:#7a8aa0"><span class="art" data-art="shadow"></span><b>그림자</b></button>
     </div>
   </div>
 </section>
@@ -602,9 +614,14 @@ body.land #scene,body.land #bubbles{display:none}
 <div id="sleep"><div class="sl"><img src="chars/sleep_shark.webp" alt=""></div>
   <b>오늘은 여기까지!</b><span>내일 또 같이 놀자</span><div class="hold" id="sleepHold">부모님: 여기를 3초 꾹 누르면 10분 더</div></div>
 
+<section id="shadow" class="screen">
+  <div class="area" id="shArea"></div>
+  <div class="topbar"><button class="rbtn" id="shBack" aria-label="처음으로" data-ic="home"></button><div class="stars" id="shStars"></div><button class="rbtn musicBtn" aria-label="음악"></button></div>
+</section>
+
 <section id="music" class="screen">
   <div class="area" id="muArea"></div>
-  <div class="topbar"><button class="rbtn" id="muBack" aria-label="처음으로" data-ic="home"></button><div class="songs" id="muSongs"></div><button class="rbtn musicBtn" aria-label="음악"></button></div>
+  <div class="topbar"><span class="tl"><button class="rbtn" id="muBack" aria-label="처음으로" data-ic="home"></button><button class="rbtn" id="muWorld" aria-label="친구 바꾸기"></button></span><div class="songs" id="muSongs"></div><button class="rbtn musicBtn" aria-label="음악"></button></div>
 </section>
 
 <section id="feed" class="screen">
@@ -1238,7 +1255,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v32';
+const APP_VERSION='v33';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1258,7 +1275,8 @@ let rz,lastLand=innerWidth>=innerHeight;addEventListener('resize',()=>{clearTime
   const land=innerWidth>=innerHeight;if(land===lastLand)return;lastLand=land;
   if(S.screen==='game'&&G&&!G.over&&!G.P.some(p=>p.drag))startGame();
   if(S.screen==='peek'&&!PK.busy)pkRound();
-  if(S.screen==='feed'&&!FD.busy&&!FD.fish.some(f=>f.drag)){fdBuild();fdRound();}},300);});
+  if(S.screen==='feed'&&!FD.busy&&!FD.fish.some(f=>f.drag)){fdBuild();fdRound();}
+  if(S.screen==='shadow'&&SH.done<SH.n&&!SH.items.some(t=>t.drag))shRound();},300);});
 
 /* ================= 그림 그리기 ================= */
 const PW=1600,PH=1100;
@@ -1844,6 +1862,47 @@ function heartBurst(x,y){for(let i=0;i<8;i++){const s=document.createElement('sp
 $('goFeed').onclick=()=>{sfx.tap();say(FD.world==='land'?'토끼한테 밥 줘요':'상어한테 밥 줘요');fdStart();};
 $('fdBack').onclick=()=>{sfx.tap();show('home');};
 
+/* ================= 그림자 맞추기: 친구를 자기 그림자에 쏙 ================= */
+const SH={round:0,items:[],done:0,n:0,last:0,gen:0};
+function shStart(){show('shadow');SH.round=0;shRound();}
+function shRound(){if(S.screen!=='shadow')return;SH.gen++;const A=$('shArea');A.innerHTML='';const W=A.clientWidth,H=A.clientHeight,land=W>=H;
+  const n=SH.round<2?2:SH.round<5?3:4,inLand=LAND.length&&SH.round%2===1;document.body.classList.toggle('land',!!inLand);   // 2쌍 → 3쌍 → 4쌍
+  const pool=shuffle((inLand?LAND:CHARS).slice()).slice(0,n),z=Math.min(W/n*(land?.62:.8),H*.3);
+  SH.items=[];SH.done=0;SH.n=n;SH.last=Date.now();
+  // 친구 줄은 그림자 줄과 순서가 꼭 다르게 (바로 밑에 자기 그림자가 있으면 맞출 게 없어요)
+  const so=shuffle(pool.slice());let fo;do fo=shuffle(pool.slice());while(n>1&&fo.every((c,i)=>c===so[i]));
+  so.forEach((ch,i)=>{const s=document.createElement('img');s.className='shd';s.src=charSrc(ch);s.alt='';
+    const x=W*(i+.5)/n-z/2,y=H*.36-z/2;Object.assign(s.style,{left:x+'px',top:y+'px',width:z+'px',height:z+'px'});A.appendChild(s);SH.items.push({ch,shd:s,sx:x,sy:y,z});});
+  fo.forEach((ch,i)=>{const it=SH.items.find(t=>t.ch===ch),f=document.createElement('img');f.className='shf';f.src=charSrc(ch);f.alt='';
+    it.f=f;it.hx=it.x=W*(i+.5)/n-z/2;it.hy=it.y=H*.76-z/2;Object.assign(f.style,{left:it.x+'px',top:it.y+'px',width:z+'px',height:z+'px'});A.appendChild(f);shDrag(it);});
+  renderStars('shStars',0,n);
+  setTimeout(()=>{if(S.screen==='shadow')say(SH.round===0?'친구를 자기 그림자에 쏙 넣어줘요!':'누구 그림자일까요?');},500);}
+function shDrag(it){const el=it.f;let d=null;
+  el.addEventListener('pointerdown',e=>{if(it.ok)return;e.preventDefault();try{el.setPointerCapture(e.pointerId);}catch(_){}
+    d={id:e.pointerId,ox:e.clientX-it.x,oy:e.clientY-it.y};it.drag=true;el.classList.remove('back');el.classList.add('hold');el.style.zIndex=20;sfx.pick();SH.last=Date.now();});
+  el.addEventListener('pointermove',e=>{if(!d||d.id!==e.pointerId)return;it.x=e.clientX-d.ox;it.y=e.clientY-d.oy;el.style.left=it.x+'px';el.style.top=it.y+'px';});
+  const up=e=>{if(!d||d.id!==e.pointerId)return;d=null;it.drag=false;el.classList.remove('hold');el.style.zIndex='';SH.last=Date.now();
+    const cx=it.x+it.z/2,cy=it.y+it.z/2,near=SH.items.filter(t=>!t.ok).map(t=>({t,dd:Math.hypot(cx-(t.sx+t.z/2),cy-(t.sy+t.z/2))})).sort((a,b)=>a.dd-b.dd)[0];
+    if(near&&near.dd<it.z*.55){if(near.t===it)shMatch(it);else shWrong(it,near.t);}else shHome(it);};
+  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+  el.addEventListener('lostpointercapture',e=>{if(d&&d.id===e.pointerId){d=null;it.drag=false;el.classList.remove('hold');el.style.zIndex='';shHome(it);}});}
+function shHome(it){sfx.drop();it.f.classList.add('back');it.x=it.hx;it.y=it.hy;it.f.style.left=it.x+'px';it.f.style.top=it.y+'px';}
+let shNo=0;
+function shWrong(it,t){sfx.nope();t.shd.animate([{transform:'none'},{transform:'rotate(-6deg)'},{transform:'rotate(6deg)'},{transform:'none'}],{duration:450});
+  if(Date.now()-shNo>2500){shNo=Date.now();say(`여기는 ${eul(t.ch.name).slice(0,-1)} 그림자예요`);}shHome(it);}
+function shMatch(it){it.ok=true;it.f.classList.add('back');it.x=it.sx;it.y=it.sy;it.f.style.left=it.x+'px';it.f.style.top=it.y+'px';
+  tone({f:700,f2:1500,d:.08,v:.2});sparkle();say(`${it.ch.name}!`);SH.done++;renderStars('shStars',SH.done,SH.n);
+  setTimeout(()=>{it.f.remove();it.shd.classList.add('lit');const r=it.shd.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,16,r.width*.6);},380);
+  if(SH.done<SH.n)return;
+  setTimeout(()=>{cheer('그림자를 다 찾았어요!');say('와! 다 찾았어요!');sfx.fanfare();
+    SH.items.forEach((t,j)=>setTimeout(()=>{t.shd.classList.remove('cheer');void t.shd.offsetWidth;t.shd.classList.add('cheer');},j*150));},700);
+  const g=SH.gen;setTimeout(()=>{if(S.screen!=='shadow'||SH.gen!==g)return;SH.round++;shRound();},3600);}
+// 가만히 있으면 손가락이 친구를 그림자로 끌어 보여주기
+setInterval(()=>{if(S.screen!=='shadow'||Date.now()-SH.last<6000||SH.items.some(t=>t.drag))return;SH.last=Date.now();const it=SH.items.find(t=>!t.ok&&t.f);if(!it)return;
+  ghostHand(it.x+it.z/2,it.y+it.z/2,it.sx+it.z/2,it.sy+it.z/2,{src:charSrc(it.ch),w:it.z,h:it.z});},1000);
+$('goShadow').onclick=()=>{sfx.tap();say('그림자 맞추기 해요');shStart();};
+$('shBack').onclick=()=>{sfx.tap();show('home');};
+
 /* ================= 친구 악단: 친구를 누르면 노래해요. 노래를 고르면 다음에 누를 친구가 반짝 ================= */
 const MU_NOTES=[60,62,64,65,67,69,71,72];   // 도 레 미 파 솔 라 시 도
 const MU_COL=['#ff6b6b','#ff9f43','#ffd93d','#6fd36f','#4fc3f7','#5b8def','#a77bf3','#ff8fc7'];
@@ -1853,18 +1912,23 @@ const MU_SONGS=[
  {id:'star',name:'작은 별',seq:[0,0,4,4,5,5,4, 3,3,2,2,1,1,0, 4,4,3,3,2,2,1, 4,4,3,3,2,2,1, 0,0,4,4,5,5,4, 3,3,2,2,1,1,0]},
  {id:'bfly',name:'나비야',seq:[4,2,2, 3,1,1, 0,1,2,3,4,4,4, 4,2,2,2, 3,1,1,1, 0,2,4,4,2,2,2]},
  {id:'plane',name:'비행기',seq:[2,1,0,1,2,2,2, 1,1,1, 2,4,4, 2,1,0,1,2,2,2, 1,1,2,1,0]},
+ {id:'bridge',name:'런던 다리',seq:[4,5,4,3,2,3,4, 1,2,3, 2,3,4, 4,5,4,3,2,3,4, 1,4,2,0]},
+ {id:'boat',name:'노 젓기',seq:[0,0,0,1,2, 2,1,2,3,4, 7,7,7,4,4,4,2,2,2,0,0,0, 4,3,2,1,0]},
 ];
-const MU={song:null,pos:0,keys:[],lastNo:0,idleT:0};
+const MU={song:null,pos:0,keys:[],lastNo:0,idleT:0,world:'sea'};
+const muBand=()=>MU.world==='land'&&LAND.length?[...LAND,...(GIRL?[GIRL]:[]),CHARS[4]].slice(0,8):CHARS.slice(0,8);
 function muNote(i,t=0){const f=mtof(MU_NOTES[i]);tone({f,t,d:.55,v:.24});tone({f:f*2,t,d:.25,v:.06});tone({f:f*4,t,d:.06,v:.05});}
-function muStart(){show('music');document.body.classList.remove('land');muBuild();muSongs();}
+function muStart(){show('music');document.body.classList.toggle('land',MU.world==='land');muBuild();muSongs();muWorldBtn();}
+function muWorldBtn(){const other=MU.world==='land'?CHARS[0]:(LAND[0]||CHARS[1]);$('muWorld').innerHTML=`<img src="${charSrc(other)}" alt="" style="width:80%;height:80%;object-fit:contain">`;}
 function muBuild(){const A=$('muArea');A.innerHTML='';MU.keys=[];const W=A.clientWidth,H=A.clientHeight,cw=W*.94/8,x0=W*.03;
-  CHARS.slice(0,8).forEach((ch,i)=>{const k=document.createElement('div');k.className='key';const bh=H*(.36-i*.022),fz=Math.min(cw*.98,H*.27);
+  muBand().forEach((ch,i)=>{const k=document.createElement('div');k.className='key';const bh=H*(.36-i*.022),fz=Math.min(cw*.98,H*.27);
     Object.assign(k.style,{left:(x0+i*cw)+'px',width:cw+'px',bottom:(H*.05)+'px',height:(bh+fz)+'px'});
     k.innerHTML=`<div class="bar" style="--c:${MU_COL[i]};height:${bh}px"></div><img src="${charSrc(ch)}" alt="" style="bottom:${bh-fz*.12}px;width:${fz}px;height:${fz}px">`;
     k.addEventListener('pointerdown',e=>{e.preventDefault();muTap(i);});A.appendChild(k);MU.keys.push(k);});
   muMark();}
 function muSongs(){const g=$('muSongs');g.innerHTML='';
-  const icon={star:`<svg viewBox="0 0 64 64">${star(32,34,26,'#ffd65a')}</svg>`,bfly:`<img src="chars/st_butterfly.webp" alt="">`,plane:`<img src="chars/st_cloud.webp" alt="">`};
+  const icon={star:`<svg viewBox="0 0 64 64">${star(32,34,26,'#ffd65a')}</svg>`,bfly:`<img src="chars/st_butterfly.webp" alt="">`,plane:`<img src="chars/st_cloud.webp" alt="">`,
+    bridge:`<img src="chars/st_rainbow.webp" alt="">`,boat:`<img src="chars/fish2.webp" alt="">`};
   MU_SONGS.forEach(sg=>{const b=document.createElement('button');b.className=MU.song===sg?'sel':'';b.innerHTML=icon[sg.id]+`<span>${sg.name}</span>`;
     b.onclick=()=>{if(MU.song===sg){MU.song=null;say('마음대로 연주해요');}else{MU.song=sg;MU.pos=0;say(`${sg.name} 같이 연주해요! 반짝이는 친구를 눌러요`);}muSongs();muMark();};g.appendChild(b);});}
 function muMark(){MU.keys.forEach((k,i)=>k.classList.toggle('next',!!MU.song&&MU.song.seq[MU.pos]===i));}
@@ -1884,6 +1948,8 @@ setInterval(()=>{if(S.screen!=='music'||!MU.song||Date.now()-MU.idleT<6000)retur
   const r=k.querySelector('img').getBoundingClientRect();ghostHand(r.left+r.width/2,r.top-r.height*.6,r.left+r.width/2,r.top+r.height*.4,null);},1000);
 $('goMusic').onclick=()=>{sfx.tap();say('친구 악단이에요! 친구를 눌러봐요');muStart();};
 $('muBack').onclick=()=>{sfx.tap();MU.song=null;show('home');};
+$('muWorld').onclick=()=>{MU.world=MU.world==='land'?'sea':'land';sfx.bubble();document.body.classList.toggle('land',MU.world==='land');
+  say(MU.world==='land'?'숲속 친구 악단이에요!':'바다 친구 악단이에요!');muBuild();muWorldBtn();};
 addEventListener('resize',()=>{if(S.screen==='music')muBuild();});
 
 /* ================= 디자인: 아이콘 채우기, 바다 배경, 첫 화면 그림, 칭찬 리본 ================= */
@@ -1967,6 +2033,11 @@ document.querySelectorAll('#title span').forEach((s,i)=>s.style.setProperty('--t
   el.innerHTML=`<svg viewBox="0 0 120 100"><g><rect x="10" y="70" width="30" height="22" rx="6" fill="#ff6b6b"/><rect x="45" y="74" width="30" height="18" rx="6" fill="#ffd93d"/><rect x="80" y="78" width="30" height="14" rx="6" fill="#4fc3f7"/></g>
    <image href="${charSrc(CHARS[3])}" x="6" y="36" width="38" height="38"/><image href="${charSrc(CHARS[1])}" x="41" y="40" width="38" height="38"/><image href="${charSrc(CHARS[0])}" x="76" y="44" width="38" height="38"/>
    <g fill="#8a6cf0"><path d="M30 8 v18" stroke="#8a6cf0" stroke-width="3"/><ellipse cx="26" cy="27" rx="5" ry="4"/><path d="M84 4 v16 M98 1 v16" stroke="#8a6cf0" stroke-width="3"/><path d="M84 4 L98 1" stroke="#8a6cf0" stroke-width="4"/><ellipse cx="80" cy="21" rx="5" ry="4"/><ellipse cx="94" cy="18" rx="5" ry="4"/></g></svg>`;}}
+
+{const el=document.querySelector('.card .art[data-art="shadow"]');if(el){el.style.setProperty('--bgc','#eef2f7');
+  el.innerHTML=`<svg viewBox="0 0 120 100"><defs><filter id="blkS"><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .3 0"/></filter></defs>
+   <image href="${charSrc(CHARS[2])}" x="62" y="14" width="54" height="54" filter="url(#blkS)"/><image href="${charSrc(CHARS[2])}" x="4" y="36" width="54" height="54"/>
+   <path d="M52 40 Q62 28 72 34" stroke="#ff8fb8" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M68 28 L74 35 L65 38" stroke="#ff8fb8" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}}
 
 // 칭찬 리본
 let cheerT=0;function cheer(t){const e=$('cheer');$('cheerTxt').textContent=t;e.classList.remove('on');void e.offsetWidth;e.classList.add('on');
