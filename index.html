@@ -566,6 +566,7 @@ body.land #scene,body.land #bubbles{display:none}
   <div class="prow col"><b>목소리 <small>(눌러서 들어보고 고르기)</small></b><div class="vlist" id="voiceList"></div></div>
   <div class="prow"><b>말 빠르기</b><div class="seg" id="rateSeg"></div></div>
   <div class="prow"><b>배경음악 크기</b><div class="seg" id="volSeg"></div></div>
+  <div class="prow"><b>그릴 때 소리</b><div class="seg" id="dsndSeg"></div></div>
   <div class="prow"><b>퍼즐 여행</b><button class="pb" id="pzReset">처음부터 다시</button></div>
   <button class="pb main" id="parentClose">닫기</button>
 </div></div>
@@ -1203,7 +1204,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v30';
+const APP_VERSION='v31';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1256,22 +1257,26 @@ function inkFor(e,d){const er=D.tool==='eraser'||(e.buttons&32);pctx.globalCompo
   const base=SIZES[D.size]*(er?1.8:1);pctx.lineWidth=e.pointerType==='pen'?base*(.35+Math.min(1,e.pressure||.5)*1.3):base;
   if(D.tool==='rainbow'&&!er){D.hue=(D.hue+d*.35)%360;pctx.strokeStyle=pctx.fillStyle=`hsl(${D.hue},92%,60%)`;}else pctx.strokeStyle=pctx.fillStyle=D.color;
   pctx.lineCap='round';pctx.lineJoin='round';return er;}
-// 그릴 때 소리: 실로폰 대신 크레용이 종이에 스치는 '사각사각' (빨리 그리면 조금 커지고, 멈추면 바로 조용)
-// 무지개 붓은 가끔 아주 작게 반짝 소리만
-function note(y,er){const now=performance.now();if(now-D.lastNote<240)return;D.lastNote=now;
-  if(D.tool==='rainbow'&&!er)bell(mtof(PENT[(Math.random()*PENT.length)|0]+12),0,.018,.28);}
-const SCR={src:null,g:null,f:null,stopT:0,kill:0};
-function scribble(speed,er){if(!isFinite(speed))return;const c=audio();if(!c)return;clearTimeout(SCR.kill);
-  if(!SCR.src){if(!NB){NB=c.createBuffer(1,c.sampleRate,c.sampleRate);const a=NB.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;}
-    const src=c.createBufferSource(),f=c.createBiquadFilter(),f2=c.createBiquadFilter(),g=c.createGain();src.buffer=NB;src.loop=true;
-    f.type='bandpass';f.Q.value=.9;f2.type='lowpass';f2.frequency.value=4200;g.gain.value=0;
-    src.connect(f);f.connect(f2);f2.connect(g);g.connect(AU.master);src.start();Object.assign(SCR,{src,g,f});}
-  const t=c.currentTime,v=er?Math.min(.035,.006+speed*.0007):Math.min(.045,.007+speed*.0009);
-  SCR.g.gain.cancelScheduledValues(t);SCR.g.gain.setTargetAtTime(v*(.8+Math.random()*.4),t,.025);   // 살짝 흔들려야 크레용 같아요
-  SCR.f.frequency.setTargetAtTime(er?800:1500+Math.min(1400,speed*22),t,.05);
-  clearTimeout(SCR.stopT);SCR.stopT=setTimeout(scribbleOff,90);}
-function scribbleOff(){if(!SCR.g)return;const t=AU.ctx.currentTime;SCR.g.gain.cancelScheduledValues(t);SCR.g.gain.setTargetAtTime(0,t,.04);
-  clearTimeout(SCR.kill);SCR.kill=setTimeout(()=>{if(SCR.src){try{SCR.src.stop();}catch(e){}SCR.src.disconnect();SCR.src=null;}},700);}
+// 그릴 때 소리 (부모님 설정에서 고르기): 보글보글(기본) / 사각사각 / 띵띵 / 끄기
+const DRAWSND=[['bubble','보글보글'],['scratch','사각사각'],['bell','띵띵'],['off','끄기']];
+const drawSnd=()=>store.get('yj_drawsnd','bubble');
+const SCR={lastG:0,lastB:0,dist:0};
+function drawSound(d,er,y,mode){mode=mode||drawSnd();if(mode==='off'||!isFinite(d))return;const c=audio();if(!c)return;const now=performance.now();
+  if(mode==='scratch'){   // 아주 짧은 '슥' 소리를 빠르기에 맞춰 촘촘하게 → 연필로 긁는 느낌
+    const gap=Math.max(26,75-d*2.2);if(now-SCR.lastG<gap)return;SCR.lastG=now;
+    if(!NB){NB=c.createBuffer(1,c.sampleRate,c.sampleRate);const a=NB.getChannelData(0);for(let k=0;k<a.length;k++)a[k]=Math.random()*2-1;}
+    const t=c.currentTime,src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain(),len=.018+Math.random()*.02;
+    src.buffer=NB;f.type='bandpass';f.frequency.value=(er?1100:2300)+Math.random()*1600;f.Q.value=3;
+    const v=(er?.045:.06)*(.45+Math.random()*.55)*Math.min(1,.35+d/28);
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+len);
+    src.connect(f);f.connect(g);g.connect(AU.master);src.start(t,Math.random()*.9,len+.02);return;}
+  SCR.dist+=d;const step=mode==='bubble'?130:150;if(SCR.dist<step||now-SCR.lastB<110)return;SCR.dist=0;SCR.lastB=now;
+  if(er){tone({f:300,f2:200,d:.08,v:.03,type:'triangle'});return;}
+  if(mode==='bubble'){const f0=380+Math.random()*320;tone({f:f0,f2:f0*1.9,d:.09,v:.05});return;}   // 동글동글 방울 소리
+  const i=Math.max(0,Math.min(PENT.length-1,Math.floor((1-y/PH)*PENT.length)));bell(mtof(PENT[i]),0,.03,.3);}
+function note(y,er){}
+function scribble(d,er){}
+function scribbleOff(){SCR.dist=0;}
 
 function hsl2hex(h,sa,l){sa/=100;l/=100;const k=n=>(n+h/30)%12,a=sa*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,9-k(n),1));
   return '#'+[f(0),f(8),f(4)].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('');}
@@ -1294,7 +1299,7 @@ paper.addEventListener('pointermove',e=>{const s=D.strokes.get(e.pointerId);if(!
     const mid={x:(s.last.x+p.x)/2,y:(s.last.y+p.y)/2},er=inkFor(ce,d);
     pctx.beginPath();pctx.moveTo(s.mid.x,s.mid.y);pctx.quadraticCurveTo(s.last.x,s.last.y,mid.x,mid.y);pctx.stroke();
     if(D.tool==='rainbow'&&!er&&Math.random()<.6)sprinkle(p,Math.ceil(d/16));
-    scribble(d,er);s.last=p;s.mid=mid;s.ink+=d;if(s.ink>100){s.ink=0;note(p.y,er);}}});
+    drawSound(d,er,p.y);s.last=p;s.mid=mid;s.ink+=d;if(s.ink>100){s.ink=0;note(p.y,er);}}});
 const endStroke=e=>{const s=D.strokes.get(e.pointerId);if(!s)return;D.strokes.delete(e.pointerId);
   if(s.pending){if(Date.now()-s.t0<900)floodFill(s.start,e,D.tool==='rainbow'?hsl2hex((D.hue=(D.hue+47)%360),90,62):D.color);}
   else{pctx.beginPath();pctx.moveTo(s.mid.x,s.mid.y);pctx.lineTo(s.last.x,s.last.y);pctx.stroke();}
@@ -1997,6 +2002,8 @@ function openParent(){const P=$('parent');P.classList.add('on');
     b.textContent=t;b.className=cur===v?'sel':'';b.onclick=()=>{store.set('yj_rate',v);openParent();say('이 빠르기로 말할게요');};rs.appendChild(b);});
   const vs2=$('volSeg');vs2.innerHTML='';const cv=store.get('yj_bgmvol','.12');[['.05','아주 작게'],['.12','작게'],['.22','보통'],['.35','크게']].forEach(([v,t])=>{const b=document.createElement('button');
     b.textContent=t;b.className=cv===v?'sel':'';b.onclick=()=>{store.set('yj_bgmvol',v);if(BGA)BGA.volume=+v;openParent();};vs2.appendChild(b);});
+  const ds=$('dsndSeg');ds.innerHTML='';DRAWSND.forEach(([v,t])=>{const b=document.createElement('button');b.textContent=t;b.className=drawSnd()===v?'sel':'';
+    b.onclick=()=>{store.set('yj_drawsnd',v);openParent();for(let k=0;k<14;k++)setTimeout(()=>{SCR.dist=999;SCR.lastB=0;drawSound(14,false,PH*(.2+k*.05),v);},k*(v==='scratch'?35:160));};ds.appendChild(b);});
   const vl=$('voiceList');vl.innerHTML='';let vs=[];try{vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));}catch(e){}
   if(!vs.length)vl.innerHTML='<div class="none">탭에 한국어 목소리가 없어요. 설정 → 일반 → 텍스트 음성 변환에서 받을 수 있어요.</div>';
   vs.forEach(v=>{const b=document.createElement('button');b.textContent='▶ '+v.name.replace(/\s*\(.*?\)\s*/g,' ').trim();b.className=KO_VOICE&&KO_VOICE.name===v.name?'sel':'';
