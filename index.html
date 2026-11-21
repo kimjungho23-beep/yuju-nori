@@ -890,7 +890,12 @@ const S={frame:store.get('yj_frame','char')==='square'?'square':'char',shape:['s
 try{S.photos=JSON.parse(store.get('yj_photos','[]'))||[];}catch(e){S.photos=[];}
 const items=()=>[...CHARS.map(c=>({...c,thumb:svgURL(c.svg(true))})),...S.photos.map(p=>({id:p.id,photo:true,src:p.src,thumb:p.src}))];
 
+function sweepFloats(all){document.querySelectorAll('body > .stkFloat, body > .dragItem, body > .gcarry, body > .ghand, body > .runner, body > .bbChar'+(all?', body > .dancer':'')).forEach(e=>e.remove());
+  if(typeof FG!=='undefined'&&FG){FG.tile&&FG.tile.classList.remove('lift');FG=null;}}
+let lastPtr=Date.now();['pointerdown','pointermove'].forEach(t=>document.addEventListener(t,()=>{lastPtr=Date.now();},true));
+setInterval(()=>{if(Date.now()-lastPtr>3000)document.querySelectorAll('body > .stkFloat, body > .dragItem').forEach(e=>e.remove());},1500);   // 3초 동안 아무도 안 만지면 떠 있는 것 정리
 function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingReload){location.reload();return;}
+  sweepFloats(true);
   if(id!=='game'&&id!=='bubble')document.body.classList.remove('land');
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;}
 function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.innerHTML=ic('music');b.classList.toggle('off',!S.music);
@@ -1196,7 +1201,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v27';
+const APP_VERSION='v28';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1934,7 +1939,7 @@ function bindStk(el,s,fromTray){let d=null;
       if(fromTray&&Math.abs(dx)>Math.abs(dy))return;     // 쟁반에서 옆으로 밀면 스크롤
       d.on=true;try{el.setPointerCapture(e.pointerId);}catch(_){}
       const z=seaSize(s.k);d.z=z;d.fl=fromTray?document.createElement('div'):el;
-      if(fromTray){d.fl.className='stk held'+(s.shiny?' shiny':'');d.fl.innerHTML=stkInner(s.k);d.fl.style.cssText=`position:fixed;width:${z}px;height:${z}px;z-index:170`;document.body.appendChild(d.fl);el.style.opacity=.3;}
+      if(fromTray){d.fl.className='stk held stkFloat'+(s.shiny?' shiny':'');d.fl.innerHTML=stkInner(s.k);d.fl.style.cssText=`position:fixed;width:${z}px;height:${z}px;z-index:170;pointer-events:none`;document.body.appendChild(d.fl);el.style.opacity=.3;}
       else d.fl.classList.add('held');sfx.pick();}
     const A=$('seaArea').getBoundingClientRect();
     if(fromTray){d.fl.style.left=(e.clientX-d.z/2)+'px';d.fl.style.top=(e.clientY-d.z/2)+'px';}
@@ -1947,7 +1952,9 @@ function bindStk(el,s,fromTray){let d=null;
       tone({f:700,f2:1500,d:.08,v:.2});bell(mtof(84),.05,.12,.5);burst(e.clientX,e.clientY,12,60);}
     else{s.placed=false;sfx.drop();}
     saveST();if(was.fl&&fromTray)was.fl.remove();seaRender();};
-  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',e=>{if(d&&!d.on)d=null;else up(e);});}
+  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',e=>{if(d&&!d.on)d=null;else up(e);});
+  el.addEventListener('lostpointercapture',e=>{if(!d||d.id!==e.pointerId)return;const was=d;d=null;   // 손을 놓쳤으면 그냥 제자리로
+    if(was.on){if(was.fl&&fromTray)was.fl.remove();el.style.opacity='';if(!fromTray)el.classList.remove('held');saveST();if(S.screen==='sea')seaRender();}});}
 addEventListener('resize',()=>{if(S.screen==='sea')seaRender();});
 
 /* ================= 부모님 설정 + 하루 놀이 시간 ================= */
