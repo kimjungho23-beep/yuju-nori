@@ -538,10 +538,14 @@ body.land #scene,body.land #bubbles{display:none}
 @keyframes engGlow{50%{filter:brightness(1.9) drop-shadow(0 0 3vmin #ffe27a)}}
 .train .te .beam{position:absolute;left:92%;top:30%;width:140%;height:62%;pointer-events:none;animation:popin .3s;
   background:linear-gradient(90deg,rgba(255,238,150,.95),rgba(255,238,150,0));clip-path:polygon(0 40%,100% 0,100% 100%,0 60%)}
-#trStars{gap:1.8vmin;align-items:center}
-#trStars img{height:clamp(26px,5vmin,46px);width:auto;opacity:.35;filter:grayscale(.9);transition:transform .3s}
-#trStars img.on{opacity:1;filter:drop-shadow(0 .4vmin .3vmin rgba(0,60,120,.25))}
-#trStars img.now{transform:scale(1.3)}
+/* 이야기 단계 진행 그림 (위쪽 별 자리): 지난 단계는 밝게, 지금 단계는 크게 */
+.stars.steps{gap:1.8vmin;align-items:center}
+.stars.steps img{height:clamp(26px,5vmin,46px);width:auto;max-width:clamp(40px,9vmin,90px);object-fit:contain;opacity:.35;filter:grayscale(.9);transition:transform .3s}
+.stars.steps img.on{opacity:1;filter:drop-shadow(0 .4vmin .3vmin rgba(0,60,120,.25))}
+.stars.steps img.now{transform:scale(1.3)}
+.paradeW{position:absolute;z-index:5;touch-action:none}
+.paradeW img{width:100%;height:100%;object-fit:contain;display:block;animation:bob .5s ease-in-out infinite;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.25))}
+.paradeW.jump img{animation:keyJump .5s ease-out}
 @keyframes toot{40%{transform:scale(1.06,.95)}}
 .wt{animation:popin .45s backwards}
 .wt .bobw{width:100%;height:100%;animation:bob 1.6s ease-in-out infinite}
@@ -565,6 +569,22 @@ body.land #scene,body.land #bubbles{display:none}
 .fbask.pop{animation:squash .45s}
 .feater{position:absolute;z-index:5;object-fit:contain;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.25))}
 .feater.munch{animation:munch .3s ease-in-out 6}
+.fbasin{position:absolute;z-index:3;touch-action:none}
+.fbasin>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 1.2vmin 1vmin rgba(0,60,20,.18))}
+.fbasin>img.fr{z-index:20;clip-path:inset(44% 0 0 0);filter:none}   /* 대야 앞쪽 테두리만 과일 앞에 */
+.fbasin .wf{position:absolute;object-fit:contain;z-index:2;animation:fishBob 1.6s ease-in-out infinite}
+.fbasin .wf.clean{filter:brightness(1.12) drop-shadow(0 0 1vmin #fff)}
+.fbasin.pop{animation:squash .45s}
+.fbasin.glow>img.bk,.fbask.glow>img.bk{filter:drop-shadow(0 0 1.2vmin #fff) drop-shadow(0 0 2.6vmin #fff8b0)}
+.fbasin.glow,.fbask.glow{animation:hint 1.2s ease-in-out infinite}
+.ffly{position:absolute;z-index:21;object-fit:contain}
+.fpal{position:absolute;z-index:5;touch-action:none}
+.fpal img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.25))}
+.fpal.munch img{animation:munch .3s ease-in-out 4}
+.fpal.jump img{animation:keyJump .5s ease-out}
+.fpal.glow img{filter:drop-shadow(0 0 1.2vmin #fff) drop-shadow(0 0 2.6vmin #fff8b0)}
+.fpal.glow{animation:hint 1.2s ease-in-out infinite}
+.fshine{position:absolute;z-index:22;pointer-events:none;color:#fff;text-shadow:0 0 1.5vmin #fff8b0,0 0 .6vmin #ffe27a;animation:twk .45s ease-in-out infinite alternate}
 @keyframes munch{50%{transform:scale(1.06,.93)}}
 
 /* ===== 생일 케이크 ===== */
@@ -619,6 +639,15 @@ body.land #scene,body.land #bubbles{display:none}
 .baduck{position:absolute;z-index:5;object-fit:contain;touch-action:none;animation:bob 2s ease-in-out infinite;filter:drop-shadow(0 .6vmin .5vmin rgba(0,50,100,.2))}
 .baduck.hop{animation:keyJump .5s ease-out}
 #bath .stars{color:rgba(60,120,170,.3);text-shadow:none}
+.banight{position:absolute;inset:0;z-index:1;background:linear-gradient(#1c2757,#33447f 62%,#4c4f8e);animation:fadein .9s}
+.banight b{position:absolute;color:#fff3b0;font-weight:400;animation:twk 1.3s ease-in-out infinite alternate}
+.banight .moon{position:absolute;right:13%;top:13%;width:12vmin;height:12vmin;border-radius:50%;box-shadow:-2.6vmin 1.4vmin 0 0 #ffe7a0;filter:drop-shadow(0 0 2vmin rgba(255,231,160,.55))}
+.babed{position:absolute;z-index:8;touch-action:none;animation:fadein .7s}
+.babed img{position:absolute;object-fit:contain;display:block}
+.babed img.bd{inset:0;width:100%;height:100%;filter:drop-shadow(0 1.4vmin 1.2vmin rgba(0,0,30,.35))}
+.babed img.bd.fr{clip-path:inset(43% 0 0 0);filter:none}   /* 이불만 친구 앞에 */
+.babed img.who{transform-origin:50% 100%;animation:breathe 3.2s ease-in-out infinite;filter:brightness(.92)}
+.bazz{position:absolute;z-index:9;color:#fff;font-weight:700;opacity:0;pointer-events:none;animation:zz 3s ease-in infinite}
 </style>
 </head>
 <body>
@@ -1415,7 +1444,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v37';
+const APP_VERSION='v38';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -2023,20 +2052,23 @@ $('goFeed').onclick=()=>{sfx.tap();say(FD.world==='land'?'토끼한테 밥 줘�
 $('fdBack').onclick=()=>{sfx.tap();show('home');};
 
 /* ================= 그림자 맞추기: 친구를 자기 그림자에 쏙 ================= */
-const SH={round:0,items:[],done:0,n:0,last:0,gen:0};
-function shStart(){show('shadow');SH.round=0;shRound();}
+const SH={story:0,step:0,items:[],done:0,n:0,last:0,gen:0,met:[]};
+// 진행 그림: 바다 친구 · 숲속 친구 · 섞여서 · 퍼레이드
+const shIcons=()=>[charSrc(CHARS[0]),charSrc(LAND[0]||CHARS[1]),'p_star','st_rainbow'];
+function shStart(){show('shadow');SH.story=0;SH.step=0;SH.met=[];shRound();}
 function shRound(){if(S.screen!=='shadow')return;SH.gen++;const A=$('shArea');A.innerHTML='';const W=A.clientWidth,H=A.clientHeight,land=W>=H;
-  const n=SH.round<2?2:SH.round<5?3:4,inLand=LAND.length&&SH.round%2===1;document.body.classList.toggle('land',!!inLand);   // 2쌍 → 3쌍 → 4쌍
-  const pool=shuffle((inLand?LAND:CHARS).slice()).slice(0,n),z=Math.min(W/n*(land?.62:.8),H*.3);
-  SH.items=[];SH.done=0;SH.n=n;SH.last=Date.now();
+  // 한 이야기 = 바다 친구 → 숲속 친구 → 섞여서 (2쌍 → 3쌍 → 4쌍, 처음 이야기는 2·2·3쌍)
+  const n=(SH.story===0?[2,2,3]:[2,3,4])[SH.step],mix=SH.step===2&&LAND.length,inLand=LAND.length&&SH.step>0;document.body.classList.toggle('land',!!inLand);
+  const pool=shuffle((mix?[...CHARS,...LAND]:inLand?LAND:CHARS).slice()).slice(0,n),z=Math.min(W/n*(land?.62:.8),H*.3);
+  SH.items=[];SH.done=0;SH.n=n;SH.last=Date.now();pool.forEach(c=>{if(!SH.met.includes(c))SH.met.push(c);});
   // 친구 줄은 그림자 줄과 순서가 꼭 다르게 (바로 밑에 자기 그림자가 있으면 맞출 게 없어요)
   const so=shuffle(pool.slice());let fo;do fo=shuffle(pool.slice());while(n>1&&fo.every((c,i)=>c===so[i]));
   so.forEach((ch,i)=>{const s=document.createElement('img');s.className='shd';s.src=charSrc(ch);s.alt='';
     const x=W*(i+.5)/n-z/2,y=H*.36-z/2;Object.assign(s.style,{left:x+'px',top:y+'px',width:z+'px',height:z+'px'});A.appendChild(s);SH.items.push({ch,shd:s,sx:x,sy:y,z});});
   fo.forEach((ch,i)=>{const it=SH.items.find(t=>t.ch===ch),f=document.createElement('img');f.className='shf';f.src=charSrc(ch);f.alt='';
     it.f=f;it.hx=it.x=W*(i+.5)/n-z/2;it.hy=it.y=H*.76-z/2;Object.assign(f.style,{left:it.x+'px',top:it.y+'px',width:z+'px',height:z+'px'});A.appendChild(f);shDrag(it);});
-  renderStars('shStars',0,n);
-  setTimeout(()=>{if(S.screen==='shadow')say(SH.round===0?'친구를 자기 그림자에 쏙 넣어줘요!':'누구 그림자일까요?');},500);}
+  stepBar('shStars',shIcons(),SH.step);
+  setTimeout(()=>{if(S.screen!=='shadow')return;say(SH.step===0?(SH.story===0?'친구를 자기 그림자에 쏙 넣어줘요! 톡 눌러도 돼요':'바다 친구들 그림자예요!'):SH.step===1?'이번엔 숲속 친구들 그림자예요!':'바다 친구랑 숲속 친구가 섞였어요! 누구 그림자일까요?');},500);}
 // 끌어서 맞추거나, 톡 누르면 자기 그림자로 폴짝 날아가요 (아기는 끌기보다 톡을 먼저 해요)
 function shDrag(it){const el=it.f;let ox=0,oy=0;
   const rel=()=>{it.drag=false;el.classList.remove('hold');el.style.zIndex='';SH.last=Date.now();};
@@ -2056,12 +2088,22 @@ let shNo=0;
 function shWrong(it,t){sfx.nope();t.shd.animate([{transform:'none'},{transform:'rotate(-6deg)'},{transform:'rotate(6deg)'},{transform:'none'}],{duration:450});
   if(Date.now()-shNo>2500){shNo=Date.now();say(`여기는 ${eul(t.ch.name).slice(0,-1)} 그림자예요`);}shHome(it);}
 function shMatch(it){it.ok=true;it.f.classList.add('back');it.x=it.sx;it.y=it.sy;it.f.style.left=it.x+'px';it.f.style.top=it.y+'px';
-  tone({f:700,f2:1500,d:.08,v:.2});sparkle();say(`${it.ch.name}!`);SH.done++;renderStars('shStars',SH.done,SH.n);
+  tone({f:700,f2:1500,d:.08,v:.2});sparkle();say(`${it.ch.name}!`);SH.done++;
   setTimeout(()=>{it.f.remove();it.shd.classList.add('lit');const r=it.shd.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,16,r.width*.6);},380);
   if(SH.done<SH.n)return;
   setTimeout(()=>{cheer('그림자를 다 찾았어요!');say('와! 다 찾았어요!');sfx.fanfare();
     SH.items.forEach((t,j)=>setTimeout(()=>{t.shd.classList.remove('cheer');void t.shd.offsetWidth;t.shd.classList.add('cheer');},j*150));},700);
-  const g=SH.gen;setTimeout(()=>{if(S.screen!=='shadow'||SH.gen!==g)return;SH.round++;shRound();},3600);}
+  const g=SH.gen;setTimeout(()=>{if(S.screen!=='shadow'||SH.gen!==g)return;SH.step++;SH.step<3?shRound():shParade();},3600);}
+// 세 단계를 다 하면 만난 친구들이 줄지어 행진해요 (톡 누르면 폴짝)
+function shParade(){const g=++SH.gen,A=$('shArea'),W=A.clientWidth,H=A.clientHeight;A.innerHTML='';SH.items=[];stepBar('shStars',shIcons(),3);
+  document.body.classList.add('land');say('그림자를 모두 찾았어요! 친구들 퍼레이드!');cheer('친구들 퍼레이드!');sfx.fanfare();
+  const list=shuffle(SH.met.slice()).slice(0,8),z=Math.min(H*.28,W*.17),gap=650,dur=6500;
+  list.forEach((ch,i)=>{const w=document.createElement('div');w.className='paradeW';w.innerHTML=`<img src="${charSrc(ch)}" alt="" style="animation-delay:-${(i*.13).toFixed(2)}s">`;
+    Object.assign(w.style,{left:(-z*1.1)+'px',top:(H*.6-z/2+(i%2?z*.18:-z*.05))+'px',width:z+'px',height:z+'px'});A.appendChild(w);
+    w.addEventListener('pointerdown',e=>{e.preventDefault();w.classList.remove('jump');void w.offsetWidth;w.classList.add('jump');sfx.giggle();say(ch.name);});
+    w.animate([{transform:'translateX(0)'},{transform:`translateX(${W+z*2.3}px)`}],{duration:dur,delay:i*gap,easing:'linear',fill:'both'});
+    setTimeout(()=>{if(SH.gen===g)bell(mtof(PENT[i%PENT.length]),0,.16,.5);},i*gap+300);});
+  setTimeout(()=>{if(S.screen!=='shadow'||SH.gen!==g)return;SH.story++;SH.step=0;SH.met=[];shRound();},dur+list.length*gap+300);}
 // 가만히 있으면 손가락이 친구를 그림자로 끌어 보여주기
 setInterval(()=>{if(S.screen!=='shadow'||Date.now()-SH.last<6000||SH.items.some(t=>t.drag))return;SH.last=Date.now();const it=SH.items.find(t=>!t.ok&&t.f);if(!it)return;
   ghostHand(it.x+it.z/2,it.y+it.z/2,it.sx+it.z/2,it.sy+it.z/2,{src:charSrc(it.ch),w:it.z,h:it.z});},1000);
@@ -2484,7 +2526,7 @@ syncBadge();
 
 /* ================= v34 새 놀이 공통 ================= */
 // 코덱스로 만든 그림의 가로:세로 비율
-const IMG_AR={tr_signal:.433,tr_tunnel:1.911,tr_station:1.682,tr_car:1.928,tr_engine:1.261,tree:.819,basket:1.485,cake:1.06,candle:.228,tub:1.366,sponge:1.149,shower:.985,duck:1.047,gift:.869};
+const IMG_AR={fr_basin:1.627,ba_towel:1.411,ba_bed:1.1,tr_signal:.433,tr_tunnel:1.911,tr_station:1.682,tr_car:1.928,tr_engine:1.261,tree:.819,basket:1.485,cake:1.06,candle:.228,tub:1.366,sponge:1.149,shower:.985,duck:1.047,gift:.869};
 const ga=w=>w+(hasBatchim(w)?'이':'가');
 const ieyo=w=>w+(hasBatchim(w)?'이에요':'예요');
 const KNUM=['','한','두','세','네','다섯'];
@@ -2513,6 +2555,9 @@ function puffAt(A,x,y,s){const p=document.createElement('i');p.className='puff';
 const BUS={};
 function busOut(k){if(BUS[k])return BUS[k];try{const c=audio();if(!c)return null;const o=c.createGain();o.connect(AU.master);return BUS[k]=o;}catch(e){return null;}}
 function busHush(k){const o=BUS[k];BUS[k]=null;if(!o)return;try{o.gain.setValueAtTime(0,AU.ctx.currentTime);setTimeout(()=>o.disconnect(),100);}catch(e){}}
+// 이야기 단계 진행 그림: icons는 chars/ 그림 이름 또는 그림 주소. k번째가 지금 단계(k>=길이면 모두 끝)
+function stepBar(id,icons,k){const el=$(id);el.classList.add('steps');
+  el.innerHTML=icons.map((s,i)=>`<img class="${i<=k?'on':''}${i===k?' now':''}" src="${/[:\/]/.test(s)?s:'chars/'+s+'.webp'}" alt="">`).join('');}
 // 화면을 돌리면(가로↔세로) 지금 판을 새 크기로 다시 놓기
 let ngRT=0,ngWH=[innerWidth,innerHeight];
 const ngMark=()=>{ngWH=[innerWidth,innerHeight];};
@@ -2529,8 +2574,7 @@ function trGeo(){const A=$('trArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H,
   const ry=H*(land?.9:.84),tw=n*cw*1.03+ew,x0=(W-tw)/2;
   return{W,H,land,n,cw,ch,ew,eh,ry,tw,x0,top:ry-eh,rz:cw*.68};}
 // 위쪽 이야기 진행: 태우기 · 신호등 · 터널 · 기차역
-function trProg(){const k=TR.stage==='done'?3:TR_STEP.indexOf(TR.stage);
-  $('trStars').innerHTML=TR_ICON.map((s,i)=>`<img class="${i<=k?'on':''}${i===k&&TR.stage!=='done'?' now':''}" src="chars/${s}.webp" alt="">`).join('');}
+function trProg(){stepBar('trStars',TR_ICON,TR.stage==='done'?9:TR_STEP.indexOf(TR.stage));}
 function trRound(){if(S.screen!=='train')return;busHush('tr');const g=++TR.gen,A=$('trArea');A.innerHTML='';
   TR.n=TR.round<2?2:TR.round<5?3:4;const G=trGeo();Object.assign(TR,{G,busy:true,last:Date.now(),cars:[],wait:[],drag:0,stage:'board',act:false,off:0,sig:null,door:null});
   document.body.classList.add('land');
@@ -2647,21 +2691,30 @@ setInterval(()=>{if(S.screen!=='train'||TR.drag>0||Date.now()-Math.max(lastTouch
 $('goTrain').onclick=()=>{sfx.tap();say('기차 놀이해요! 칙칙폭폭');trStart();};
 $('trBack').onclick=()=>{sfx.tap();TR.gen++;busHush('tr');show('home');};
 
-/* ================= 과일 따기: 나무의 과일을 톡! 바구니에 쏙, 친구가 냠냠 ================= */
+/* ================= 과일 따기: 나무의 과일을 톡! 바구니에 쏙 → 대야에 씻고 → 친구들에게 나눠 주고 → 다 같이 냠냠 ================= */
 const FRUITS=[{img:'fr_apple',name:'사과',col:'빨간'},{img:'fr_banana',name:'바나나',col:'노란'},{img:'fr_orange',name:'오렌지',col:'주황색'},
   {img:'fr_peach',name:'복숭아',col:'분홍색'},{img:'fr_grape',name:'포도',col:'보라색'},{img:'fr_blueberry',name:'블루베리',col:'파란'}];
 const FSPOT=[[.30,.17],[.52,.12],[.72,.19],[.17,.33],[.40,.29],[.62,.31],[.83,.35],[.27,.48],[.50,.46],[.73,.48]];   // 나무 잎 속 과일 자리
 const PILE=[[.3,.3],[.5,.31],[.7,.3],[.4,.21],[.6,.21],[.5,.13],[.22,.22],[.78,.22]];   // 바구니 속 자리
-const FT={round:0,k0:0,gen:0,mode:'free',kind:null,target:null,need:5,got:0,inB:0,busy:true,last:0,fr:[],G:null,noT:0,askText:''};
+const FWASH=[[.28,.31],[.5,.26],[.72,.31],[.39,.37],[.61,.37]];   // 대야 물 위 과일 자리
+const FT={round:0,k0:0,gen:0,mode:'free',kind:null,target:null,need:5,got:0,inB:0,busy:true,last:0,fr:[],G:null,noT:0,askText:'',
+  stage:'pick',act:false,pals:[],pe:[],wf:[],nIn:0,inW:0,scrub:0,given:0};
+// 진행 그림: 과일 따기 · 대야에 씻기 · 친구에게 나눠 주기 · 다 같이 냠냠
+const ftProg=()=>stepBar('frStars',[FT.target.img,'fr_basin',FT.pals[0]?charSrc(FT.pals[0]):'st_heart','st_rainbow'],{pick:0,wash:1,scrub:1,clean:1,share:2,party:3}[FT.stage]||0);
 function ftStart(){show('fruit');ngMark();FT.round=0;FT.k0=Math.floor(Math.random()*FRUITS.length);ftRound();}
 function ftGeo(){const A=$('frArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H;let tw,th,tx,ty,bw,bh,bx,by,ez,ex,ey;
   if(land){th=Math.min(H*.86,W*.5/IMG_AR.tree);tw=th*IMG_AR.tree;tx=W*.07;ty=H-th-H*.02;
     bw=Math.min(W*.27,H*.42);bh=bw/IMG_AR.basket;bx=W*.55;by=H-bh-H*.05;ez=Math.min(W*.2,H*.32);ex=Math.min(W-ez-W*.02,bx+bw*.85);ey=H-ez-H*.06;}
   else{tw=Math.min(W*.86,H*.5*IMG_AR.tree);th=tw/IMG_AR.tree;tx=(W-tw)/2;ty=Math.max(90,H*.09);
     bw=Math.min(W*.44,H*.24);bh=bw/IMG_AR.basket;bx=W*.08;by=H-bh-H*.04;ez=Math.min(W*.36,H*.22);ex=W*.58;ey=H-ez-H*.05;}
-  return{W,H,land,tw,th,tx,ty,bw,bh,bx,by,ez,ex,ey,fz:tw*.16,gy:Math.min(H*.97,ty+th*.97)};}
+  // 씻기: 나무가 있던 자리에 물 대야 / 나눠 주기: 친구들이 줄지어 서요
+  const AB=IMG_AR.fr_basin,wz=land?Math.min(W*.42,H*.48*AB):Math.min(W*.78,H*.3*AB),wh=wz/AB,
+    wx=land?Math.max(W*.02,tx+tw/2-wz/2):(W-wz)/2,wy=land?H-wh-H*.08:ty+th*.3;
+  const pal=(i,n)=>{const z=land?Math.min(W*.42/n*1.1,H*.32,W*.17):Math.min(W*.9/n,H*.2,W*.3),cx=land?W*.56+W*.42*(i+.5)/n:W*.05+W*.9*(i+.5)/n;
+    return[cx-z/2,H-z-(land?H*.05:H*.04)-(i%2?z*.06:0),z];};
+  return{W,H,land,tw,th,tx,ty,bw,bh,bx,by,ez,ex,ey,fz:tw*.16,gy:Math.min(H*.97,ty+th*.97),wz,wh,wx,wy,pal};}
 function ftRound(){if(S.screen!=='fruit')return;const g=++FT.gen,A=$('frArea');A.innerHTML='';const G=ftGeo();
-  Object.assign(FT,{G,fr:[],got:0,inB:0,busy:false,last:Date.now()});document.body.classList.add('land');
+  Object.assign(FT,{G,fr:[],got:0,inB:0,busy:false,last:Date.now(),stage:'pick',act:false,pe:[],wf:[],nIn:0,inW:0,scrub:0,given:0});document.body.classList.add('land');
   // 순서: 한 가지 과일 나무(다섯 개) → "빨간 사과 두 개" 찾기 → 다른 과일 나무 → …
   FT.mode=FT.round%2===0?'free':'mission';let list;
   if(FT.mode==='free'){FT.kind=FRUITS[(FT.k0+FT.round/2)%FRUITS.length];FT.target=FT.kind;FT.need=5;list=Array(7).fill(FT.kind);}
@@ -2680,12 +2733,12 @@ function ftRound(){if(S.screen!=='fruit')return;const g=++FT.gen,A=$('frArea');A
   const ask=document.createElement('div');ask.className='ask';ask.id='ftAsk';ask.style.fontSize='clamp(18px,3.6vmin,36px)';
   ask.innerHTML=`${`<img src="chars/${FT.target.img}.webp" alt="" style="width:clamp(40px,7vmin,70px)">`.repeat(FT.mode==='free'?1:FT.need)}<span>${t}</span>`;
   Object.assign(ask.style,G.land?{left:((G.tx+G.tw+G.W)/2)+'px',top:Math.max(100,G.H*.17)+'px',transform:'translateX(-50%)'}:{left:'50%',top:(G.ty+G.th+6)+'px',transform:'translateX(-50%)'});
-  A.appendChild(ask);renderStars('frStars',0,FT.need);
+  A.appendChild(ask);FT.pals=friendPool(Math.floor(FT.round/2)%2===1,Math.min(3,FT.need),true);ftProg();
   setTimeout(()=>{if(FT.gen===g)say(FT.mode==='free'?`${FT.kind.name} 나무예요! ${t}`:t);},400);}
-function ftTap(it){if(FT.busy||it.picked)return;FT.last=Date.now();
+function ftTap(it){if(FT.busy||it.picked||FT.stage!=='pick')return;FT.last=Date.now();
   if(FT.mode==='mission'&&it.f!==FT.target){it.el.classList.remove('no');void it.el.offsetWidth;it.el.classList.add('no');sfx.nope();
     if(Date.now()-FT.noT>2500){FT.noT=Date.now();say(`이건 ${it.f.col} ${ieyo(it.f.name)}. ${FT.askText}`);}return;}
-  it.picked=true;FT.got++;const n=FT.got;renderStars('frStars',n,FT.need);tone({f:900,f2:500,d:.12,v:.15});
+  it.picked=true;FT.got++;const n=FT.got;tone({f:900,f2:500,d:.12,v:.15});
   if(n>=FT.need)FT.busy=true;ftDrop(it,FT.gen);}
 async function ftDrop(it,g){const G=FT.G,el=it.el;el.querySelector('img').style.animation='none';const dy=G.gy-G.fz-it.y;
   await el.animate([{transform:'none'},{transform:`translateY(${dy}px)`}],{duration:380+dy*.35,easing:'cubic-bezier(.5,0,1,.6)',fill:'forwards'}).finished;
@@ -2699,22 +2752,88 @@ async function ftDrop(it,g){const G=FT.G,el=it.el;el.querySelector('img').style.
   Object.assign(p.style,{left:(G.bw*slot[0]-pz/2)+'px',top:(G.bh*slot[1]-pz/2)+'px',width:pz+'px',height:pz+'px',zIndex:1+Math.round(slot[1]*20)});$('fbask').appendChild(p);
   const b=$('fbask');b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');bell(mtof(PENT[Math.min(n,8)]),0,.2,.6);
   if(n<FT.need){say(NUM[n-1]);return;}
-  say(FT.mode==='free'?`${NUM[n-1]}! 다 땄어요!`:`${NUM[n-1]}! ${FT.target.name} ${KNUM[n]} 개!`);setTimeout(()=>ftEat(g),1100);}
-function ftEat(g){if(FT.gen!==g||S.screen!=='fruit')return;const G=FT.G,A=$('frArea'),ch=pick(friendPool(Math.floor(FT.round/2)%2===1,3,true));
-  const e=document.createElement('img');e.className='feater';e.src=charSrc(ch);e.alt='';Object.assign(e.style,{left:G.ex+'px',top:G.ey+'px',width:G.ez+'px',height:G.ez+'px'});A.appendChild(e);
-  e.animate([{transform:`translateX(${G.W-G.ex+20}px)`},{transform:'translateY(-14%)',offset:.65},{transform:'none'}],{duration:900,easing:'ease-out'});sfx.giggle();
-  setTimeout(()=>{if(FT.gen!==g)return;say(`${ga(ch.name)} 왔어요! 냠냠, 맛있어요!`);e.classList.add('munch');
-    const ps=[...$('fbask').querySelectorAll('.pile')];
-    ps.forEach((p,i)=>setTimeout(()=>{if(FT.gen!==g)return;sfx.chomp();p.animate([{transform:'none'},{transform:'scale(0)'}],{duration:250,fill:'forwards'});
-      const r=e.getBoundingClientRect();heartBurst(r.left+r.width*.4,r.top+r.height*.3);},700+i*380));
-    setTimeout(()=>{if(FT.gen!==g)return;cheer(FT.mode==='free'?'맛있게 먹었어요!':'고마워요!');sfx.fanfare();burst(innerWidth/2,innerHeight/2,40,Math.min(innerWidth,innerHeight)*.4,true);},900+ps.length*380);
-    setTimeout(()=>{if(FT.gen!==g||S.screen!=='fruit')return;FT.round++;ftRound();},3300+ps.length*380);},900);}
+  say(FT.mode==='free'?`${NUM[n-1]}! 다 땄어요!`:`${NUM[n-1]}! ${FT.target.name} ${KNUM[n]} 개!`);setTimeout(()=>ftWash(g),1300);}
+// 물방울 튀기기 (x,y는 놀이 영역 안 좌표)
+function ftSplash(x,y,n=5){const A=$('frArea');for(let i=0;i<n;i++){const d=document.createElement('i');d.className='wdrop';
+  d.style.cssText=`left:${x}px;top:${y}px;--dx:${((Math.random()-.5)*14).toFixed(1)}vmin;--dy:${(-4-Math.random()*7).toFixed(1)}vmin;--d:${(.4+Math.random()*.25).toFixed(2)}s`;
+  d.addEventListener('animationend',()=>d.remove());A.appendChild(d);}}
+const ftPlop=()=>{tone({f:520,f2:170,d:.14,v:.22});noise({f:1400,d:.18,v:.07,q:1});};
+// 요소를 놀이 영역 위의 날아가는 그림으로 바꿔요 (원래 요소는 지워요)
+function ftLift(el){const A=$('frArea'),a=A.getBoundingClientRect(),r=el.getBoundingClientRect(),f=document.createElement('img');f.className='ffly';f.src=el.src;f.alt='';
+  Object.assign(f.style,{left:(r.left-a.left)+'px',top:(r.top-a.top)+'px',width:r.width+'px',height:r.height+'px'});A.appendChild(f);el.remove();
+  return{f,x:r.left-a.left+r.width/2,y:r.top-a.top+r.height/2,w:r.width};}
+// 2단계: 나무가 사라지고 물 대야가 나와요. 바구니를 톡 → 과일이 하나씩 퐁당
+function ftWash(g){if(FT.gen!==g||S.screen!=='fruit')return;const G=FT.G,A=$('frArea');FT.stage='wash';FT.act=true;FT.last=Date.now();ftProg();
+  [...A.querySelectorAll('.ftree,.fru,#ftAsk')].forEach(el=>{el.style.pointerEvents='none';
+    el.animate([{opacity:1},{opacity:0,transform:'scale(.9)'}],{duration:500,fill:'forwards'}).finished.then(()=>el.remove()).catch(()=>{});});
+  const w=document.createElement('div');w.className='fbasin';w.id='fbasin';Object.assign(w.style,{left:G.wx+'px',top:G.wy+'px',width:G.wz+'px',height:G.wh+'px'});
+  w.innerHTML='<img class="bk" src="chars/fr_basin.webp" alt=""><img class="fr" src="chars/fr_basin.webp" alt="">';A.appendChild(w);
+  w.animate([{transform:'translateY(25%) scale(.6)',opacity:0},{transform:'none',opacity:1}],{duration:550,delay:250,easing:'ease-out',fill:'backwards'});
+  w.addEventListener('pointerdown',e=>{e.preventDefault();FT.stage==='wash'?ftToBasin():FT.stage==='scrub'?ftScrub():FT.stage==='share'?ftGive(null):0;});
+  $('fbask').addEventListener('pointerdown',e=>{e.preventDefault();ftToBasin();});
+  setTimeout(()=>{if(FT.gen!==g)return;ftPlop();say('과일을 물에 씻어요! 바구니를 톡톡 눌러요');$('fbask').classList.add('glow');},700);}
+function ftToBasin(){if(FT.stage!=='wash')return;const ps=[...$('fbask').querySelectorAll('.pile')];if(!ps.length)return;
+  FT.last=Date.now();const g=FT.gen,G=FT.G,k=FT.nIn++,s=FWASH[k%FWASH.length],z=G.wz*.17;$('fbask').classList.remove('glow');
+  const p=ps.reduce((m,q)=>parseFloat(q.style.top)<parseFloat(m.style.top)?q:m);   // 맨 위에 있는 과일부터
+  const L=ftLift(p),tx=G.wx+G.wz*s[0],ty=G.wy+G.wh*s[1];tone({f:700,f2:1000,d:.08,v:.12});
+  hopTo(L.f,tx-L.x,ty-L.y,z/L.w,560,G.H*.14).then(()=>{if(FT.gen!==g)return;L.f.remove();
+    const e=document.createElement('img');e.className='wf';e.src=L.f.src;e.alt='';
+    Object.assign(e.style,{left:(G.wz*s[0]-z/2)+'px',top:(G.wh*s[1]-z/2)+'px',width:z+'px',height:z+'px',animationDelay:`-${(k*.37).toFixed(2)}s`});
+    $('fbasin').appendChild(e);FT.wf.push(e);ftPlop();ftSplash(tx,ty,5);const n=++FT.inW;
+    if(n<FT.need){say(`${NUM[n-1]}, 퐁당!`);return;}
+    FT.stage='scrub';FT.last=Date.now();say('다 들어갔어요! 대야를 톡톡 눌러서 깨끗이 씻어요!');setTimeout(()=>{if(FT.gen===g&&FT.stage==='scrub')$('fbasin').classList.add('glow');},600);}).catch(()=>{});}
+function ftScrub(){if(FT.stage!=='scrub')return;FT.last=Date.now();const g=FT.gen,G=FT.G,w=$('fbasin');const n=++FT.scrub;
+  w.classList.remove('pop','glow');void w.offsetWidth;w.classList.add('pop');
+  FT.wf.forEach((e,i)=>e.animate([{transform:'none'},{transform:`rotate(${i%2?24:-24}deg) translateY(-14%)`},{transform:`rotate(${i%2?-14:14}deg)`},{transform:'none'}],{duration:520}));
+  for(let i=0;i<3;i++){const f=document.createElement('i');f.className='foam';const z=G.wz*(.08+Math.random()*.07);
+    f.style.cssText=`left:${G.wz*(.18+Math.random()*.6)-z/2}px;top:${G.wh*(.2+Math.random()*.16)-z/2}px;width:${z}px;height:${z}px`;
+    f.addEventListener('animationend',e=>{if(e.animationName==='foamFade')f.remove();});w.appendChild(f);}
+  ftSplash(G.wx+G.wz*(.3+Math.random()*.4),G.wy+G.wh*.28,6);noise({f:2600,d:.25,v:.07,q:.7});bell(mtof(PENT[n+2]),.05,.14,.5);
+  if(n<3){say(n===1?'쓱싹쓱싹!':'보글보글!');return;}
+  FT.stage='clean';FT.act=false;FT.wf.forEach(e=>e.classList.add('clean'));sparkle();
+  FT.wf.forEach((e,i)=>{const t=document.createElement('i');t.className='fshine';t.textContent='✦';const r=parseFloat(e.style.width);
+    t.style.cssText=`left:${parseFloat(e.style.left)+r*.7}px;top:${parseFloat(e.style.top)-r*.1}px;font-size:${(r*.45).toFixed(0)}px;animation-delay:-${(i*.15).toFixed(2)}s`;w.appendChild(t);
+    setTimeout(()=>t.remove(),2200);});
+  say('깨끗해졌어요! 반짝반짝!');cheer('반짝반짝!');setTimeout(()=>ftShare(g),2300);}
+// 3단계: 친구들이 와요. 친구를 톡 → 대야의 과일이 폴짝 날아가서 냠냠 (대야를 톡 하면 아직 덜 먹은 친구에게)
+function ftShare(g){if(FT.gen!==g||S.screen!=='fruit')return;const G=FT.G,A=$('frArea');FT.stage='share';FT.act=true;FT.last=Date.now();ftProg();
+  const b=$('fbask');b.style.pointerEvents='none';b.animate([{opacity:1},{opacity:0,transform:'translateY(20%)'}],{duration:450,fill:'forwards'});
+  FT.pe=FT.pals.map((ch,i)=>{const [x,y,z]=G.pal(i,FT.pals.length),d=document.createElement('div');d.className='fpal';d.innerHTML=`<img src="${charSrc(ch)}" alt="">`;
+    Object.assign(d.style,{left:x+'px',top:y+'px',width:z+'px',height:z+'px'});A.appendChild(d);
+    d.animate([{transform:`translateX(${G.W-x+40}px)`},{transform:'translateY(-12%)',offset:.7},{transform:'none'}],{duration:900+i*260,easing:'ease-out'});
+    const it={el:d,ch,ate:0};d.addEventListener('pointerdown',e=>{e.preventDefault();ftGive(it);});return it;});
+  sfx.giggle();
+  setTimeout(()=>{if(FT.gen!==g)return;say(`${FT.pals.map(c=>c.name).join(', ')}! 친구들이 왔어요. 과일을 나눠 줘요! 친구를 톡 눌러요`);},1000);}
+function ftGive(it){if(FT.stage==='party'&&it){it.el.classList.remove('munch','jump');void it.el.offsetWidth;it.el.classList.add('jump');sfx.giggle();say(it.ch.name);return;}
+  if(FT.stage!=='share')return;const left=FT.wf.filter(e=>e.isConnected);if(!left.length)return;FT.last=Date.now();
+  const min=Math.min(...FT.pe.map(p=>p.ate)),hungry=FT.pe.find(p=>p.ate===min);
+  if(!it)it=hungry;
+  else if(it.ate>min){   // 골고루 나눠 먹어요: 아직 못 먹은 친구를 알려 줘요
+    it.el.classList.remove('jump');void it.el.offsetWidth;it.el.classList.add('jump');hungry.el.classList.add('glow');setTimeout(()=>hungry.el.classList.remove('glow'),2000);
+    if(Date.now()-FT.noT>1800){FT.noT=Date.now();say(`이번엔 ${hungry.ch.name}한테 줘요!`);}return;}
+  it.ate++;const g=FT.gen,G=FT.G,e=left[0],L=ftLift(e),a=$('frArea').getBoundingClientRect(),c=ctr(it.el);
+  FT.wf=FT.wf.filter(x=>x!==e);it.el.classList.remove('glow');tone({f:700,f2:1100,d:.09,v:.12});
+  hopTo(L.f,c.x-a.left-L.x,c.y-a.top-c.h*.12-L.y,1.3,620,G.H*.16).then(()=>{if(FT.gen!==g)return;L.f.remove();
+    sfx.chomp();it.el.classList.remove('munch','jump');void it.el.offsetWidth;it.el.classList.add('munch');heartBurst(c.x,c.y-c.h*.25);
+    const n=++FT.given;say(n>=FT.need?`${it.ch.name}도 냠냠! 다 나눠 줬어요!`:pick([`${it.ch.name}, 냠냠!`,`${it.ch.name}, 맛있어요!`,'고마워요!']));
+    if(n>=FT.need){FT.act=false;setTimeout(()=>ftParty(g),1500);}}).catch(()=>{});}
+// 4단계: 다 같이 폴짝폴짝 냠냠 파티
+function ftParty(g){if(FT.gen!==g||S.screen!=='fruit')return;FT.stage='party';ftProg();
+  cheer('나눠 먹으니 맛있어요!');sfx.fanfare();say('다 같이 냠냠! 나눠 먹으니 더 맛있어요!');burst(innerWidth/2,innerHeight/2,40,Math.min(innerWidth,innerHeight)*.4,true);
+  FT.pe.forEach((p,i)=>[0,1].forEach(j=>setTimeout(()=>{if(FT.gen!==g)return;p.el.classList.remove('munch','jump');void p.el.offsetWidth;p.el.classList.add('jump');
+    if(!j){const c=ctr(p.el);heartBurst(c.x,c.y-c.h*.3);}bell(mtof(PENT[(i+j*2+3)%PENT.length]),0,.16,.5);},400+i*330+j*1300)));
+  setTimeout(()=>{if(FT.gen!==g||S.screen!=='fruit')return;FT.round++;ftRound();},4600);}
 let ftShT=0;
-function ftShake(){if(Date.now()-ftShT<800)return;ftShT=Date.now();FT.last=Date.now();const t=document.querySelector('.ftree');if(!t)return;
+function ftShake(){if(FT.stage!=='pick'||Date.now()-ftShT<800)return;ftShT=Date.now();FT.last=Date.now();const t=document.querySelector('.ftree');if(!t)return;
   t.classList.remove('shake');void t.offsetWidth;t.classList.add('shake');for(let i=0;i<6;i++)noise({t:i*.07,f:3000+Math.random()*2000,d:.08,v:.06,q:1.5});
   FT.fr.filter(it=>!it.picked).forEach(it=>{it.el.classList.remove('no');void it.el.offsetWidth;it.el.classList.add('no');});
   if(FT.mode==='free'&&!FT.busy){const g=FT.gen;setTimeout(()=>{if(FT.gen!==g||S.screen!=='fruit')return;const left=FT.fr.filter(it=>!it.picked);if(left.length)ftTap(pick(left));},380);}}   // 한 가지 과일 나무는 흔들면 하나 떨어져요
-setInterval(()=>{if(S.screen!=='fruit'||FT.busy||Date.now()-Math.max(lastTouch,FT.last)<6000)return;FT.last=Date.now();
+setInterval(()=>{if(S.screen!=='fruit'||Date.now()-Math.max(lastTouch,FT.last)<6000)return;
+  if(FT.stage!=='pick'){if(!FT.act)return;FT.last=Date.now();const min=Math.min(...FT.pe.map(p=>p.ate));
+    const el=FT.stage==='wash'?$('fbask'):FT.stage==='scrub'?$('fbasin'):(FT.pe.find(p=>p.ate===min)||{}).el;if(!el)return;const c=ctr(el);
+    el.classList.remove('glow');void el.offsetWidth;el.classList.add('glow');setTimeout(()=>el.classList.remove('glow'),2400);ghostHand(c.x+c.w*.4,c.y+c.h*.3,c.x,c.y,null);
+    say(FT.stage==='wash'?'바구니를 톡 눌러요! 과일이 퐁당':FT.stage==='scrub'?'대야를 톡톡 눌러서 씻어요!':'친구한테 과일을 줘요!');return;}
+  if(FT.busy)return;FT.last=Date.now();
   const it=FT.fr.find(it=>!it.picked&&it.f===FT.target);if(!it)return;const c=ctr(it.el);
   it.el.classList.remove('hintme');void it.el.offsetWidth;it.el.classList.add('hintme');ghostHand(c.x+c.w*.6,c.y-c.h*.9,c.x,c.y,null);say(FT.askText);},1000);
 $('goFruit').onclick=()=>{sfx.tap();ftStart();};
@@ -2725,6 +2844,8 @@ const CK_DECO=['fr_strawberry','fr_blueberry','st_heart','st_flower','fr_orange'
 const CK_NAME={fr_strawberry:'딸기',fr_blueberry:'블루베리',st_heart:'하트',st_flower:'꽃',fr_orange:'오렌지',st_butterfly:'나비',fr_peach:'복숭아'};
 const CK_TINT=['hue-rotate(0deg)','hue-rotate(-40deg) saturate(1.1)','hue-rotate(25deg)'];
 const CK_SPOT=[[.5,.35],[.22,.22],[.78,.22],[.34,.31],[.66,.31],[.31,.12],[.69,.12]];   // 케이크 윗면 가장자리 (앞쪽부터). 가운데 뒤쪽은 초 자리라 비워 둬요
+const CK_STEP=['deco','candle','song','blow'],CK_ICON=['fr_strawberry','candle','st_heart','gift'];
+const ckProg=()=>stepBar('ckStars',CK_ICON,CK.stage==='done'?9:CK_STEP.indexOf(CK.stage));
 const CK={round:0,gen:0,stage:'deco',n:0,need:5,nc:3,cands:[],used:[],last:0,who:null,G:null};
 // 생일 축하 노래 가락 (옛날부터 내려오는 곡): [음, 박자]
 const HB=[[67,.75],[67,.25],[69,1],[67,1],[72,1],[71,2],[67,.75],[67,.25],[69,1],[67,1],[74,1],[72,2],
@@ -2742,7 +2863,7 @@ function ckRound(){ckHush();if(S.screen!=='cake')return;const g=++CK.gen,A=$('ck
   fr.addEventListener('pointerdown',e=>{e.preventDefault();fr.classList.remove('yay');void fr.offsetWidth;fr.classList.add('yay');sfx.giggle();});A.appendChild(fr);
   const ck=document.createElement('div');ck.className='ckc';ck.id='ckCake';Object.assign(ck.style,{left:G.x+'px',top:G.y+'px',width:G.w+'px',height:G.h+'px'});
   ck.innerHTML=`<img class="cb" src="chars/cake.webp" alt="" style="filter:${CK_TINT[CK.round%CK_TINT.length]} drop-shadow(0 1.4vmin 1vmin rgba(80,40,60,.2))">`;A.appendChild(ck);
-  ckTray(shuffle(CK_DECO.slice()).slice(0,4),false);renderStars('ckStars',0,CK.need);
+  ckTray(shuffle(CK_DECO.slice()).slice(0,4),false);ckProg();
   setTimeout(()=>{if(CK.gen===g)say(`오늘은 ${who.name} 생일이에요! 케이크를 예쁘게 꾸며 줘요!`);},400);}
 function ckTray(items,glow){const A=$('ckArea'),G=CK.G;let t=$('ckTray');if(t)t.remove();t=document.createElement('div');t.className='cktray';t.id='ckTray';
   Object.assign(t.style,G.tray==='right'?{right:'3vmin',top:'50%',transform:'translateY(-50%)',flexDirection:'column'}:{left:'50%',bottom:'3vmin',transform:'translateX(-50%)'});
@@ -2765,10 +2886,10 @@ function ckDeco(img,fx,fy,near){if(CK.stage!=='deco'||CK.n>=CK.need)return;const
   CK.used.push(si);const s=CK_SPOT[si],dz=G.w*.15,el=document.createElement('img');el.className='ckd';el.src=`chars/${img}.webp`;el.alt='';
   Object.assign(el.style,{left:(s[0]*G.w-dz/2)+'px',top:(s[1]*G.h-dz*.7)+'px',width:dz+'px',height:dz+'px',zIndex:2+Math.round(s[1]*20)});$('ckCake').appendChild(el);
   flyIn(el,fx-(cr.left+s[0]*G.w),fy-(cr.top+s[1]*G.h-dz*.2));CK.n++;const n=CK.n,g=CK.gen;
-  setTimeout(()=>{if(CK.gen!==g)return;tone({f:700,f2:1500,d:.08,v:.2});bell(mtof(PENT[Math.min(n+1,8)]),0,.18,.5);renderStars('ckStars',n,CK.need);
+  setTimeout(()=>{if(CK.gen!==g)return;tone({f:700,f2:1500,d:.08,v:.2});bell(mtof(PENT[Math.min(n+1,8)]),0,.18,.5);
     const ck=$('ckCake');ck.classList.remove('wob');void ck.offsetWidth;ck.classList.add('wob');
     if(n<CK.need){say(CK_NAME[img]||'');return;}
-    say(`${CK_NAME[img]||''}! 우와, 예쁜 케이크예요! 이제 초를 꽂아요!`);CK.stage='candle';renderStars('ckStars',0,CK.nc);
+    say(`${CK_NAME[img]||''}! 우와, 예쁜 케이크예요! 이제 초를 꽂아요!`);CK.stage='candle';ckProg();
     setTimeout(()=>{if(CK.gen===g)ckTray(['candle'],true);},700);},460);}
 function ckCandle(fx,fy){if(CK.stage!=='candle'||CK.cands.length>=CK.nc)return;const G=CK.G,cr=$('ckCake').getBoundingClientRect(),i=CK.cands.length,nc=CK.nc;
   const sx=.5+(i-(nc-1)/2)*.11,sy=.21,w=G.w*.055,h=w/IMG_AR.candle,el=document.createElement('div');el.className='ckn';
@@ -2776,8 +2897,8 @@ function ckCandle(fx,fy){if(CK.stage!=='candle'||CK.cands.length>=CK.nc)return;c
   el.innerHTML='<img src="chars/candle.webp" alt=""><i class="flame"></i><i class="hitz"></i>';$('ckCake').appendChild(el);
   const c={el,out:false};CK.cands.push(c);const g=CK.gen;el.addEventListener('pointerdown',e=>{if(CK.stage!=='blow'||c.out)return;e.preventDefault();ckBlow(c,g);});
   flyIn(el,fx-(cr.left+sx*G.w),fy-(cr.top+sy*G.h-h*.45));const n=CK.cands.length;
-  setTimeout(()=>{if(CK.gen!==g)return;tone({f:1200,f2:1800,d:.1,v:.12});bell(mtof(PENT[n+2]),.05,.16,.6);renderStars('ckStars',n,nc);say(NUM[n-1]);
-    if(n>=nc){CK.stage='song';setTimeout(()=>ckSong(g),900);}},460);}
+  setTimeout(()=>{if(CK.gen!==g)return;tone({f:1200,f2:1800,d:.1,v:.12});bell(mtof(PENT[n+2]),.05,.16,.6);say(NUM[n-1]);
+    if(n>=nc){CK.stage='song';ckProg();setTimeout(()=>ckSong(g),900);}},460);}
 function ckSong(g){if(CK.gen!==g||S.screen!=='cake')return;const A=$('ckArea'),G=CK.G,t=$('ckTray');t&&t.remove();A.classList.add('dark');
   const others=friendPool(CK.round%2===0,5,false).filter(c=>c!==CK.who).slice(0,3),pos=G.land?[[.12,.15],[.8,.14],[.8,.5]]:[[.7,.1],[.06,.78],[.72,.8]],z=G.fz*.72;
   others.forEach((ch,i)=>{const e=document.createElement('img');e.className='ckfr sway';e.src=charSrc(ch);e.alt='';e.style.animationDelay=`-${i*.4}s`;
@@ -2789,15 +2910,15 @@ function ckSong(g){if(CK.gen!==g||S.screen!=='cake')return;const A=$('ckArea'),G
       if(out)try{tone({f,t,d,v:.2,out});tone({f:f*2,t,d:d*.5,v:.056,out});tone({f:f*3.01,t,d:d*.25,v:.02,out});
         tone({f:mtof(m-12),t,d:Math.min(.9,b*spb),v:.05,type:'triangle',out});}catch(e){}
       const tt=t;setTimeout(()=>{if(CK.gen===g)ckNote();},tt*1000);t+=b*spb;});
-    setTimeout(()=>{if(CK.gen!==g)return;CK.stage='blow';CK.last=Date.now();document.querySelectorAll('#ckArea .ckfr').forEach(e=>e.classList.remove('sway'));
+    setTimeout(()=>{if(CK.gen!==g)return;CK.stage='blow';ckProg();CK.last=Date.now();document.querySelectorAll('#ckArea .ckfr').forEach(e=>e.classList.remove('sway'));
       say(`사랑하는 ${CK.who.name}, 생일 축하해요! 이제 촛불을 후~ 불어요!`);},t*1000+300);},2300);}
 function ckNote(){const fs=[...document.querySelectorAll('#ckArea .ckfr')];if(!fs.length)return;const r=pick(fs).getBoundingClientRect(),n=document.createElement('span');
   n.className='mnote';n.textContent=pick(['♪','♫','♬']);n.style.cssText=`left:${r.left+r.width*(.3+Math.random()*.4)}px;top:${r.top+r.height*.1}px;--c:${pick(MU_COL)};--dx:${(Math.random()-.5)*12}vmin;--r:${(Math.random()*60-30)|0}deg`;
   n.addEventListener('animationend',()=>n.remove());document.body.appendChild(n);}
 function ckBlow(c,g){c.out=true;c.el.classList.add('out');CK.last=Date.now();const A=$('ckArea'),r=c.el.getBoundingClientRect(),a=A.getBoundingClientRect();
   noise({f:900,f2:300,d:.45,v:.25,q:.5});puffAt(A,r.left-a.left+r.width/2,r.top-a.top-r.height*.2,r.width*2.4);
-  const left=CK.cands.filter(k=>!k.out).length;renderStars('ckStars',CK.nc-left,CK.nc);if(left>0){say('후~!');return;}
-  CK.stage='done';A.classList.remove('dark');
+  const left=CK.cands.filter(k=>!k.out).length;if(left>0){say('후~!');return;}
+  CK.stage='done';ckProg();A.classList.remove('dark');
   setTimeout(()=>{if(CK.gen!==g)return;cheer('생일 축하해요!');say(`와! ${CK.who.name}, 생일 축하해요!`);sfx.fanfare();
     [0,500,1000].forEach(t=>setTimeout(()=>burst(innerWidth*(.25+Math.random()*.5),innerHeight*.4,40,Math.min(innerWidth,innerHeight)*.4,true),t));
     document.querySelectorAll('#ckArea .ckfr').forEach((e,i)=>setTimeout(()=>{e.classList.remove('yay');void e.offsetWidth;e.classList.add('yay');},i*120));
@@ -2813,8 +2934,10 @@ setInterval(()=>{if(S.screen!=='cake'||Date.now()-Math.max(lastTouch,CK.last)<60
 $('goCake').onclick=()=>{sfx.tap();ckStart();};
 $('ckBack').onclick=()=>{sfx.tap();CK.gen++;ckHush();show('home');};
 
-/* ================= 목욕 놀이: 쓱쓱 문질러 비누 거품, 샤워기로 쏴아 ================= */
-const BA={round:0,gen:0,stage:'load',last:0,who:null,cv:null,cx:null,N:0,init:1,G:null,lp:null,pid:null,dist:0,lastSnd:0,chk:0,kind:'mud',st:0,noT:0};
+/* ================= 목욕 놀이: 쓱쓱 문질러 비누 거품 → 샤워기로 쏴아 → 수건으로 뽀송뽀송 → 침대에서 코~ ================= */
+const BA={round:0,gen:0,stage:'load',last:0,who:null,cv:null,cx:null,N:0,init:1,G:null,lp:null,pid:null,dist:0,lastSnd:0,chk:0,kind:'mud',st:0,noT:0,im:null,pat:0};
+// 진행 그림: 비누 · 샤워 · 수건 · 침대
+const baProg=()=>stepBar('baStars',['sponge','shower','ba_towel','ba_bed'],{load:0,rub:0,rinse:1,done:1,dry:2,sleepy:3,sleep:3,night:3}[BA.stage]||0);
 function baStart(){show('bath');ngMark();baRound();}
 function baGeo(){const A=$('baArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H;
   const tw=land?Math.min(W*.5,H*.72*IMG_AR.tub):Math.min(W*.86,H*.36*IMG_AR.tub),th=tw/IMG_AR.tub,tx=(W-tw)/2,ty=H-th-H*.03;
@@ -2834,12 +2957,12 @@ function baRound(){if(S.screen!=='bath')return;busHush('ba');baSponge(null,false
     tone({f:1300,f2:1700,d:.09,v:.12,type:'square'});tone({f:1250,f2:1650,t:.13,d:.09,v:.1,type:'square'});});A.appendChild(dk);
   const sh=document.createElement('div');sh.className='bashow';sh.id='baShow';Object.assign(sh.style,{left:G.sx+'px',top:G.sy+'px',width:G.sz+'px',height:(G.sz/IMG_AR.shower)+'px'});
   sh.innerHTML='<img src="chars/shower.webp" alt="">';sh.addEventListener('pointerdown',e=>{e.preventDefault();baShower();});A.appendChild(sh);
-  renderStars('baStars',0,5);
+  baProg();
   const cv=f.querySelector('canvas'),N=Math.round(Math.min(480,G.fz));cv.width=cv.height=N;BA.cv=cv;BA.cx=cv.getContext('2d',{willReadFrequently:true});BA.N=N;
   baMud(src,g).then(()=>{if(BA.gen!==g)return;BA.stage='rub';BA.last=Date.now();
     say(`${ga(ch.name)} ${BA.kind==='mud'?'진흙 놀이를':'물감 놀이를'} 했어요! 쓱쓱 문질러서 씻겨 줘요!`);});}
 // 진흙(또는 물감) 점을 그린 다음, 친구 모양 안쪽에만 남겨요 (욕조 거품에 가려지는 아래쪽은 빼고)
-async function baMud(src,g){let im=null;try{im=await loadImg(src);}catch(e){}if(BA.gen!==g)return;const N=BA.N,x=BA.cx,mud=BA.kind==='mud';
+async function baMud(src,g){let im=null;try{im=await loadImg(src);}catch(e){}if(BA.gen!==g)return;BA.im=im;const N=BA.N,x=BA.cx,mud=BA.kind==='mud';
   const m=document.createElement('canvas');m.width=m.height=N;const mx=m.getContext('2d');
   const cols=mud?['#8a5a2e','#7a4b22','#9c6b3c','#6e4320','#a0703f']:['#ff6b6b','#ffd93d','#4fc3f7','#6fd36f','#a77bf3','#ff8fc7','#ff9f43'];
   // 점이 친구 모양 밖에만 떨어지면 다시 뿌려요(세 번까지). 그림을 못 불러오면 둥근 모양 안에 뿌려요
@@ -2854,25 +2977,28 @@ async function baMud(src,g){let im=null;try{im=await loadImg(src);}catch(e){}if(
     if(baCount()>=N*N*.002)break;}
   BA.cv.style.opacity=1;BA.init=Math.max(1,baCount());}
 function baCount(){const N=BA.N,d=BA.cx.getImageData(0,0,N,Math.round(N*.64)).data;let c=0;for(let i=3;i<d.length;i+=16)if(d[i]>60)c++;return c;}
-function baSponge(e,on){const s=$('sponge');if(!on||!BA.G){s.style.display='none';return;}const z=BA.G.fz*.34;
-  Object.assign(s.style,{display:'block',width:z+'px',height:(z/IMG_AR.sponge)+'px',transform:`translate(${e.clientX-z/2}px,${e.clientY-z*.42}px) rotate(-12deg)`});}
-function baRub(e){if(BA.stage!=='rub')return;const r=BA.cv.getBoundingClientRect(),N=BA.N,k=N/r.width,px=(e.clientX-r.left)*k,py=(e.clientY-r.top)*k,R=N*.085,x=BA.cx;
+function baSponge(e,on){const s=$('sponge');if(!on||!BA.G||(BA.stage!=='rub'&&BA.stage!=='dry')){s.style.display='none';return;}
+  const dry=BA.stage==='dry',z=BA.G.fz*(dry?.42:.34),ar=dry?IMG_AR.ba_towel:IMG_AR.sponge,k=dry?'t':'s';   // 닦을 때는 수건
+  if(s.dataset.k!==k){s.dataset.k=k;s.src=dry?'chars/ba_towel.webp':'chars/sponge.webp';}
+  Object.assign(s.style,{display:'block',width:z+'px',height:(z/ar)+'px',transform:`translate(${e.clientX-z/2}px,${e.clientY-z/ar*.48}px) rotate(-12deg)`});}
+function baRub(e){if(BA.stage!=='rub'&&BA.stage!=='dry')return;const dry=BA.stage==='dry';const r=BA.cv.getBoundingClientRect(),N=BA.N,k=N/r.width,px=(e.clientX-r.left)*k,py=(e.clientY-r.top)*k,R=N*.085,x=BA.cx;
   if(px<-R||py<-R||px>N+R||py>N*.7+R){BA.lp=null;return;}
   const lp=BA.lp||{x:px,y:py};x.globalCompositeOperation='destination-out';x.lineCap='round';x.lineWidth=R*2;x.beginPath();x.moveTo(lp.x,lp.y);x.lineTo(px+.01,py);x.stroke();
   x.globalCompositeOperation='source-over';BA.dist+=Math.hypot(px-lp.x,py-lp.y)/k;BA.lp={x:px,y:py};
-  if(BA.dist>34){BA.dist=0;baFoam(e.clientX,e.clientY);}
-  const now=Date.now();if(now-BA.lastSnd>110){BA.lastSnd=now;noise({f:2200+Math.random()*600,d:.09,v:.07,q:1.2});if(Math.random()<.25)sfx.bubble();}
+  if(BA.dist>34){BA.dist=0;if(!dry)baFoam(e.clientX,e.clientY);}
+  const now=Date.now();if(now-BA.lastSnd>110){BA.lastSnd=now;noise({f:dry?900+Math.random()*300:2200+Math.random()*600,d:.09,v:dry?.06:.07,q:dry?.6:1.2});if(Math.random()<.25)dry?tone({f:1500,f2:1900,d:.06,v:.05}):sfx.bubble();}
   if(now-BA.chk>300){BA.chk=now;baCheck();}}
 function baFoam(x,y){const A=$('baArea');if(A.querySelectorAll('.foam').length>24)return;const a=A.getBoundingClientRect();
   for(let i=0;i<1;i++){const s=BA.G.fz*(.04+Math.random()*.05),f=document.createElement('i');f.className='foam';f.addEventListener('animationend',e=>{if(e.animationName==='foamFade')f.remove();});
     f.style.cssText=`left:${x-a.left-s/2+(Math.random()-.5)*s*1.4}px;top:${y-a.top-s/2+(Math.random()-.5)*s*1.4}px;width:${s}px;height:${s}px`;A.appendChild(f);}}
-function baCheck(){if(BA.stage!=='rub')return;const left=baCount()/BA.init,st=Math.min(5,Math.floor((1-left)*5/.88));
-  if(st!==BA.st){BA.st=st;renderStars('baStars',st,5);}
-  if(left>.12)return;BA.stage='rinse';BA.cv.style.transition='opacity .5s';BA.cv.style.opacity=0;renderStars('baStars',5,5);sparkle();BA.last=Date.now();
+function baCheck(){if(BA.stage!=='rub'&&BA.stage!=='dry')return;const left=baCount()/BA.init;
+  if(left>.12)return;if(BA.stage==='dry'){baSleep();return;}
+  BA.stage='rinse';baProg();BA.cv.style.transition='opacity .5s';BA.cv.style.opacity=0;sparkle();BA.last=Date.now();
   say('뽀득뽀득! 이제 샤워기를 톡 눌러서 거품을 씻어요!');$('baShow').classList.add('glow');}
 const baA=$('baArea');
 baA.addEventListener('pointerdown',e=>{if(S.screen!=='bath'||BA.pid!=null||e.target.closest('.bashow,.baduck'))return;e.preventDefault();
-  if(BA.stage!=='rub'){if(e.target.closest('.baf')){const f=$('baF');f.classList.remove('giggle');void f.offsetWidth;f.classList.add('giggle');sfx.giggle();}return;}
+  if(BA.stage==='sleep'||BA.stage==='night'){baPat();return;}   // 잠자기: 어디를 눌러도 토닥토닥
+  if(BA.stage!=='rub'&&BA.stage!=='dry'){if(e.target.closest('.baf')){const f=$('baF');f.classList.remove('giggle');void f.offsetWidth;f.classList.add('giggle');sfx.giggle();}return;}
   try{baA.setPointerCapture(e.pointerId);}catch(_){}BA.pid=e.pointerId;BA.lp=null;baSponge(e,true);baRub(e);});
 baA.addEventListener('pointermove',e=>{if(BA.pid!==e.pointerId)return;baSponge(e,true);baRub(e);});
 const baUp=e=>{if(BA.pid!==e.pointerId)return;BA.pid=null;BA.lp=null;baSponge(e,false);baCheck();};
@@ -2890,10 +3016,58 @@ function baShower(){if(Date.now()-baShT<900||!BA.G)return;baShT=Date.now();BA.la
   [...A.querySelectorAll('.foam')].forEach((f,i)=>setTimeout(()=>{if(BA.gen!==g||S.screen!=='bath')return;f.classList.add('bye');setTimeout(()=>f.remove(),420);if(i%5===0)sfx.pop();},200+Math.random()*1900));
   setTimeout(()=>{if(BA.gen!==g)return;const f=$('baF');f.classList.add('giggle');const q=f.getBoundingClientRect();burst(q.left+q.width/2,q.top+q.height*.35,30,q.width*.6,true);sparkle();
     cheer('반짝반짝 깨끗해요!');say(`반짝반짝! ${ga(BA.who.name)} 깨끗해졌어요!`);sfx.fanfare();},2500);
-  setTimeout(()=>{if(BA.gen!==g||S.screen!=='bath')return;BA.round++;baRound();},6200);}
+  setTimeout(()=>baDry(g),5400);}
+// 3단계: 몸이 젖었어요 → 수건으로 쓱쓱 닦기 (물방울을 다 닦으면 뽀송뽀송)
+function baWet(){const N=BA.N,x=BA.cx,im=BA.im;x.globalCompositeOperation='source-over';x.clearRect(0,0,N,N);
+  if(im)x.drawImage(im,0,0,N,N);else{x.fillStyle='#000';x.beginPath();x.ellipse(N/2,N*.42,N*.36,N*.4,0,0,6.283);x.fill();}
+  const m=document.createElement('canvas');m.width=m.height=N;const mx=m.getContext('2d');
+  for(let i=0;i<26;i++){const r=N*(.022+Math.random()*.024),cx=N*(.16+Math.random()*.68),cy=N*(.14+Math.random()*.44);
+    mx.fillStyle='rgba(150,215,255,.72)';mx.strokeStyle='rgba(70,160,225,.75)';mx.lineWidth=Math.max(1,r*.16);mx.beginPath();   // 물방울 모양
+    mx.moveTo(cx,cy-r*2);mx.quadraticCurveTo(cx+r*.35,cy-r*1.1,cx+r,cy);mx.arc(cx,cy,r,0,3.1416);mx.quadraticCurveTo(cx-r*.35,cy-r*1.1,cx,cy-r*2);mx.fill();mx.stroke();
+    mx.fillStyle='rgba(255,255,255,.9)';mx.beginPath();mx.arc(cx-r*.35,cy-r*.25,r*.28,0,6.283);mx.fill();}
+  mx.clearRect(0,N*.62,N,N);
+  x.globalCompositeOperation='source-in';x.drawImage(m,0,0);x.globalCompositeOperation='source-over';
+  BA.cv.style.transition='none';BA.cv.style.opacity=1;BA.init=Math.max(1,baCount());}
+function baDry(g){if(BA.gen!==g||S.screen!=='bath')return;BA.stage='dry';baProg();BA.last=Date.now();baWet();
+  const sh=$('baShow');sh.style.pointerEvents='none';sh.animate([{opacity:1},{opacity:0}],{duration:400,fill:'forwards'});
+  const f=$('baF');f.classList.remove('giggle');void f.offsetWidth;f.classList.add('giggle');
+  [0,1,2].forEach(i=>tone({f:1100-i*150,f2:600,t:i*.16,d:.1,v:.12}));   // 똑 똑 똑
+  say('어머, 몸이 다 젖었어요! 수건으로 쓱쓱 닦아 줘요!');}
+// 4단계: 밤이 되면 침대에 누워요 → 토닥토닥 세 번 → 자장가
+function baSleep(){const g=BA.gen,A=$('baArea'),G=BA.G;BA.stage='sleepy';baProg();BA.cv.style.transition='opacity .5s';BA.cv.style.opacity=0;
+  $('sponge').style.display='none';sparkle();cheer('뽀송뽀송!');say('뽀송뽀송! 이제 코 자러 가요');
+  setTimeout(()=>{if(BA.gen!==g||S.screen!=='bath')return;
+    const n=document.createElement('div');n.className='banight';
+    n.innerHTML='<i class="moon"></i>'+Array.from({length:16},(_,i)=>`<b style="left:${(4+Math.random()*92).toFixed(1)}%;top:${(4+Math.random()*(G.land?40:30)).toFixed(1)}%;font-size:${(1.8+Math.random()*2).toFixed(1)}vmin;animation-delay:-${(Math.random()*1.3).toFixed(2)}s">✦</b>`).join('');
+    A.appendChild(n);
+    [...A.querySelectorAll('.batub,.bashow,.baduck,.baf,.bafloor')].forEach(el=>{el.style.pointerEvents='none';el.animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'});});
+    const AR=IMG_AR.ba_bed,bw=G.land?Math.min(G.W*.46,G.H*.74*AR):Math.min(G.W*.84,G.H*.42*AR),bh=bw/AR,fz=bw*.46,b=document.createElement('div');b.className='babed';
+    Object.assign(b.style,{left:(G.W-bw)/2+'px',top:(G.H-bh-G.H*.05)+'px',width:bw+'px',height:bh+'px'});
+    b.innerHTML=`<img class="bd" src="chars/ba_bed.webp" alt=""><img class="who" src="${BA.who.img||charSrc(BA.who)}" alt="" style="left:${(bw-fz)/2}px;top:${bh*.12}px;width:${fz}px;height:${fz}px"><img class="bd fr" src="chars/ba_bed.webp" alt="">`;
+    A.appendChild(b);BA.stage='sleep';BA.pat=0;BA.last=Date.now();
+    tone({f:660,f2:440,d:.5,v:.1,a:.05});say(`${ga(BA.who.name)} 침대에 누웠어요. 토닥토닥 해 줘요!`);},1700);}
+function baPat(){const b=document.querySelector('.babed'),w=b&&b.querySelector('.who');if(!w)return;BA.last=Date.now();const g=BA.gen,c=ctr(w);
+  w.animate([{transform:'none'},{transform:'scale(1.05,.93)'},{transform:'none'}],{duration:450});heartBurst(c.x,c.y-c.h*.15);
+  if(BA.stage!=='sleep'){bell(mtof(PENT[2+Math.floor(Math.random()*4)]),0,.08,.6);return;}
+  const n=++BA.pat;bell(mtof(PENT[n+1]),0,.12,.7);
+  if(n<3){say(n===1?'토닥토닥':'자장자장');return;}
+  BA.stage='night';
+  [0,1,2].forEach(i=>{const z=document.createElement('i');z.className='bazz';z.textContent='Z';
+    z.style.cssText=`left:${parseFloat(w.style.left)+parseFloat(w.style.width)*.78}px;top:${parseFloat(w.style.top)-parseFloat(w.style.width)*.05}px;font-size:${(7-i*1.5)}vmin;animation-delay:${i}s`;b.appendChild(z);});
+  say(`잘 자요, ${BA.who.name}!`);cheer('잘 자요!');
+  setTimeout(()=>{if(BA.gen!==g)return;const t=baLullaby();
+    setTimeout(()=>{if(BA.gen!==g||S.screen!=='bath')return;BA.round++;baRound();},t*1000+1800);},1300);}
+// 자장가 (브람스 자장가 앞부분) — 놀이를 나가면 바로 꺼져요
+function baLullaby(){const o=busOut('ba'),b=.46;let t=.05;
+  [[76,.5],[76,.5],[79,2],[76,.5],[76,.5],[79,2],[76,.5],[79,.5],[84,1],[83,1.5],[81,.5],[81,1],[79,2]].forEach(([m,d])=>{const f=mtof(m);
+    tone({f,t,d:d*b*1.7,v:.15,a:.03,out:o});tone({f:f*2,t,d:d*b*.7,v:.035,a:.03,out:o});t+=d*b;});
+  [[48,0],[55,3],[48,6],[53,8.5],[48,10.5]].forEach(([m,k])=>tone({f:mtof(m),t:.05+k*b,d:b*2.6,v:.07,a:.05,out:o}));   // 낮은 소리 받침
+  return t;}
 setInterval(()=>{if(S.screen!=='bath'||BA.pid!=null||!BA.G||Date.now()-Math.max(lastTouch,BA.last)<6000)return;BA.last=Date.now();const G=BA.G;
-  if(BA.stage==='rub'){const y=G.fy+G.fz*.32;ghostHand(G.fx+G.fz*.25,y,G.fx+G.fz*.75,y+G.fz*.06,{src:'chars/sponge.webp',w:G.fz*.3,h:G.fz*.26});say('쓱쓱 문질러요!');}
-  else if(BA.stage==='rinse'){const c=ctr($('baShow'));ghostHand(c.x-c.w,c.y+c.h*.4,c.x,c.y,null);say('샤워기를 톡 눌러요!');}},1000);
+  if(BA.stage==='rub'||BA.stage==='dry'){const y=G.fy+G.fz*.32,t=BA.stage==='dry';
+    ghostHand(G.fx+G.fz*.25,y,G.fx+G.fz*.75,y+G.fz*.06,{src:t?'chars/ba_towel.webp':'chars/sponge.webp',w:G.fz*(t?.36:.3),h:G.fz*(t?.26:.26)});say(t?'수건으로 쓱쓱 닦아요!':'쓱쓱 문질러요!');}
+  else if(BA.stage==='rinse'){const c=ctr($('baShow'));ghostHand(c.x-c.w,c.y+c.h*.4,c.x,c.y,null);say('샤워기를 톡 눌러요!');}
+  else if(BA.stage==='sleep'){const w=document.querySelector('.babed .who');if(w){const c=ctr(w);ghostHand(c.x+c.w*.5,c.y+c.h*.3,c.x,c.y-c.h*.15,null);say('토닥토닥 해 줘요!');}}},1000);
 $('goBath').onclick=()=>{sfx.tap();baStart();};
 $('baBack').onclick=()=>{sfx.tap();BA.gen++;BA.pid=null;busHush('ba');$('sponge').style.display='none';show('home');};
 
