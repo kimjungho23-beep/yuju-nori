@@ -857,7 +857,7 @@ function synthStop(){if(!bgmTimer)return;clearInterval(bgmTimer);bgmTimer=null;c
 // 배경음악: 받은 노래 3곡을 돌아가며. 파일을 못 읽으면 직접 만든 오르골 음악으로
 const SONGS_FILE=['music/kids.mp3','music/baby.mp3','music/lofi.mp3'];
 let BGA=null,bgaIdx=Math.floor(Math.random()*SONGS_FILE.length),bgaFail=0,bgaOn=false;
-const bgaVol=()=>+store.get('yj_bgmvol','.22')||.22;
+const bgaVol=()=>+store.get('yj_bgmvol','.12')||.12;
 function bgmStart(){if(bgaOn)return;audio();
   if(bgaFail>=SONGS_FILE.length){synthStart();return;}
   if(!BGA){BGA=new Audio();BGA.preload='auto';
@@ -1196,7 +1196,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v26';
+const APP_VERSION='v27';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1972,7 +1972,7 @@ function openParent(){const P=$('parent');P.classList.add('on');
   const r=playRec();$('todayTime').textContent=`${Math.floor(r.s/60)}분`+(r.extra?` (10분씩 ${r.extra/10}번 더 줌)`:'');
   const rs=$('rateSeg');rs.innerHTML='';const cur=store.get('yj_rate','.9');[['.8','천천히'],['.9','보통'],['1','조금 빠르게']].forEach(([v,t])=>{const b=document.createElement('button');
     b.textContent=t;b.className=cur===v?'sel':'';b.onclick=()=>{store.set('yj_rate',v);openParent();say('이 빠르기로 말할게요');};rs.appendChild(b);});
-  const vs2=$('volSeg');vs2.innerHTML='';const cv=store.get('yj_bgmvol','.22');[['.12','작게'],['.22','보통'],['.35','크게']].forEach(([v,t])=>{const b=document.createElement('button');
+  const vs2=$('volSeg');vs2.innerHTML='';const cv=store.get('yj_bgmvol','.12');[['.05','아주 작게'],['.12','작게'],['.22','보통'],['.35','크게']].forEach(([v,t])=>{const b=document.createElement('button');
     b.textContent=t;b.className=cv===v?'sel':'';b.onclick=()=>{store.set('yj_bgmvol',v);if(BGA)BGA.volume=+v;openParent();};vs2.appendChild(b);});
   const vl=$('voiceList');vl.innerHTML='';let vs=[];try{vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));}catch(e){}
   if(!vs.length)vl.innerHTML='<div class="none">탭에 한국어 목소리가 없어요. 설정 → 일반 → 텍스트 음성 변환에서 받을 수 있어요.</div>';
