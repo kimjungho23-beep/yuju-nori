@@ -337,6 +337,30 @@ img{-webkit-user-drag:none;pointer-events:none}
 .abtn{padding:1vmin 1.8vmin;font-size:clamp(20px,3.6vmin,36px);white-space:nowrap}
 .abtn small{white-space:nowrap;font-size:clamp(13px,2.3vmin,22px)}
 
+/* ===== 화면 전환 비눗방울 ===== */
+.wipe{position:fixed;inset:0;z-index:300;pointer-events:none}
+.wipe i{position:absolute;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff 0 9%,rgba(220,245,255,.95) 30%,rgba(170,220,255,.9) 70%,rgba(255,200,240,.9) 100%);
+  box-shadow:inset 0 0 3vmin rgba(255,255,255,.9);animation:wipePop .75s ease-in forwards}
+@keyframes wipePop{0%{transform:scale(1.15);opacity:1}35%{transform:scale(1.2);opacity:1}70%{transform:scale(1.45);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+/* ===== 친구 악단 ===== */
+.songs{display:flex;gap:1.4vmin;align-self:center;pointer-events:none}
+.songs button{pointer-events:auto;border:none;background:#fff;border-radius:99px;padding:.8vmin 2vmin .8vmin 1vmin;display:flex;align-items:center;gap:1vmin;
+  font-size:clamp(16px,2.8vmin,26px);box-shadow:0 .6vmin 0 rgba(30,90,140,.15)}
+.songs button img,.songs button svg{width:clamp(30px,5.4vmin,50px);height:clamp(30px,5.4vmin,50px);object-fit:contain}
+.songs button.sel{background:#ffd65a}
+.key{position:absolute;touch-action:none}
+.key .bar{position:absolute;left:8%;right:8%;bottom:0;border-radius:2.4vmin;background:var(--c);box-shadow:inset 0 -1.4vmin 0 rgba(0,0,0,.12),0 1vmin 0 rgba(0,0,0,.08)}
+.key .bar::before,.key .bar::after{content:'';position:absolute;left:50%;width:2.2vmin;height:2.2vmin;margin-left:-1.1vmin;border-radius:50%;background:rgba(255,255,255,.7)}
+.key .bar::before{top:8%}.key .bar::after{bottom:14%}
+.key img{position:absolute;left:0;right:0;margin:auto;object-fit:contain;transform-origin:50% 100%;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.22))}
+.key.hit img{animation:keyJump .42s ease-out}
+.key.hit .bar{filter:brightness(1.25)}
+@keyframes keyJump{0%{transform:none}30%{transform:translateY(-22%) scale(1.08,.94)}60%{transform:translateY(0) scale(1.1,.9)}100%{transform:none}}
+.key.next .bar{animation:nextGlow .9s ease-in-out infinite}
+.key.next img{animation:bob 1s ease-in-out infinite}
+@keyframes nextGlow{0%,100%{box-shadow:0 0 0 .6vmin #fff,0 0 3vmin #fff,inset 0 -1.4vmin 0 rgba(0,0,0,.12)}50%{box-shadow:0 0 0 1.2vmin #fff,0 0 6vmin #fff8b0,inset 0 -1.4vmin 0 rgba(0,0,0,.12)}}
+.mnote{position:fixed;z-index:60;pointer-events:none;font-size:clamp(26px,5vmin,48px);color:var(--c);text-shadow:0 2px 0 #fff;animation:noteUp 1.1s ease-out forwards}
+@keyframes noteUp{0%{transform:translate(-50%,0) scale(.5);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),-22vh) scale(1.2) rotate(var(--r));opacity:0}}
 /* ===== 친구 꾸미기 ===== */
 #doll{animation:breathe 2.8s ease-in-out infinite;transform-origin:50% 95%}
 #doll .fr{position:absolute;object-fit:contain;filter:drop-shadow(0 1.6vmin 1.4vmin rgba(150,40,90,.18));transform-origin:50% 90%}
@@ -479,7 +503,7 @@ body.land #scene,body.land #bubbles{display:none}
       <button class="card" id="goBubble" style="--c:#7ec8ff"><span class="art" data-art="bubble"></span><b>비눗방울</b></button>
       <button class="card" id="goPeek" style="--c:#5ccf95"><span class="art" data-art="peek"></span><b>까꿍</b></button>
       <button class="card" id="goFeed" style="--c:#ff9f43"><span class="art" data-art="feed"></span><b>밥 주기</b></button>
-      <button class="card" id="goSea" style="--c:#4fb3e8"><span class="art" data-art="sea"></span><b>내 바다</b><i class="badge" id="seaBadge"></i></button>
+      <button class="card" id="goMusic" style="--c:#b8a6ff"><span class="art" data-art="music"></span><b>악단</b></button>
     </div>
   </div>
 </section>
@@ -577,6 +601,11 @@ body.land #scene,body.land #bubbles{display:none}
 <!-- 놀이 시간이 끝나면 -->
 <div id="sleep"><div class="sl"><img src="chars/sleep_shark.webp" alt=""></div>
   <b>오늘은 여기까지!</b><span>내일 또 같이 놀자</span><div class="hold" id="sleepHold">부모님: 여기를 3초 꾹 누르면 10분 더</div></div>
+
+<section id="music" class="screen">
+  <div class="area" id="muArea"></div>
+  <div class="topbar"><button class="rbtn" id="muBack" aria-label="처음으로" data-ic="home"></button><div class="songs" id="muSongs"></div><button class="rbtn musicBtn" aria-label="음악"></button></div>
+</section>
 
 <section id="feed" class="screen">
   <div class="area" id="fdArea"></div>
@@ -897,7 +926,12 @@ let lastPtr=Date.now();['pointerdown','pointermove'].forEach(t=>document.addEven
 setInterval(()=>{if(Date.now()-lastPtr<=3000)return;const left=document.querySelectorAll('body > .stkFloat, body > .dragItem');if(!left.length)return;
   left.forEach(e=>e.remove());if(typeof FG!=='undefined'&&FG){FG.tile&&FG.tile.classList.remove('lift');FG=null;}
   if(S.screen==='sea')seaRender();},1500);   // 3초 동안 아무도 안 만지면 떠 있는 것 정리 (쟁반도 새로 그려서 다시 잡을 수 있게)   // 3초 동안 아무도 안 만지면 떠 있는 것 정리
+function bubbleWipe(){const w=document.createElement('div');w.className='wipe';const W=innerWidth,H=innerHeight,z=Math.max(W,H)*.3;
+  for(let i=0;i<16;i++){const b=document.createElement('i'),k=z*(.7+Math.random()*.7);
+    b.style.cssText=`left:${(i%4+.5)*W/4-k/2+(Math.random()-.5)*W*.1}px;top:${(Math.floor(i/4)+.5)*H/4-k/2+(Math.random()-.5)*H*.1}px;width:${k}px;height:${k}px;animation-delay:${(Math.random()*.22).toFixed(2)}s`;w.appendChild(b);}
+  document.body.appendChild(w);setTimeout(()=>{for(let i=0;i<5;i++)setTimeout(()=>sfx.pop(),i*60);},120);setTimeout(()=>w.remove(),900);}
 function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingReload){location.reload();return;}
+  if(typeof S!=='undefined'&&S.screen&&S.screen!==id&&unlocked)bubbleWipe();
   sweepFloats(true);
   if(id!=='game'&&id!=='bubble')document.body.classList.remove('land');
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;}
@@ -1204,7 +1238,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen!=='home')show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v31';
+const APP_VERSION='v32';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1810,6 +1844,48 @@ function heartBurst(x,y){for(let i=0;i<8;i++){const s=document.createElement('sp
 $('goFeed').onclick=()=>{sfx.tap();say(FD.world==='land'?'토끼한테 밥 줘요':'상어한테 밥 줘요');fdStart();};
 $('fdBack').onclick=()=>{sfx.tap();show('home');};
 
+/* ================= 친구 악단: 친구를 누르면 노래해요. 노래를 고르면 다음에 누를 친구가 반짝 ================= */
+const MU_NOTES=[60,62,64,65,67,69,71,72];   // 도 레 미 파 솔 라 시 도
+const MU_COL=['#ff6b6b','#ff9f43','#ffd93d','#6fd36f','#4fc3f7','#5b8def','#a77bf3','#ff8fc7'];
+const MU_NAME=['도','레','미','파','솔','라','시','도'];
+// 옛날부터 내려오는 동요 가락 (저작권이 끝난 곡)
+const MU_SONGS=[
+ {id:'star',name:'작은 별',seq:[0,0,4,4,5,5,4, 3,3,2,2,1,1,0, 4,4,3,3,2,2,1, 4,4,3,3,2,2,1, 0,0,4,4,5,5,4, 3,3,2,2,1,1,0]},
+ {id:'bfly',name:'나비야',seq:[4,2,2, 3,1,1, 0,1,2,3,4,4,4, 4,2,2,2, 3,1,1,1, 0,2,4,4,2,2,2]},
+ {id:'plane',name:'비행기',seq:[2,1,0,1,2,2,2, 1,1,1, 2,4,4, 2,1,0,1,2,2,2, 1,1,2,1,0]},
+];
+const MU={song:null,pos:0,keys:[],lastNo:0,idleT:0};
+function muNote(i,t=0){const f=mtof(MU_NOTES[i]);tone({f,t,d:.55,v:.24});tone({f:f*2,t,d:.25,v:.06});tone({f:f*4,t,d:.06,v:.05});}
+function muStart(){show('music');document.body.classList.remove('land');muBuild();muSongs();}
+function muBuild(){const A=$('muArea');A.innerHTML='';MU.keys=[];const W=A.clientWidth,H=A.clientHeight,cw=W*.94/8,x0=W*.03;
+  CHARS.slice(0,8).forEach((ch,i)=>{const k=document.createElement('div');k.className='key';const bh=H*(.36-i*.022),fz=Math.min(cw*.98,H*.27);
+    Object.assign(k.style,{left:(x0+i*cw)+'px',width:cw+'px',bottom:(H*.05)+'px',height:(bh+fz)+'px'});
+    k.innerHTML=`<div class="bar" style="--c:${MU_COL[i]};height:${bh}px"></div><img src="${charSrc(ch)}" alt="" style="bottom:${bh-fz*.12}px;width:${fz}px;height:${fz}px">`;
+    k.addEventListener('pointerdown',e=>{e.preventDefault();muTap(i);});A.appendChild(k);MU.keys.push(k);});
+  muMark();}
+function muSongs(){const g=$('muSongs');g.innerHTML='';
+  const icon={star:`<svg viewBox="0 0 64 64">${star(32,34,26,'#ffd65a')}</svg>`,bfly:`<img src="chars/st_butterfly.webp" alt="">`,plane:`<img src="chars/st_cloud.webp" alt="">`};
+  MU_SONGS.forEach(sg=>{const b=document.createElement('button');b.className=MU.song===sg?'sel':'';b.innerHTML=icon[sg.id]+`<span>${sg.name}</span>`;
+    b.onclick=()=>{if(MU.song===sg){MU.song=null;say('마음대로 연주해요');}else{MU.song=sg;MU.pos=0;say(`${sg.name} 같이 연주해요! 반짝이는 친구를 눌러요`);}muSongs();muMark();};g.appendChild(b);});}
+function muMark(){MU.keys.forEach((k,i)=>k.classList.toggle('next',!!MU.song&&MU.song.seq[MU.pos]===i));}
+function muTap(i){const k=MU.keys[i];if(!k)return;muNote(i);k.classList.remove('hit');void k.offsetWidth;k.classList.add('hit');MU.idleT=Date.now();
+  const r=k.querySelector('img').getBoundingClientRect(),n=document.createElement('span');n.className='mnote';n.textContent=pick(['♪','♫','♬']);
+  n.style.cssText=`left:${r.left+r.width/2}px;top:${r.top}px;--c:${MU_COL[i]};--dx:${(Math.random()-.5)*12}vmin;--r:${(Math.random()*60-30)|0}deg`;
+  n.addEventListener('animationend',()=>n.remove());document.body.appendChild(n);
+  if(!MU.song)return;
+  if(MU.song.seq[MU.pos]!==i){if(Date.now()-MU.lastNo>3000){MU.lastNo=Date.now();const nx=MU.keys[MU.song.seq[MU.pos]];nx&&nx.animate([{transform:'none'},{transform:'translateY(-6%)'},{transform:'none'}],{duration:400});}return;}
+  MU.pos++;if(MU.pos<MU.song.seq.length){muMark();return;}
+  // 노래 끝! 친구들이 차례로 폴짝, 박수
+  const done=MU.song;MU.song=null;muMark();muSongs();cheer(`${done.name} 다 연주했어요!`);setTimeout(()=>say('와! 정말 잘 연주했어요!'),400);
+  MU.keys.forEach((kk,j)=>setTimeout(()=>{muNote(j);kk.classList.remove('hit');void kk.offsetWidth;kk.classList.add('hit');},600+j*110));
+  setTimeout(()=>{for(let t=0;t<14;t++)noise({t:t*.09+Math.random()*.04,f:1800+Math.random()*1500,d:.06,v:.12,q:2});sfx.fanfare();},1600);}
+// 노래 따라하기 중에 가만히 있으면 손가락이 반짝이는 친구를 톡
+setInterval(()=>{if(S.screen!=='music'||!MU.song||Date.now()-MU.idleT<6000)return;MU.idleT=Date.now();const k=MU.keys[MU.song.seq[MU.pos]];if(!k)return;
+  const r=k.querySelector('img').getBoundingClientRect();ghostHand(r.left+r.width/2,r.top-r.height*.6,r.left+r.width/2,r.top+r.height*.4,null);},1000);
+$('goMusic').onclick=()=>{sfx.tap();say('친구 악단이에요! 친구를 눌러봐요');muStart();};
+$('muBack').onclick=()=>{sfx.tap();MU.song=null;show('home');};
+addEventListener('resize',()=>{if(S.screen==='music')muBuild();});
+
 /* ================= 디자인: 아이콘 채우기, 바다 배경, 첫 화면 그림, 칭찬 리본 ================= */
 document.querySelectorAll('[data-ic]').forEach(e=>e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic)));
 syncMusic();
@@ -1887,6 +1963,11 @@ document.querySelectorAll('#title span').forEach((s,i)=>s.style.setProperty('--t
 [['puzzle','ic_puzzle'],['draw','ic_draw'],['bubble','ic_bubble'],['feed','ic_peek']].forEach(([a,img])=>{const el=document.querySelector(`.card .art[data-art="${a}"]`);
   if(el)el.innerHTML=`<img src="chars/${img}.webp" alt="" class="homeic">`;});
 
+{const el=document.querySelector('.card .art[data-art="music"]');if(el){el.style.setProperty('--bgc','#f1ebff');
+  el.innerHTML=`<svg viewBox="0 0 120 100"><g><rect x="10" y="70" width="30" height="22" rx="6" fill="#ff6b6b"/><rect x="45" y="74" width="30" height="18" rx="6" fill="#ffd93d"/><rect x="80" y="78" width="30" height="14" rx="6" fill="#4fc3f7"/></g>
+   <image href="${charSrc(CHARS[3])}" x="6" y="36" width="38" height="38"/><image href="${charSrc(CHARS[1])}" x="41" y="40" width="38" height="38"/><image href="${charSrc(CHARS[0])}" x="76" y="44" width="38" height="38"/>
+   <g fill="#8a6cf0"><path d="M30 8 v18" stroke="#8a6cf0" stroke-width="3"/><ellipse cx="26" cy="27" rx="5" ry="4"/><path d="M84 4 v16 M98 1 v16" stroke="#8a6cf0" stroke-width="3"/><path d="M84 4 L98 1" stroke="#8a6cf0" stroke-width="4"/><ellipse cx="80" cy="21" rx="5" ry="4"/><ellipse cx="94" cy="18" rx="5" ry="4"/></g></svg>`;}}
+
 // 칭찬 리본
 let cheerT=0;function cheer(t){const e=$('cheer');$('cheerTxt').textContent=t;e.classList.remove('on');void e.offsetWidth;e.classList.add('on');
   clearTimeout(cheerT);cheerT=setTimeout(()=>e.classList.remove('on'),2300);}
@@ -1914,10 +1995,10 @@ const ST={list:[],last:{}};
 try{ST.list=JSON.parse(store.get('yj_stickers','[]'))||[];}catch(e){ST.list=[];}
 const saveST=()=>store.set('yj_stickers',JSON.stringify(ST.list));
 function newCount(){return ST.list.filter(s=>!s.placed).length;}
-function syncBadge(){const n=newCount(),b=$('seaBadge');b.textContent=n;b.classList.toggle('on',n>0);}
+function syncBadge(){const n=newCount(),b=$('seaBadge');if(!b)return;b.textContent=n;b.classList.toggle('on',n>0);}
 
 // 놀이에서 성공하면 호출: kind 없으면 바다 소품 중 하나, 'fish'면 물고기
-function giveSticker(kind,src){
+function giveSticker(kind,src){return;   // 스티커 모으기는 뺐어요 (놀이 흐름이 끊겨서)
   if(src){if(Date.now()-(ST.last[src]||0)<90000)return;ST.last[src]=Date.now();}   // 그림 저장·사진은 1분 반에 한 번만
   if(!kind)kind='i:'+pick(document.body.classList.contains('land')?['flower','butterfly','mushroom','apple','carrot','rainbow','sun','cloud','heart']:['star','shell','pearl','coral','weed','chest','heart']);
   if(kind==='fish')kind='f:'+pick(FISH_COLS);
@@ -2151,11 +2232,11 @@ $('goDress').querySelector('b').textContent='꾸미기';
    <svg x="6" y="40" width="34" height="46" viewBox="${FI.balloon.box}">${FI.balloon.svg}</svg></svg>`;}}
 
 $('pzReset').onclick=()=>{Object.assign(PZ,{world:'sea',order:[],idx:0,solved:0});savePZ();$('pzReset').textContent='처음부터 다시 시작해요 ✓';};
-$('goSea').onclick=()=>{sfx.tap();say('내 바다를 꾸며요');seaOpen();};
+if($('goSea'))$('goSea').onclick=()=>{sfx.tap();say('내 바다를 꾸며요');seaOpen();};
 $('seaBack').onclick=()=>{sfx.tap();show('home');syncBadge();};
 syncBadge();
 // '내 바다' 카드 그림
-(()=>{const el=document.querySelector('.card .art[data-art="sea"]');el.style.setProperty('--bgc','#d7f1ff');
+(()=>{const el=document.querySelector('.card .art[data-art="sea"]');if(!el)return;el.style.setProperty('--bgc','#d7f1ff');
   el.innerHTML=`<svg viewBox="0 0 120 100"><rect x="10" y="14" width="100" height="76" rx="12" fill="#8fd3f7" stroke="#fff" stroke-width="4"/>
    <path d="M12 78 Q40 70 60 76 T108 74 V86 Q108 88 104 88 H16 Q12 88 12 84 Z" fill="#ffe3a3"/>
    <image href="chars/p_star.webp" x="16" y="60" width="26" height="26"/><image href="chars/p_shell.webp" x="76" y="60" width="26" height="26"/>
