@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 // 2단계: 머리 없는 크롬(음소거)에서 앱을 열고 gen.js로 모든 문장을 펼쳐 lines.json에 저장해요
 // 먼저 저장소 폴더에서 로컬 서버를 켜 두세요: python -m http.server 8765 --bind 127.0.0.1
 //   node tools/voice/run_gen.mjs
@@ -5,7 +6,7 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-const DIR = path.dirname(new URL(import.meta.url).pathname).replace(/^\/(\w:)/, '$1');
+const DIR = path.dirname(fileURLToPath(import.meta.url));   // 한글 폴더 이름도 그대로
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const PORT = 9420;
 const prof = path.join(os.tmpdir(), 'yuju-voice-gen-prof');   // 크롬 임시 프로필 (저장소 밖)

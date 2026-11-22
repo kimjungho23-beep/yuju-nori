@@ -60,4 +60,8 @@ NAMES.forEach(n=>{add(`오늘은 ${n} 생일이에요! 케이크를 예쁘게 �
 // 목욕
 NAMES.forEach(n=>{['진흙 놀이를','물감 놀이를'].forEach(k=>add(`${ga(n)} ${k} 했어요! 쓱쓱 문질러 줘요!`,'ba'));
   add(`반짝반짝! ${ga(n)} 깨끗해졌어요!`,'ba');add(`${ga(n)} 침대에 누웠어요. 토닥토닥 해 줘요!`,'ba');add(`잘 자요, ${n}!`,'ba');});
+// 병원 (v49)
+NAMES.forEach(n=>{HO_STORY.forEach(st=>add(st.intro(n),'ho'));add(`와! ${ga(n)} 다 나았어요! 고마워요!`,'ho');});
+Object.values(HO_ASK).forEach(t=>add(t,'ho'));Object.values(HO_BEAT1).forEach(t=>add(t,'ho'));
+HO_STORY.forEach(st=>st.steps.forEach((k,i)=>{const nx=st.steps[i+1];if(nx)add(`${HO_DONE[k]} ${HO_ASK[nx]}`,'ho');}));
 return [...L].map(([t,tag])=>({t,tag}));}
