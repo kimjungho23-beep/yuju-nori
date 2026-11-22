@@ -287,6 +287,52 @@ img.shf,img.ckfr,img.baduck,img.shd{pointer-events:auto}
 .fdtool img{width:100%;height:100%;object-fit:contain;display:block}
 .fdtool.glow img{filter:drop-shadow(0 0 1.2vmin #fff) drop-shadow(0 0 2.6vmin #fff8b0)}
 .fdtool.glow{animation:hint 1.2s ease-in-out infinite}
+/* 요리 (v45) */
+.cuwrap{position:absolute;z-index:7;border-radius:4vmin;touch-action:none;
+  background:linear-gradient(to bottom,transparent 80%,#f3c897 80%,#e7ae75),repeating-conic-gradient(#fffaf2 0 25%,#ffeedd 0 50%) 0 0/8vmin 8vmin;
+  box-shadow:0 0 0 1vmin #fff,0 1.6vmin 3vmin rgba(0,40,90,.25);animation:mouthIn .5s cubic-bezier(.3,1.4,.5,1)}
+.cuwrap.out{animation:mouthOut .5s ease-in forwards}
+.cuwrap>*{position:absolute}
+.custove{pointer-events:none;object-fit:contain;filter:drop-shadow(0 .8vmin .6vmin rgba(0,40,90,.2))}
+.cupot{pointer-events:none;transform-origin:88% 90%;transition:transform .35s ease}
+.cupot .pot{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 1vmin .8vmin rgba(0,40,90,.22))}
+.cupot.tilt{transform:rotate(24deg) translate(6%,-4%)}
+.cupot.glow{animation:hint 1.2s ease-in-out infinite}.cupot.glow .pot{filter:drop-shadow(0 0 1.2vmin #fff) drop-shadow(0 0 2.6vmin #fff8b0)}
+.cupot .soup{position:absolute;border-radius:50%;overflow:hidden;transition:opacity .6s;
+  background:radial-gradient(ellipse at 42% 38%,color-mix(in srgb,var(--sc) 55%,#fff) 0,var(--sc) 55%,color-mix(in srgb,var(--sc) 82%,#000) 100%)}
+.cupot .soup.low{opacity:.4}
+.cupot .soup.boil{animation:boil .45s ease-in-out infinite alternate}
+@keyframes boil{to{filter:brightness(1.1) saturate(1.15)}}
+.cupot .soup .sw{position:absolute;left:0;top:50%;width:100%;aspect-ratio:1;transform:translateY(-50%) scaleY(var(--k))}
+.cupot .soup .sw i{position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(rgba(255,255,255,.2) 0 9deg,transparent 9deg 40deg)}
+.cupot .soup .bit{position:absolute;width:34%;height:auto;transform:translate(-50%,-50%);filter:drop-shadow(0 .3vmin .3vmin rgba(0,0,0,.2));animation:bitBob 1.5s ease-in-out infinite alternate}
+@keyframes bitBob{to{margin-top:-2%}}
+.cubub{position:absolute;border-radius:50%;border:.35vmin solid rgba(255,255,255,.85);transform:translate(-50%,-50%);animation:bubPop .7s ease-out forwards}
+@keyframes bubPop{from{transform:translate(-50%,-50%) scale(.2);opacity:.9}to{transform:translate(-50%,-50%) scale(1.15);opacity:0}}
+.culadle{z-index:5;pointer-events:none;opacity:0;transition:opacity .3s;object-fit:contain;filter:drop-shadow(0 1vmin .8vmin rgba(0,40,90,.3))}
+.culadle.in{opacity:1}.culadle.on{animation:brWig .16s ease-in-out infinite alternate}.culadle.gone{opacity:0}
+.cuitem{z-index:6;touch-action:none;animation:popsoft .4s backwards;filter:drop-shadow(0 1vmin .8vmin rgba(0,40,90,.25))}
+.cuitem img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
+.cuitem.hold{transform:scale(1.12);z-index:9}
+.cuitem.back{transition:left .4s cubic-bezier(.3,1.35,.5,1),top .4s cubic-bezier(.3,1.35,.5,1)}
+.cuitem.hint{animation:hint 1s}
+.cubowl{z-index:8;pointer-events:none;filter:drop-shadow(0 1vmin .8vmin rgba(0,40,90,.25));animation:popsoft .4s}
+.cubowl img{width:100%;height:100%;object-fit:contain;display:block}
+.cubowl.glow{animation:hint 1.2s ease-in-out infinite}.cubowl.glow img{filter:drop-shadow(0 0 1vmin #fff) drop-shadow(0 0 2.2vmin #fff8b0)}
+.cupour{z-index:4;border-radius:99px;background:var(--sc);transform-origin:50% 0;animation:pourIn .3s ease-out both}
+.cupour.end{animation:pourOut .4s ease-in forwards}
+@keyframes pourIn{from{transform:scaleY(0)}}@keyframes pourOut{to{transform:scaleY(.1) translateY(400%);opacity:0}}
+.custeam{z-index:6;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,.9),rgba(255,255,255,0) 70%);animation:steamUp 1.6s ease-out forwards}
+@keyframes steamUp{from{transform:translateY(0) scale(.5);opacity:0}25%{opacity:.95}to{transform:translateY(-14vmin) scale(1.6);opacity:0}}
+.cuwisp{z-index:9;pointer-events:none;border-radius:99px;background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));filter:blur(.25vmin);animation:wisp 1.4s ease-in-out infinite;transition:opacity .5s}
+@keyframes wisp{0%{transform:translateY(0) skewX(0);opacity:.35}50%{transform:translateY(-2vmin) skewX(14deg);opacity:1}100%{transform:translateY(-4vmin) skewX(-10deg);opacity:.35}}
+.cuwisp.bye{opacity:0!important;animation:none}
+.cuwind{z-index:9;pointer-events:none;height:1.1vmin;border-radius:99px;background:rgba(255,255,255,.95);box-shadow:0 0 .8vmin rgba(120,180,255,.6);animation:windGo .7s ease-out both}
+@keyframes windGo{from{transform:translateX(-4vmin) scaleX(.3);opacity:0}30%{opacity:1}to{transform:translateX(8vmin) scaleX(1);opacity:0}}
+.cudrop{z-index:7;pointer-events:none;border-radius:50%;background:var(--sc);border:.3vmin solid #fff;animation:cuSplash .6s cubic-bezier(.2,.7,.4,1) forwards}
+@keyframes cuSplash{to{transform:translate(var(--x),var(--y)) scale(.4);opacity:0}}
+/* 까꿍: 바닥이 깨끗한 배경 (숨는 물건과 배경 그림이 겹치지 않게) */
+.bgimg.pkimg{display:none}body.pkbg .bgimg.pkimg{display:block}body.pkbg .bgimg:not(.pkimg){visibility:hidden}
 .fdshine{position:absolute;z-index:15;pointer-events:none;color:#fff;text-shadow:0 0 1.5vmin #fff8b0,0 0 .6vmin #ffe27a;animation:twk .45s ease-in-out infinite alternate}
 
 /* ===== 디자인 다듬기 ===== */
@@ -446,6 +492,13 @@ body.land #dress{background:linear-gradient(180deg,#e6f7ff,#eafbe0 60%,#c9efb0)}
 .seg button.sel,.vlist button.sel{background:#ff8fb8;color:#fff}
 .pb.main{background:#4fb3e8;color:#fff;padding:1.4vmin;margin-top:1vmin}
 .vlist{display:flex;flex-direction:column;gap:1vmin;max-height:34vh;overflow:auto}
+.phList{display:flex;flex-wrap:wrap;gap:1.6vmin;padding-top:1vmin}
+.phList .ph{position:relative;width:clamp(64px,11vmin,100px);aspect-ratio:1;border-radius:1.6vmin;border:none;padding:0;background:#eef3f8}
+.phList .ph img{width:100%;height:100%;object-fit:cover;border-radius:1.6vmin;display:block}
+.phList .ph .del{position:absolute;top:-1.2vmin;right:-1.2vmin;width:clamp(26px,4vmin,36px);height:clamp(26px,4vmin,36px);border-radius:50%;border:none;
+  background:#ff6b8b;color:#fff;font-size:clamp(16px,2.6vmin,24px);display:grid;place-items:center;padding:0;line-height:1}
+.phList .ph.add{border:.4vmin dashed #9ab0c6;background:#f6f9fc;color:#5a7a9a;font-size:clamp(26px,4.6vmin,42px);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.phList .ph.add small{font-size:clamp(12px,1.9vmin,16px);margin-top:.6vmin}
 .vlist button{text-align:left;border-radius:2vmin}
 .vlist .none{color:#7a8aa0}
 #sleep{position:fixed;inset:0;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2vmin;color:#fff;
@@ -823,6 +876,7 @@ body.land #scene,body.land #bubbles{display:none}
   <div class="prow"><b>배경음악 크기</b><div class="seg" id="volSeg"></div></div>
   <div class="prow"><b>그릴 때 소리</b><div class="seg" id="dsndSeg"></div></div>
   <div class="prow"><b>퍼즐 여행</b><button class="pb" id="pzReset">처음부터 다시</button></div>
+  <div class="prow col"><b>퍼즐 사진 <small>(가족 사진을 넣으면 숲속 퍼즐에 같이 나와요 · 8장까지)</small></b><div class="phList" id="phList"></div></div>
   <button class="pb main" id="parentClose">닫기</button>
 </div></div>
 
@@ -1230,6 +1284,7 @@ function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingRel
   if(typeof S!=='undefined'&&S.screen&&S.screen!==id&&unlocked)bubbleWipe();
   sweepFloats(true);
   if(id!=='game'&&id!=='bubble')document.body.classList.remove('land');
+  document.body.classList.toggle('pkbg',id==='peek');
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;S.visit=(S.visit||0)+1;bgmHoldScreen(id);}
 function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.innerHTML=ic('music');b.classList.toggle('off',!S.music);
   b.setAttribute('aria-label',S.music?'배경음악 끄기':'배경음악 켜기');});}
@@ -1310,7 +1365,7 @@ $('photoIn').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!
   const url=URL.createObjectURL(f);try{const img=await loadImg(url);const s=Math.min(img.naturalWidth,img.naturalHeight),N=900;
     const c=document.createElement('canvas');c.width=c.height=N;
     c.getContext('2d').drawImage(img,(img.naturalWidth-s)/2,(img.naturalHeight-s)/2,s,s,0,0,N,N);
-    S.photos.push({id:'p'+Date.now(),src:c.toDataURL('image/jpeg',.85)});savePhotos();sfx.fanfare();renderSelect();}
+    S.photos.push({id:'p'+Date.now(),src:c.toDataURL('image/jpeg',.85)});savePhotos();sfx.fanfare();renderSelect();renderPhotos();}
   catch(err){alert('사진을 불러오지 못했어요');}finally{URL.revokeObjectURL(url);}};
 $('selBack').onclick=()=>{sfx.tap();show('home');};
 
@@ -1346,7 +1401,11 @@ const savePZ=()=>store.set('yj_pz',JSON.stringify(PZ));
 const PZ_S={met:[],gen:0,tapped:0,ending:false,endT:0};   // 이번에 맞춘 친구들 (세 명이 모이면 파티)
 function pzList(){return PZ.world==='sea'?CHARS:[...LAND,...S.photos.map(p=>({id:p.id,photo:true,src:p.src,name:''}))];}
 function pzEnsure(){const L=pzList(),ids=L.map(x=>x.id);if(!Array.isArray(PZ.order))PZ.order=[];PZ.idx=Math.max(0,Math.floor(+PZ.idx||0));PZ.solved=+PZ.solved||0;
-  if(PZ.order.length!==ids.length||PZ.order.some(id=>!ids.includes(id))){PZ.order=shuffle(ids.slice());PZ.idx=Math.min(PZ.idx,0);savePZ();}}
+  if(PZ.order.length!==ids.length||PZ.order.some(id=>!ids.includes(id))){
+    const done=PZ.order.slice(0,PZ.idx).filter(id=>ids.includes(id)),rest=PZ.order.slice(PZ.idx).filter(id=>ids.includes(id)),add=shuffle(ids.filter(id=>!PZ.order.includes(id)));
+    if(!done.length&&!rest.length){PZ.order=shuffle(ids.slice());PZ.idx=0;}
+    else{PZ.order=[...new Set([...done,...rest.slice(0,1),...add,...rest.slice(1)])];PZ.idx=Math.min(done.length,PZ.order.length-1);}
+    savePZ();}}
 function pzItem(){pzEnsure();const L=pzList();return L.find(x=>x.id===PZ.order[PZ.idx])||L[0];}
 // 난이도: 처음 3판은 4조각, 그다음 8판은 6조각, 그 뒤로는 6·9조각이 섞여 나옴. 조각 모양도 점점 다양하게(무작위)
 function pzLevel(){const k=PZ.solved;
@@ -1570,7 +1629,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='home')return;const b=document.querySelector('#'+S.screen+' [id$="Back"]');b?b.click():show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v44';
+const APP_VERSION='v45';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -2177,15 +2236,16 @@ const FEEDS={
    items:[['fr_apple','빨간 사과'],['fr_banana','노란 바나나'],['fr_blueberry','파란 블루베리'],['fr_peach','분홍 복숭아'],['fr_orange','주황 오렌지'],['fr_grape','보라 포도']]
      .map(([img,s])=>({img,say:s,wrong:`이건 ${s}예요.`}))}};
 const FD={fed:0,target:null,busy:false,last:0,fish:[],shark:null,S:0,timer:null,world:'sea',need:1,got:0,cycles:0,stage:'eat',act:false,n:0,tool:null,mv:false,gen:0};
-const FD_MEALS=4;   // 한 이야기에서 밥 먹는 횟수
-// 진행 그림: 밥 · 배 톡톡 · 칫솔 · 컵
-const fdProg=()=>stepBar('fdStars',[FW().items[0].img,'st_heart','fd_brush','fd_cup'],{eat:0,burp:1,brush:2,rinse:3,play:9}[FD.stage]||0);
+const FD_MEALS=3;   // 한 이야기에서 간식 먹는 횟수 (v45: 요리해서 먹은 다음이라 3번)
+// 진행 그림: 요리 · 간식 · 배 톡톡 · 칫솔 · 컵
+const fdProg=()=>stepBar('fdStars',['ck_pot',FW().items[0].img,'st_heart','fd_brush','fd_cup'],{cook:0,eat:1,burp:2,brush:3,rinse:4,play:9}[FD.stage]||0);
 const FW=()=>FEEDS[FD.world];
 const itemImg=(it,flip)=>`<img src="chars/${it.img}.webp" alt=""${flip?' style="transform:scaleX(-1)"':''}>`;
 function fdFace(kind){const sh=FD.shark;if(!sh)return;sh.querySelector('.so').src=`chars/${FW()[kind]}.webp`;sh.classList.add('open');}
-function fdStart(){show('feed');FD.fed=0;FD.stage='eat';FD.act=false;FD.mv=false;FD.busy=true;FD.gen++;document.body.classList.toggle('land',FD.world==='land');fdBuild();fdProg();fdRound();
+function fdStart(){show('feed');FD.fed=0;FD.stage='cook';FD.act=false;FD.mv=false;FD.busy=true;FD.gen++;document.body.classList.toggle('land',FD.world==='land');fdBuild();fdCook(FD.gen);
   clearInterval(FD.timer);FD.timer=setInterval(()=>{if(S.screen!=='feed'){clearInterval(FD.timer);FD.timer=null;return;}
     if(Date.now()-Math.max(FD.last,lastTouch)<7000)return;
+    if(FD.stage==='cook'){if(FD.ck&&FD.ck.act){FD.last=Date.now();cuHint();}return;}
     if(FD.stage==='brush'){if(!FD.act||!FD.mouth)return;FD.last=Date.now();fdScrubHint();say('쓱쓱 문질러서 닦아 줘요!');return;}
     if(FD.stage!=='eat'){if(!FD.act||FD.mv)return;FD.last=Date.now();const el=FD.stage==='burp'?FD.shark:FD.tool;if(!el)return;const c=ctr(el);   // 단계별 손가락 힌트
       if(FD.tool){FD.tool.classList.remove('glow');void FD.tool.offsetWidth;FD.tool.classList.add('glow');setTimeout(()=>FD.tool&&FD.tool.classList.remove('glow'),2400);}
@@ -2193,7 +2253,7 @@ function fdStart(){show('feed');FD.fed=0;FD.stage='eat';FD.act=false;FD.mv=false
     if(FD.busy)return;FD.last=Date.now();const f=FD.fish.find(f=>f.c===FD.target);
     if(f){f.el.classList.remove('hint');void f.el.offsetWidth;f.el.classList.add('hint');const m=mouthXY();
       ghostHand(f.x+f.w/2,f.y+f.h/2,m.x,m.y,{html:f.el.querySelector('.fb').innerHTML,w:f.w,h:f.h});}say(FD.askText||`${FD.target.say} 주세요!`);},1000);}
-function fdBuild(){const A=$('fdArea');A.innerHTML='';FD.tool=null;FD.mouth=null;const W=A.clientWidth,H=A.clientHeight,land=W>=H,w=FW();
+function fdBuild(){const A=$('fdArea');A.innerHTML='';FD.tool=null;FD.mouth=null;FD.ck=null;const W=A.clientWidth,H=A.clientHeight,land=W>=H,w=FW();
   const S0=land?Math.min(W*.46,H*.72):Math.min(W*.72,H*.42),Sz=S0*(FD.world==='land'?.85:1);FD.S=Sz;FD.land=land;   // 숲속 토끼는 조금 작게
   const sh=document.createElement('div');sh.className='shark open';
   sh.innerHTML=`<div class="sb"><img class="sc" src="chars/${w.chew}.webp" alt=""><img class="so" src="chars/${w.wait}.webp" alt=""><i class="mHit" style="left:${w.mouth[0]*100}%;top:${w.mouth[1]*100}%"></i></div>`;
@@ -2209,7 +2269,7 @@ function fdRound(){if(S.screen!=='feed')return;FD.busy=false;FD.last=Date.now();
   FD.need=FD.cycles>=1&&Math.random()<.4?2:1;FD.got=0;const unit=FD.world==='sea'?'마리':'개';
   const items=shuffle(FD.need===2?[pickd[0],pickd[0],pickd[1],pickd[2]]:pickd);
   const ask=FD.need===2?`${FD.target.say} 두 ${unit} 주세요!`:`${FD.target.say} 주세요!`;FD.askText=ask;
-  $('fdAsk').innerHTML=`${itemImg(FD.target,false)}${FD.need===2?itemImg(FD.target,false):''}<span>${ask}</span>`;
+  $('fdAsk').style.display='';$('fdAsk').innerHTML=`${itemImg(FD.target,false)}${FD.need===2?itemImg(FD.target,false):''}<span>${ask}</span>`;
   $('fdAsk').style.animation='none';void $('fdAsk').offsetWidth;$('fdAsk').style.animation='';
   say(ask);fdFace('wait');
   const R=FD.region,nI=items.length,fw=Math.min(FD.land?R.w*(nI>3?.5:.62):R.w/nI*.9,FD.land?R.h/nI*1.35:R.h*.7*1.5),fh=fw*.82;
@@ -2254,6 +2314,8 @@ function fdEat(f,m){FD.busy=true;const el=f.el,w=FW();el.classList.add('eaten');
 function fdBurp(g){if(FD.gen!==g||S.screen!=='feed')return;FD.fish.forEach(f=>f.el.remove());FD.fish=[];
   FD.stage='burp';FD.act=true;FD.n=0;FD.busy=false;FD.last=Date.now();fdProg();say(`배가 빵빵해요! ${FW().who} 배를 톡톡 두드려 줘요`);}
 function fdPoke(){const sh=FD.shark;if(!sh)return;FD.last=Date.now();sh.classList.remove('squish');void sh.offsetWidth;sh.classList.add('squish');
+  if(FD.stage==='cook'){const K=FD.ck;if(K&&K.act&&K.step==='give'){cuGive();return;}sfx.giggle();
+    if(Date.now()-(FD.ckSay||0)>6000){FD.ckSay=Date.now();say('조금만 기다려요! 맛있게 만들고 있어요');}return;}
   if(FD.stage==='brush'){fdBrushGo();return;}if(FD.stage==='rinse'){fdRinseGo();return;}
   if(FD.stage==='play'){sfx.giggle();const r=sh.getBoundingClientRect();heartBurst(r.left+r.width/2,r.top+r.height*.35);return;}
   if(FD.stage!=='burp'||!FD.act)return;const n=++FD.n,g=FD.gen;
@@ -2269,6 +2331,147 @@ function fdPoke(){const sh=FD.shark;if(!sh)return;FD.last=Date.now();sh.classLis
 function fdTool(img,ar){const A=$('fdArea'),R=FD.region,z=Math.min(R.w*.5,R.h*.55,FD.S*.5),w=z,h=z/ar,el=document.createElement('div');el.className='fdtool';
   el.innerHTML=`<img src="chars/${img}.webp" alt="">`;Object.assign(el.style,{left:(R.x+R.w/2-w/2)+'px',top:(R.y+R.h/2-h/2)+'px',width:w+'px',height:h+'px'});
   A.appendChild(el);if(FD.tool)FD.tool.remove();FD.tool=el;return el;}
+// ===== 요리 (v45): 밥 주기 전에 — 재료를 냄비에 퐁당 → 국자로 휘휘 → 그릇에 담기 → 후~ 불기 → 갖다주기 =====
+const COOK={
+  sea:{dish:'미역국',bowl:'ck_bowl_miyeok',soup:['#d3ebf6','#cfdcb2','#c6b37f','#b4955a'],ing:[['ck_seaweed','미역'],['ck_tofu','두부'],['ck_mushroom','버섯']]},
+  land:{dish:'당근 수프',bowl:'ck_bowl_carrot',soup:['#d3ebf6','#ffd7a6','#ffbb70','#ff9c40'],ing:[['ck_carrot','당근'],['ck_potato','감자'],['ck_broccoli','브로콜리']]}};
+const CU_SOUP={cx:.498,cy:.342,rx:.271,ry:.189};   // 냄비 그림에서 국물이 보이는 자리 (그림 크기 대비)
+const CU_SCOOP=[.294,.711];                         // 국자 그림에서 국자 머리 자리
+const iga=w=>w+(hasBatchim(w)?'이':'가');
+const CW=()=>COOK[FD.world==='land'?'land':'sea'];
+function fdCook(g,again){if(FD.gen!==g||S.screen!=='feed')return;
+  FD.stage='cook';FD.act=false;FD.busy=true;FD.last=Date.now();fdProg();fdFace('wait');
+  const A=$('fdArea'),R=FD.region,c=CW(),ask=$('fdAsk');if(ask)ask.style.display='none';
+  const w=R.w,h=R.h,wrap=document.createElement('div');wrap.className='cuwrap';wrap.id='fdCook';
+  Object.assign(wrap.style,{left:R.x+'px',top:R.y+'px',width:w+'px',height:h+'px'});
+  // 가스레인지 위에 냄비 (냄비 밑이 불판에 얹히게)
+  const pw=Math.min(w*.58,h*.46*IMG_AR.ck_pot),ph=pw/IMG_AR.ck_pot,stw=pw,sth=stw/IMG_AR.ck_stove;
+  const pcx=w*.37,sty=h*.985-sth,py=sty+sth*.38-ph,px=pcx-pw/2;
+  const so={x:px+pw*CU_SOUP.cx,y:py+ph*CU_SOUP.cy,rx:pw*CU_SOUP.rx,ry:ph*CU_SOUP.ry};
+  wrap.innerHTML=`<img class="custove" src="chars/ck_stove.webp" alt="" style="left:${pcx-stw/2}px;top:${sty}px;width:${stw}px;height:${sth}px">`+
+    `<div class="cupot" style="left:${px}px;top:${py}px;width:${pw}px;height:${ph}px"><img class="pot" src="chars/ck_pot.webp" alt="">`+
+    `<div class="soup" style="left:${(CU_SOUP.cx-CU_SOUP.rx)*100}%;top:${(CU_SOUP.cy-CU_SOUP.ry)*100}%;width:${CU_SOUP.rx*200}%;height:${CU_SOUP.ry*200}%;--sc:${c.soup[0]}">`+
+    `<div class="sw" style="--k:${(so.ry/so.rx).toFixed(3)}"><i></i></div></div></div><img class="culadle" src="chars/ck_ladle.webp" alt="">`;
+  A.appendChild(wrap);
+  const L=pw*.6;
+  const K=FD.ck={g,wrap,step:'add',act:false,n:0,dist:0,ang:null,rot:0,said:0,so,L,pot:wrap.querySelector('.cupot'),soup:wrap.querySelector('.soup'),
+    ladle:wrap.querySelector('.culadle'),items:[],bits:[],bowl:null,steamT:0,ptr:new Set(),sndT:0};
+  Object.assign(K.ladle.style,{width:L+'px',height:L/IMG_AR.ck_ladle+'px'});
+  // 재료 셋: 위쪽에 나란히
+  const z=Math.min(w*.27,h*.24);
+  shuffle(c.ing.slice()).forEach(([img,name],i)=>{const el=document.createElement('div');el.className='cuitem';
+    el.innerHTML=`<img src="chars/${img}.webp" alt="">`;const x=w*(.19+.31*i)-z/2,y=h*.04;
+    Object.assign(el.style,{left:x+'px',top:y+'px',width:z+'px',height:z+'px',animationDelay:(i*.12)+'s'});
+    const it={el,img,name,x,y,hx:x,hy:y,z,done:false};K.items.push(it);cuDrag(it);wrap.appendChild(el);});
+  // 젓기·담기·불기·갖다주기는 판 어디를 눌러도 받아요
+  wrap.addEventListener('pointerdown',cuDown);wrap.addEventListener('pointermove',e=>{if(K.ptr.has(e.pointerId))cuStir(e,false);});
+  ['pointerup','pointercancel'].forEach(t=>wrap.addEventListener(t,e=>{K.ptr.delete(e.pointerId);if(!K.ptr.size){K.ang=null;K.ladle.classList.remove('on');}}));
+  say(`${again?'이번엔 ':''}${iga(FW().who)} 배고파요! 맛있는 ${eul(c.dish)} 만들어 줘요!`);
+  setTimeout(()=>{if(FD.ck!==K||FD.gen!==g)return;K.act=true;FD.busy=false;FD.last=Date.now();say('재료를 냄비에 퐁당 넣어요!');setTimeout(()=>{if(FD.ck===K&&K.step==='add'&&!K.n)cuHint();},2200);},3200);}
+function cuLocal(e){const r=FD.ck.wrap.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+function cuDrag(it){const el=it.el;
+  el.addEventListener('pointerdown',e=>{e.stopPropagation();const K=FD.ck;if(!K||K.step!=='add'||!K.act||it.done||it.drag)return;e.preventDefault();
+    try{el.setPointerCapture(e.pointerId);}catch(_){}it.drag={id:e.pointerId,ox:e.clientX-it.x,oy:e.clientY-it.y,sx:e.clientX,sy:e.clientY};
+    el.classList.remove('back','hint');el.classList.add('hold');FD.last=Date.now();sfx.pick();});
+  el.addEventListener('pointermove',e=>{if(!it.drag||it.drag.id!==e.pointerId)return;it.x=e.clientX-it.drag.ox;it.y=e.clientY-it.drag.oy;el.style.left=it.x+'px';el.style.top=it.y+'px';});
+  const up=e=>{if(!it.drag||it.drag.id!==e.pointerId)return;const d=it.drag;it.drag=null;el.classList.remove('hold');FD.last=Date.now();const K=FD.ck;if(!K||it.done)return;
+    const moved=Math.hypot(e.clientX-d.sx,e.clientY-d.sy),cx=it.x+it.z/2,cy=it.y+it.z/2,so=K.so;
+    const near=Math.abs(cx-so.x)<so.rx*1.35&&cy>so.y-so.ry*5&&cy<so.y+so.ry*3.5;
+    if(near||moved<20)cuDrop(it);else{sfx.drop();el.classList.add('back');it.x=it.hx;it.y=it.hy;el.style.left=it.x+'px';el.style.top=it.y+'px';setTimeout(()=>el.classList.remove('back'),450);}};
+  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);}
+// 냄비로 폴짝 → 퐁당
+function cuDrop(it){const K=FD.ck;if(!K||it.done)return;it.done=true;const el=it.el,so=K.so;el.classList.remove('hold','hint','back');
+  hopTo(el,so.x-(it.x+it.z/2),so.y-(it.y+it.z/2),.4,520,it.z*.6).then(()=>{el.remove();if(FD.ck===K)cuPlop(it);});}
+function cuPlop(it){const K=FD.ck,so=K.so,c=CW();K.n++;
+  tone({f:420,f2:140,d:.16,v:.3,type:'triangle'});noise({f:900,d:.18,v:.14,q:.7});setTimeout(()=>sfx.bubble(),120);
+  K.soup.style.setProperty('--sc',c.soup[Math.min(K.n,c.soup.length-1)]);
+  const b=document.createElement('img');b.className='bit';b.src=`chars/${it.img}.webp`;b.alt='';
+  K.bits.push({el:b,a:K.n*2.1+Math.random(),r:.3+Math.random()*.25});K.soup.appendChild(b);cuBits();
+  cuSplash(so.x,so.y-so.ry*.2,c.soup[Math.min(K.n,c.soup.length-1)]);say(`${it.name} 퐁당!`);
+  if(K.n>=K.items.length){K.act=false;const g=K.g;setTimeout(()=>{if(FD.ck===K&&FD.gen===g)cuStirStart();},1500);}}
+function cuBits(){const K=FD.ck;if(!K)return;K.bits.forEach(b=>{const a=b.a+K.rot;b.el.style.left=(50+Math.cos(a)*b.r*50)+'%';b.el.style.top=(50+Math.sin(a)*b.r*50)+'%';});}
+function cuSplash(x,y,col){const W=FD.ck.wrap;for(let i=0;i<9;i++){const d=document.createElement('i');d.className='cudrop';const z=FD.ck.so.rx*(.1+Math.random()*.08),a=-Math.PI*(.15+.7*Math.random()),r=FD.ck.so.rx*(.6+Math.random()*.7);
+  d.style.cssText=`left:${x-z/2}px;top:${y-z/2}px;width:${z}px;height:${z}px;--sc:${col};--x:${Math.cos(a)*r}px;--y:${Math.sin(a)*r}px`;d.addEventListener('animationend',()=>d.remove());W.appendChild(d);}}
+function cuLadleAt(x,y){const K=FD.ck,l=K.ladle,L=K.L,lh=L/IMG_AR.ck_ladle;l.style.left=(x-L*CU_SCOOP[0])+'px';l.style.top=(y-lh*CU_SCOOP[1])+'px';}
+function cuStirStart(){const K=FD.ck;if(!K)return;K.step='stir';K.dist=0;K.act=true;FD.last=Date.now();
+  cuLadleAt(K.so.x+K.so.rx*.3,K.so.y);K.ladle.classList.add('in');say('다 넣었어요! 국자로 휘휘 저어요!');
+  setTimeout(()=>{if(FD.ck===K&&K.step==='stir'&&K.dist<1)cuHint();},2600);}
+function cuDown(e){const K=FD.ck;if(!K||!K.act||FD.gen!==K.g)return;e.preventDefault();FD.last=Date.now();
+  if(K.step==='stir'){try{K.wrap.setPointerCapture(e.pointerId);}catch(_){}K.ptr.add(e.pointerId);K.ang=null;cuStir(e,true);return;}
+  if(K.step==='serve'){cuServe();return;}if(K.step==='blow'){cuBlow();return;}if(K.step==='give'){cuGive();return;}}
+// 휘휘: 국자가 손가락을 따라오고, 국물과 재료가 같이 빙글빙글
+function cuStir(e,tap){const K=FD.ck;if(!K||K.step!=='stir'||!K.act)return;FD.last=Date.now();const so=K.so;let{x,y}=cuLocal(e);
+  const ex=(x-so.x)/so.rx,ey=(y-so.y)/so.ry,d=Math.hypot(ex,ey),m=.75;if(d>m){x=so.x+ex/d*m*so.rx;y=so.y+ey/d*m*so.ry;}
+  cuLadleAt(x,y);K.ladle.classList.add('on');
+  const a=Math.atan2((y-so.y)/so.ry,(x-so.x)/so.rx);
+  if(K.ang!=null){let da=a-K.ang;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;K.rot+=da;K.dist+=Math.min(.8,Math.abs(da));}
+  K.ang=a;if(tap){K.dist+=1.6;K.rot+=.5;}
+  cuBits();K.soup.querySelector('.sw i').style.transform=`rotate(${K.rot}rad)`;
+  const now=Date.now();if(now-K.sndT>200){K.sndT=now;sfx.bubble();cuBubble();}
+  const goal=Math.PI*2*3;   // 세 바퀴쯤 (톡톡 눌러도 열두 번쯤이면 돼요)
+  if(K.dist>goal*.5&&!K.said){K.said=1;say('보글보글! 잘 젓고 있어요!');}
+  if(K.dist>=goal)cuCooked();}
+function cuBubble(){const K=FD.ck;if(!K)return;const b=document.createElement('i');b.className='cubub';const z=8+Math.random()*12;
+  b.style.cssText=`left:${20+Math.random()*60}%;top:${25+Math.random()*50}%;width:${z}%;aspect-ratio:1`;b.addEventListener('animationend',()=>b.remove());K.soup.appendChild(b);}
+function cuSteam(K){clearInterval(K.steamT);K.steamT=setInterval(()=>{if(FD.ck!==K||FD.gen!==K.g||S.screen!=='feed'){clearInterval(K.steamT);return;}
+  const s=document.createElement('i');s.className='custeam';const so=K.so,z=so.rx*(.45+Math.random()*.35);
+  s.style.cssText=`left:${so.x+(Math.random()-.5)*so.rx*1.1-z/2}px;top:${so.y-so.ry-z*.4}px;width:${z}px;height:${z}px`;s.addEventListener('animationend',()=>s.remove());K.wrap.appendChild(s);
+  if(Math.random()<.5)cuBubble();},320);}
+function cuCooked(){const K=FD.ck;if(!K||!K.act)return;K.act=false;const g=K.g,c=CW();K.ladle.classList.remove('on');
+  K.soup.classList.add('boil');cuSteam(K);sparkle();const r=K.pot.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height*.3,18,r.width*.5);
+  say(`보글보글! 맛있는 ${c.dish} 다 됐어요!`);
+  setTimeout(()=>{if(FD.ck===K&&FD.gen===g)cuServeStart();},2800);}
+function cuServeStart(){const K=FD.ck,w=K.wrap.clientWidth,h=K.wrap.clientHeight,pot=K.pot;K.step='serve';K.ladle.classList.add('gone');
+  const bw=Math.min(w*.3,pot.offsetWidth*.6),bh=bw/IMG_AR.ck_bowl_empty,bx=Math.min(w-bw-w*.015,pot.offsetLeft+pot.offsetWidth+w*.03),by=h*.985-bh;
+  const b=document.createElement('div');b.className='cubowl';b.innerHTML=`<img src="chars/ck_bowl_empty.webp" alt="">`;
+  Object.assign(b.style,{left:bx+'px',top:by+'px',width:bw+'px',height:bh+'px'});K.wrap.appendChild(b);K.bowl=b;sfx.pop();
+  K.act=true;FD.last=Date.now();pot.classList.add('glow');say('그릇에 담아요! 냄비를 톡 눌러요!');
+  setTimeout(()=>{if(FD.ck===K&&K.step==='serve'&&K.act)cuHint();},2600);}
+// 냄비를 기울여 그릇에 쪼르륵
+function cuServe(){const K=FD.ck;if(!K||K.step!=='serve'||!K.act)return;K.act=false;const g=K.g,c=CW(),pot=K.pot,b=K.bowl;
+  pot.classList.remove('glow');pot.classList.add('tilt');
+  const top=pot.offsetTop+pot.offsetHeight*.25,bx=b.offsetLeft+b.offsetWidth*.5,bt=b.offsetTop+b.offsetHeight*.22,sw=b.offsetWidth*.1;
+  const st=document.createElement('i');st.className='cupour';st.style.cssText=`left:${bx-sw/2}px;top:${top}px;width:${sw}px;height:${Math.max(10,bt-top)}px;--sc:${c.soup[c.soup.length-1]}`;
+  setTimeout(()=>{if(FD.ck!==K)return;K.wrap.appendChild(st);sfx.pour();setTimeout(()=>sfx.pour(),320);},250);
+  setTimeout(()=>{if(FD.ck!==K)return;b.querySelector('img').src=`chars/${c.bowl}.webp`;b.classList.add('full');st.classList.add('end');K.soup.classList.add('low');},950);
+  setTimeout(()=>{if(FD.ck!==K||FD.gen!==g)return;st.remove();pot.classList.remove('tilt');clearInterval(K.steamT);K.soup.classList.remove('boil');
+    // 김이 모락모락 → 후~ 불어서 식혀요
+    K.wisps=[.3,.5,.7].map((f,i)=>{const s=document.createElement('i');s.className='cuwisp';const z=b.offsetWidth*.09;
+      s.style.cssText=`left:${b.offsetLeft+b.offsetWidth*f-z/2}px;top:${b.offsetTop-b.offsetWidth*.32}px;width:${z}px;height:${b.offsetWidth*.34}px;animation-delay:${-i*.45}s`;K.wrap.appendChild(s);return s;});
+    K.step='blow';K.n=0;K.act=true;FD.last=Date.now();b.classList.add('glow');say('앗, 뜨거워요! 후~ 불어서 식혀 줘요!');
+    setTimeout(()=>{if(FD.ck===K&&K.step==='blow'&&!K.n)cuHint();},2800);},1700);}
+function cuBlow(){const K=FD.ck;if(!K||K.step!=='blow'||!K.act)return;const b=K.bowl,n=++K.n;FD.last=Date.now();
+  noise({f:1100,f2:420,d:.5,v:.22,q:.5});tone({f:300,f2:180,d:.4,v:.05,type:'triangle'});
+  for(let i=0;i<3;i++){const wd=document.createElement('i');wd.className='cuwind';const wz=b.offsetWidth*.45;
+    wd.style.cssText=`left:${b.offsetLeft-wz*.6}px;top:${b.offsetTop-b.offsetWidth*(.05+i*.09)}px;width:${wz}px;animation-delay:${i*.08}s`;wd.addEventListener('animationend',()=>wd.remove());K.wrap.appendChild(wd);}
+  const ws=K.wisps&&K.wisps[n-1];if(ws)ws.classList.add('bye');
+  if(n<3){say(n===1?'후~':'한 번 더 후~');return;}
+  K.act=false;b.classList.remove('glow');const g=K.g;
+  setTimeout(()=>{if(FD.ck!==K||FD.gen!==g)return;say(`이제 안 뜨거워요! ${FW().who}한테 갖다줘요!`);K.step='give';K.act=true;FD.last=Date.now();b.classList.add('glow');
+    setTimeout(()=>{if(FD.ck===K&&K.step==='give'&&K.act)cuHint();},3000);},700);}
+// 그릇이 친구 입으로 폴짝 → 냠냠
+function cuGive(){const K=FD.ck;if(!K||K.step!=='give'||!K.act)return;K.act=false;const g=K.g,b=K.bowl,sh=FD.shark,w=FW();b.classList.remove('glow');
+  const r=b.getBoundingClientRect(),m=mouthXY();sfx.whoosh();
+  hopTo(b,m.x-(r.left+r.width/2),m.y+r.height*.15-(r.top+r.height/2),.85,750,FD.S*.25).then(()=>{if(FD.ck!==K||FD.gen!==g)return;
+    let k=0;const chew=setInterval(()=>{if(w.toggle)sh.classList.toggle('open');else{sh.classList.remove('squish');void sh.offsetWidth;sh.classList.add('squish');}
+      if(++k>=7){clearInterval(chew);fdFace('wait');}},150);
+    sfx.chomp();setTimeout(()=>sfx.chomp(),450);
+    setTimeout(()=>{if(FD.ck!==K)return;b.querySelector('img').src='chars/ck_bowl_empty.webp';heartBurst(m.x,m.y);sparkle();say('냠냠! 정말 맛있어요! 고마워요!');},900);
+    setTimeout(()=>{if(FD.ck!==K||FD.gen!==g)return;K.wrap.classList.add('out');
+      setTimeout(()=>{if(FD.gen!==g)return;K.wrap.remove();if(FD.ck===K)FD.ck=null;FD.stage='eat';FD.fed=0;FD.busy=true;fdProg();
+        say(`이번엔 ${iga(w.who)} 좋아하는 간식을 줘요!`);setTimeout(()=>{if(FD.gen===g&&FD.stage==='eat')fdRound();},2600);},520);},3300);});}
+// 가만히 있을 때 알려 주기
+function cuHint(){const K=FD.ck;if(!K||!K.act)return;const r=K.wrap.getBoundingClientRect(),so=K.so,X=x=>r.left+x,Y=y=>r.top+y;
+  if(K.step==='add'){const it=K.items.find(i=>!i.done&&!i.drag);if(!it)return;it.el.classList.remove('hint');void it.el.offsetWidth;it.el.classList.add('hint');
+    ghostHand(X(it.x+it.z/2),Y(it.y+it.z/2),X(so.x),Y(so.y),{src:`chars/${it.img}.webp`,w:it.z,h:it.z});say(`${eul(it.name)} 냄비에 넣어요!`);}
+  else if(K.step==='stir'){ghostHand(X(so.x-so.rx*.55),Y(so.y),X(so.x+so.rx*.55),Y(so.y),null);say('국자로 휘휘 저어요!');}
+  else if(K.step==='serve'){const c=ctr(K.pot);ghostHand(c.x+c.w*.3,c.y+c.h*.3,c.x,c.y,null);say('냄비를 톡 눌러요!');}
+  else if(K.step==='blow'&&K.bowl){const c=ctr(K.bowl);ghostHand(c.x+c.w*.3,c.y+c.h*.3,c.x,c.y,null);say('그릇을 톡톡 눌러서 후~ 불어요!');}
+  else if(K.step==='give'&&K.bowl){const c=ctr(K.bowl),m=mouthXY();ghostHand(c.x,c.y,m.x,m.y,null);say(`그릇을 톡 눌러서 ${FW().who}한테 줘요!`);}}
+// 도움·시험용: 다음 할 일을 저절로 해요
+function cuAuto(){const K=FD.ck;if(!K||!K.act)return false;
+  if(K.step==='add'){const it=K.items.find(i=>!i.done);if(it)cuDrop(it);}else if(K.step==='stir'){K.dist=1e9;cuCooked();}
+  else if(K.step==='serve')cuServe();else if(K.step==='blow')cuBlow();else if(K.step==='give')cuGive();return true;}
 // 3단계: 칫솔질 — 입 속을 크게 보고, 이에 묻은 찌꺼기를 손가락으로 쓱쓱 문질러 닦아요 (목욕처럼)
 const TEETH={"sea":[[0.362,0.258,0.125,0.148],[0.513,0.258,0.125,0.148],[0.232,0.285,0.117,0.137],[0.651,0.285,0.117,0.137],[0.779,0.297,0.115,0.141],[0.104,0.301,0.115,0.137],[0.122,0.641,0.117,0.145],[0.763,0.641,0.115,0.148],[0.237,0.684,0.12,0.168],[0.646,0.684,0.12,0.168],[0.365,0.703,0.13,0.18],[0.508,0.703,0.13,0.18]],"land":[[0.346,0.266,0.151,0.207],[0.503,0.266,0.151,0.207],[0.253,0.316,0.086,0.117],[0.661,0.316,0.086,0.117],[0.164,0.344,0.081,0.098],[0.755,0.344,0.076,0.098],[0.195,0.691,0.083,0.121],[0.719,0.691,0.083,0.113],[0.281,0.738,0.089,0.125],[0.628,0.738,0.091,0.125],[0.375,0.758,0.102,0.137],[0.523,0.758,0.099,0.137]]};   // 이 자리 [x,y,w,h] (teeth_*.webp 비율)
 let FD_DIRT=null;
@@ -2350,12 +2553,12 @@ function fdFinale(g){if(FD.gen!==g||S.screen!=='feed')return;FD.stage='play';fdP
   [0,700,1400].forEach(t=>setTimeout(()=>{if(FD.gen!==g)return;sh.classList.remove('shake');void sh.offsetWidth;sh.classList.add('shake');heartBurst(r.left+r.width/2,r.top+r.height*.3);},t));
   setTimeout(()=>{if(FD.gen!==g||S.screen!=='feed')return;FD.fed=0;FD.stage='eat';FD.act=false;FD.busy=true;FD.last=Date.now();
     FD.world=FD.world==='sea'?'land':'sea';document.body.classList.toggle('land',FD.world==='land');   // 다음엔 다른 친구
-    fdBuild();fdProg();say(`이번엔 ${FW().who}한테 밥 줘요!`);setTimeout(()=>{if(FD.gen===g)fdRound();},1800);},4600);}
+    fdBuild();fdCook(g,true);},4600);}
 function heartBurst(x,y){for(let i=0;i<8;i++){const s=document.createElement('span');s.className='pt';s.textContent='♥';
   const a=-Math.PI/2+(Math.random()-.5)*1.6,r=60+Math.random()*80;
   s.style.cssText=`left:${x}px;top:${y}px;--x:${Math.cos(a)*r}px;--y:${Math.sin(a)*r}px;--r:${(Math.random()*60-30)|0}deg;--c:#ff6b9a;--s:${22+Math.random()*18}px`;
   s.addEventListener('animationend',()=>s.remove());document.body.appendChild(s);}}
-$('goFeed').onclick=()=>{sfx.tap();say(FD.world==='land'?'토끼한테 밥 줘요':'상어한테 밥 줘요');fdStart();};
+$('goFeed').onclick=()=>{sfx.tap();fdStart();};
 $('fdBack').onclick=()=>{sfx.tap();FD.gen++;FD.mv=false;show('home');};
 
 /* ================= 그림자 맞추기: 친구를 자기 그림자에 쏙 ================= */
@@ -2609,8 +2812,8 @@ document.querySelectorAll('#title span').forEach((s,i)=>s.style.setProperty('--t
 
 // 받은 3D 배경: 바다·들판 그림을 깔고, 바다엔 멀리 헤엄치는 물고기 떼만 남기기
 {const sc=$('scene'),schools=[...sc.querySelectorAll('.school')].map(g=>g.outerHTML).join('');
- sc.innerHTML=`<img class="bgimg" src="chars/bg_sea.webp" alt=""><svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice"><g fill="#2f8fc4" opacity=".16">${schools}</g></svg>`;
- $('sceneLand').innerHTML=`<img class="bgimg" src="chars/bg_land.webp" alt="">`;}
+ sc.innerHTML=`<img class="bgimg" src="chars/bg_sea.webp" alt=""><img class="bgimg pkimg" src="chars/bg_sea_peek.webp" alt=""><svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice"><g fill="#2f8fc4" opacity=".16">${schools}</g></svg>`;
+ $('sceneLand').innerHTML=`<img class="bgimg" src="chars/bg_land.webp" alt=""><img class="bgimg pkimg" src="chars/bg_land_peek.webp" alt="">`;}
 // 첫 화면 놀이 아이콘 (받은 그림)
 [['puzzle','ic_puzzle'],['draw','ic_draw'],['bubble','ic_bubble'],['feed','ic_peek']].forEach(([a,img])=>{const el=document.querySelector(`.card .art[data-art="${a}"]`);
   if(el)el.innerHTML=`<img src="chars/${img}.webp" alt="" class="homeic">`;});
@@ -2728,7 +2931,11 @@ longPress($('sleepHold'),3000,()=>{const r=playRec();r.extra+=10;store.set('yj_t
   if(S.music&&unlocked)bgmStart();sfx.tap();},on=>$('sleepHold').classList.toggle('ing',on));
 if(isOver())showSleep();
 
-function openParent(){const P=$('parent');P.classList.add('on');
+function renderPhotos(){const L=$('phList');if(!L)return;L.innerHTML='';
+  S.photos.forEach(p=>{const d=document.createElement('div');d.className='ph';d.innerHTML=`<img src="${p.src}" alt=""><button class="del" aria-label="지우기">×</button>`;
+    d.querySelector('.del').onclick=()=>{if(confirm('이 사진을 지울까요?')){S.photos=S.photos.filter(q=>q.id!==p.id);savePhotos();renderPhotos();}};L.appendChild(d);});
+  if(S.photos.length<8){const a=document.createElement('button');a.className='ph add';a.innerHTML='+<small>사진 넣기</small>';a.onclick=()=>$('photoIn').click();L.appendChild(a);}}
+function openParent(){const P=$('parent');P.classList.add('on');renderPhotos();
   const ls=$('limitSeg');ls.innerHTML='';[[0,'끄기'],[15,'15분'],[20,'20분'],[30,'30분'],[45,'45분']].forEach(([m,t])=>{const b=document.createElement('button');
     b.textContent=t;b.className=limitMin()===m?'sel':'';b.onclick=()=>{store.set('yj_limit',m);openParent();};ls.appendChild(b);});
   const r=playRec();$('todayTime').textContent=`${Math.floor(r.s/60)}분`+(r.extra?` (10분씩 ${r.extra/10}번 더 줌)`:'');
@@ -2902,7 +3109,7 @@ syncBadge();
 
 /* ================= v34 새 놀이 공통 ================= */
 // 코덱스로 만든 그림의 가로:세로 비율
-const IMG_AR={fd_brush:1.021,fd_cup:.798,pk_camera:1.155,fr_basin:1.627,ba_towel:1.411,ba_bed:1.1,tr_signal:.433,tr_tunnel:1.911,tr_station:1.682,tr_car:1.928,tr_engine:1.261,tree:.819,basket:1.485,cake:1.06,candle:.228,tub:1.366,sponge:1.149,shower:.985,duck:1.047,gift:.869};
+const IMG_AR={fd_brush:1.021,fd_cup:.798,pk_camera:1.155,fr_basin:1.627,ba_towel:1.411,ba_bed:1.1,tr_signal:.433,tr_tunnel:1.911,tr_station:1.682,tr_car:1.928,tr_engine:1.261,tree:.819,basket:1.485,cake:1.06,candle:.228,tub:1.366,sponge:1.149,shower:.985,duck:1.047,gift:.869,ck_pot:1.233,ck_stove:1.285,ck_ladle:1.013,ck_bowl_empty:1.267};
 const ga=w=>w+(hasBatchim(w)?'이':'가');
 const ieyo=w=>w+(hasBatchim(w)?'이에요':'예요');
 const KNUM=['','한','두','세','네','다섯'];
