@@ -1,6 +1,6 @@
 // 유주 놀이터 오프라인 저장소. 앱을 고치면 VERSION 숫자를 올려주세요 (index.html의 APP_VERSION도 같이).
 const MUSIC_CACHE = 'yuju-music-1';
-const VERSION = 'yuju-v47';
+const VERSION = 'yuju-v48';
 const CORE = ['./', './index.html', './manifest.json', './chars/chars.js', './voice/list.js',
   './chars/bg_land.webp', './chars/bg_sea.webp',
   './chars/ck_pot.webp', './chars/ck_stove.webp', './chars/ck_ladle.webp', './chars/ck_bowl_empty.webp', './chars/ck_bowl_carrot.webp', './chars/ck_bowl_miyeok.webp', './chars/ck_carrot.webp', './chars/ck_potato.webp', './chars/ck_broccoli.webp', './chars/ck_seaweed.webp', './chars/ck_tofu.webp', './chars/ck_mushroom.webp', './chars/bg_sea_peek.webp', './chars/bg_land_peek.webp', './chars/crab.webp', './chars/deer.webp', './chars/dolphin.webp',

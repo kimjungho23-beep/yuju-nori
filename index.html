@@ -1321,7 +1321,12 @@ function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.innerH
   b.setAttribute('aria-label',S.music?'배경음악 끄기':'배경음악 켜기');});}
 let toastT=0;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1800);}
 let unlocked=false;
-document.addEventListener('pointerdown',()=>{audio();if(!unlocked){unlocked=true;if(S.music)bgmStart();}},true);
+// 소리 깨우기 (v48): 크롬은 손가락을 '뗄 때'(pointerup·touchend·click)부터 소리를 허락해요. 누르는 순간(pointerdown)에
+// 켜려다 거절되면 배경음악이 그날 내내 안 나오던 것 → 누를 때도, 뗄 때도 깨우고, 켜져 있어야 하는데 멈춰 있으면 다시 틀어요
+function bgmKick(){if(!S.music||!bgaOn||!BGA||!BGA.paused||bgmHushed()||document.hidden)return;
+  BGA.play().then(()=>{if(!bgmHushed()&&BGA.volume<bgaVol()*.5)bgaFade(bgaVol(),600);}).catch(()=>{});}
+function audioKick(){audio();if(!unlocked){unlocked=true;if(S.music)bgmStart();}else bgmKick();}
+['pointerdown','pointerup','touchend','click','keydown'].forEach(t=>document.addEventListener(t,audioKick,true));
 /* 버튼 누르기를 확실하게 (특히 S펜): 브라우저의 click은 버튼이 눌리며 살짝 움직이거나 펜이 조금만 흔들려도 취소돼요.
    그래서 '누른 버튼'을 기억했다가, 뗀 곳이 그 버튼 근처(여유 28px)이고 크게 끌지 않았으면 직접 눌러줘요. */
 let tapB=null,fastFiring=false,fastAt=0,fastX=0,fastY=0;
@@ -1660,7 +1665,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='home')return;const b=document.querySelector('#'+S.screen+' [id$="Back"]');b?b.click():show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v47';
+const APP_VERSION='v48';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
