@@ -782,6 +782,12 @@ body.land #scene,body.land #bubbles{display:none}
 .hotool.glow img{filter:drop-shadow(0 0 1.2vmin #fff) drop-shadow(0 0 2.6vmin #fff8b0)}
 .hotool.fly{transition:left .5s ease-in-out,top .5s ease-in-out}
 .hotool.off{pointer-events:none;transition:opacity .4s;opacity:0}
+.hotool.taken{transition:opacity .3s;opacity:0}
+/* 도구를 대야 할 곳: 반짝이는 동그라미 (가까이 가져가면 노랗게) */
+.hotarget{position:absolute;z-index:7;pointer-events:none;border-radius:50%;border:.8vmin dashed #fff;background:rgba(255,255,255,.16);transform:translate(-50%,-50%);
+  box-shadow:0 0 0 .6vmin rgba(255,90,150,.7),0 0 2.4vmin rgba(255,255,255,.9),inset 0 0 1.6vmin rgba(255,255,255,.7);animation:hoRing 1.1s ease-in-out infinite}
+@keyframes hoRing{50%{transform:translate(-50%,-50%) scale(1.18)}}
+.hotarget.hot{border-color:#fff3a0;border-style:solid;box-shadow:0 0 0 .9vmin rgba(255,200,50,.75),0 0 3.2vmin #fff6a8;animation-duration:.5s}
 .hometer{position:absolute;z-index:9;pointer-events:none;border-radius:99vmin;background:#fff;box-shadow:0 .6vmin 1.2vmin rgba(0,60,60,.25);padding:.8vmin;animation:pop .35s ease}
 .hometer i{display:block;height:100%;width:12%;border-radius:99vmin;background:linear-gradient(90deg,#ffd166,#ff8a5c,#ff4d6d);transition:width 1.3s ease-out}
 .hoheart{position:absolute;z-index:9;pointer-events:none;color:#ff5a8a;font-weight:700;text-shadow:0 .3vmin .6vmin rgba(255,255,255,.9);animation:hoBeat .7s ease-out forwards}
@@ -1703,7 +1709,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='home')return;const b=document.querySelector('#'+S.screen+' [id$="Back"]');b?b.click():show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v49';
+const APP_VERSION='v50';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -3796,20 +3802,21 @@ const HO_TOOL={steth:{img:'ho_steth',k:.36,hot:[.79,.8],rot:180},thermo:{img:'ho
   syrup:{img:'ho_syrup',k:.2},cream:{img:'ho_cream',k:.24},tbox:{img:'ho_tbox',k:.3},band:{img:'ho_band',k:.26},band2:{img:'ho_band2',k:.26},band3:{img:'ho_band3',k:.26}};
 // 이야기: 단계 셋 + 다 나았어요. land = 숲속 친구만 (꽈당·콧물)
 const HO_STORY=[
- {k:'cold',steps:['steth','thermo','med'],fever:true,intro:n=>`콜록콜록! ${ga(n)} 감기에 걸렸어요. 청진기를 대 봐요!`},
+ {k:'cold',steps:['steth','thermo','med'],fever:true,intro:n=>`콜록콜록! ${ga(n)} 감기에 걸렸어요. 청진기를 가슴에 대 봐요!`},
  {k:'fall',steps:['blow','cream','band'],land:true,intro:n=>`꽈당! ${ga(n)} 넘어져서 아야 했어요. 호~ 불어 줘요!`},
- {k:'tummy',steps:['stethB','rubB','med'],intro:n=>`아야야! ${ga(n)} 배가 아프대요. 청진기를 대 봐요!`},
- {k:'nose',steps:['tissue','thermo','med'],fever:true,land:true,intro:n=>`에취! ${ga(n)} 콧물이 나요. 휴지로 코를 닦아 줘요!`}];
+ {k:'tummy',steps:['stethB','rubB','med'],intro:n=>`아야야! ${ga(n)} 배가 아프대요. 청진기를 배에 대 봐요!`},
+ {k:'nose',steps:['tissue','thermo','med'],fever:true,land:true,intro:n=>`에취! ${ga(n)} 콧물이 나요. 휴지를 톡 눌러서 코를 닦아 줘요!`}];
 const HO_ICON={steth:'ho_steth',stethB:'ho_steth',thermo:'ho_thermo',med:'ho_spoon',blow:'st_cloud',cream:'ho_cream',band:'ho_band',rubB:'st_heart',tissue:'ho_tissue'};
-const HO_ASK={steth:'청진기를 대 봐요!',stethB:'청진기를 대 봐요!',thermo:'체온계로 재 봐요!',med:'약을 먹어요! 숟가락을 입에 갖다줘요!',blow:'호~ 불어 줘요!',
-  cream:'약을 발라요! 쓱쓱 문질러요!',band:'반창고를 붙여요! 톡 눌러요!',rubB:'엄마 손은 약손! 배를 쓱쓱 문질러 줘요!',tissue:'휴지로 코를 쓱쓱 닦아 줘요!'};
+const HO_ASK={steth:'청진기를 가슴에 대 봐요!',stethB:'청진기를 배에 대 봐요!',thermo:'체온계를 이마에 대 봐요!',med:'약을 먹어요! 숟가락을 입에 갖다줘요!',blow:'호~ 불어 줘요!',
+  cream:'연고를 톡 누르고 쓱쓱 발라요!',band:'반창고를 붙여요! 톡 눌러요!',rubB:'엄마 손은 약손! 배를 쓱쓱 문질러 줘요!',tissue:'휴지를 톡 눌러서 코를 쓱쓱 닦아 줘요!'};
+const HO_RUBSAY={cream:'아픈 데를 쓱쓱 발라요!',tissue:'코를 쓱쓱 닦아요!'};   // 연고·휴지를 집은 뒤
 const HO_DONE={steth:'콩닥콩닥! 튼튼해요!',stethB:'꾸르륵! 배에서 소리가 나요!',thermo:'삐빅! 열이 나요! 뜨거워요!',blow:'호~ 조금 괜찮아요!',
   cream:'다 발랐어요!',rubB:'배가 편해졌어요!',tissue:'흥! 코가 깨끗해졌어요!'};
 const HO_BEAT1={steth:'콩닥콩닥! 톡톡 눌러 봐요!',stethB:'꾸르륵! 톡톡 눌러 봐요!'};
 const HO_CART_TOP=.24;   // 카트 그림에서 윗판이 있는 높이(비율)
 const HO_RUB={cream:{cur:'ho_cream',R:.09},tissue:{cur:'ho_tissue',R:.1},rubB:{cur:null,R:.12}};   // 문지르는 단계
 const HO={round:0,gen:0,story:null,si:0,stage:'load',who:null,G:null,last:0,pid:null,lp:null,dist:0,lastSnd:0,chk:0,cv:null,cx:null,N:0,init:1,
-  spots:[],beat:0,blow:0,spoon:0,band:0,busy:true,placed:false,noT:0,beatT:0,blowT:0};
+  spots:[],beat:0,blow:0,spoon:0,band:0,busy:true,placed:false,held:false,noT:0,beatT:0,blowT:0};
 function hoStart(){show('hosp');ngMark();hoRound();}
 function hoGeo(){const A=$('hoArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H;
   const AR=IMG_AR.ho_bed,bw=land?Math.min(W*.5,H*.5*AR):Math.min(W*.86,H*.3*AR),bh=bw/AR,bx=(land?W*.42:W*.5)-bw/2,by=H-bh-H*.035;
@@ -3822,7 +3829,7 @@ function hoRound(keep){if(S.screen!=='hosp')return;const g=++HO.gen,A=$('hoArea'
   if(!keep||!HO.who){const st=HO_STORY[HO.round%HO_STORY.length],land=!!st.land||Math.floor(HO.round/HO_STORY.length)%2===1;HO.story=st;
     HO.who=pick(friendPool(land,4,true).filter(c=>c!==HO.who&&(c.img||c===GIRL_PLAY)))||HO.who||CHARS[0];}
   const ch=HO.who,st=HO.story;
-  Object.assign(HO,{G,si:0,stage:'load',last:Date.now(),pid:null,lp:null,spots:[],beat:0,blow:0,spoon:0,band:0,busy:true,placed:false});
+  Object.assign(HO,{G,si:0,stage:'load',last:Date.now(),pid:null,lp:null,spots:[],beat:0,blow:0,spoon:0,band:0,busy:true,placed:false,held:false});
   A.innerHTML='';
   const cart=document.createElement('img');cart.className='hobed';cart.src='chars/ho_cart.webp';cart.alt='';Object.assign(cart.style,{left:G.cx+'px',top:G.cy+'px',width:G.cw+'px',height:G.ch+'px'});A.appendChild(cart);
   const bed=document.createElement('img');bed.className='hobed';bed.src='chars/ho_bed.webp';bed.alt='';Object.assign(bed.style,{left:G.bx+'px',top:G.by+'px',width:G.bw+'px',height:G.bh+'px'});A.appendChild(bed);
@@ -3859,14 +3866,31 @@ function hoSpots(fr,an){const n=100;if(!fr)return[[an.b[0]-.1,an.b[1]],[an.b[0]+
 function hoCount(){const N=HO.N,d=HO.cx.getImageData(0,0,N,N).data;let c=0;for(let i=3;i<d.length;i+=16)if(d[i]>60)c++;return c;}
 function hoWhimper(t=0){tone({f:720,f2:540,t,d:.32,v:.07,type:'triangle'});tone({f:660,f2:480,t:t+.38,d:.42,v:.07,type:'triangle'});}
 function hoGurgle(){for(let i=0;i<6;i++)tone({f:160+Math.random()*200,f2:260+Math.random()*320,t:i*.07,d:.08,v:.13,type:'triangle'});}
-function hoStep(i){const k=HO.story.steps[i],G=HO.G;Object.assign(HO,{si:i,stage:k,busy:false,placed:false,last:Date.now()});hoProg();
+function hoStep(i){const k=HO.story.steps[i],G=HO.G;Object.assign(HO,{si:i,stage:k,busy:false,placed:false,held:false,last:Date.now()});hoProg();hoCursor(null,false);
+  hoRings({steth:['c'],stethB:['b'],thermo:['f'],med:['m'],band:[HO.spots[0]||'b'],blow:HO.spots,cream:HO.spots,tissue:HO.spots,rubB:HO.spots}[k]);
   const T=(key,dx=0,lift=0)=>{const t=HO_TOOL[key],h=G.fz*t.k/(IMG_AR[t.img]||1);return hoTool(key,G.tx+dx*G.fz,G.ty-h*.46-lift*G.fz);};   // 카트 위에 올려 둬요
   if(k==='steth'||k==='stethB')hoDrag(T('steth'),()=>hoPt(k==='steth'?'c':'b'),hoStethHit);
   else if(k==='thermo')hoDrag(T('thermo'),()=>{const p=hoPt('f');return{x:p.x+G.fz*.04,y:p.y-G.fz*.02};},hoThermoHit);
   else if(k==='med'){hoDeco(T('syrup',.09));hoDrag(T('spoon',-.09),()=>hoPt('m'),hoSpoonHit);}
   else if(k==='band')['band3','band2','band'].forEach((b,j)=>{const el=T(b,0,j*.12);el.style.transform=`rotate(${[-8,6,-3][j]}deg)`;hoDrag(el,()=>hoPt(HO.spots[HO.band]||'b'),hoBandHit);});
-  else if(k==='cream')hoDeco(T('cream'));
-  else if(k==='tissue')hoDeco(T('tbox'));}
+  else if(k==='cream')hoPickable(T('cream'));
+  else if(k==='tissue')hoPickable(T('tbox'));}
+// 대야 할 곳에 반짝이는 동그라미
+function hoRings(pts){const A=$('hoArea');A.querySelectorAll('.hotarget').forEach(r=>r.remove());if(!pts||!HO.G)return;
+  pts.forEach(p=>{const q=hoPt(p),z=HO.G.fz*.2,r=document.createElement('i');r.className='hotarget';r.style.cssText=`left:${q.x}px;top:${q.y}px;width:${z}px;height:${z}px`;A.appendChild(r);});}
+// 문지르는 도구(연고·휴지): 톡 누르면 손에 들려서 아픈 곳으로 날아가요. 손가락을 떼도 계속 들고 있어요
+function hoPickable(el){el.classList.add('pickup');
+  dragTap(el,{can:()=>!HO.busy&&S.screen==='hosp'&&!!HO_RUB[HO.stage],down:()=>{HO.last=Date.now();},tap:()=>hoPick(el,true),
+    start:e=>{hoPick(el,false);HO.lp=null;hoCursorAt(e.clientX,e.clientY);},move:e=>{if(HO.busy||!HO_RUB[HO.stage])return;hoCursorAt(e.clientX,e.clientY);hoRub(e);},
+    drop:()=>{HO.lp=null;hoCheck();},lost:()=>{HO.lp=null;}});}
+function hoPick(el,fly){if(HO.held){if(fly){sfx.tap();if(Date.now()-HO.noT>1500){HO.noT=Date.now();hoHint();}}return;}
+  HO.held=true;HO.last=Date.now();el.classList.remove('glow');const tb=el.dataset.k==='tbox',s=$('hoCur');
+  if(tb){el.animate([{transform:'none'},{transform:'scale(1.12,.88)'},{transform:'none'}],{duration:300});noise({f:2400,f2:1200,d:.15,v:.1,q:.5});}   // 휴지 쏙
+  else{el.classList.add('taken');sfx.pick();}
+  const r=el.getBoundingClientRect();s.style.transition='';hoCursorAt(r.left+r.width/2,r.top+r.height*(tb?.1:.5));
+  if(!fly)return;const a=$('hoArea').getBoundingClientRect(),p=hoPt(HO.spots[0]||'b');void s.offsetWidth;
+  s.style.transition='transform .55s ease-in-out';hoCursorAt(p.x+a.left,p.y+a.top);setTimeout(()=>{s.style.transition='';},600);
+  HO.noT=Date.now();say(HO_RUBSAY[HO.stage]);}
 function hoTool(key,x,y){const t=HO_TOOL[key],w=HO.G.fz*t.k,h=w/(IMG_AR[t.img]||1),el=document.createElement('div');el.className='hotool glow';el.dataset.k=key;
   Object.assign(el.style,{left:(x-w/2)+'px',top:(y-h/2)+'px',width:w+'px',height:h+'px'});el.innerHTML=`<img src="chars/${t.img}.webp" alt=""${t.rot?` style="transform:rotate(${t.rot}deg)"`:''}>`;
   el._home=[x-w/2,y-h/2];$('hoArea').appendChild(el);return el;}
@@ -3884,7 +3908,9 @@ function hoDrag(el,tgt,hit){let ox=0,oy=0;
     down:()=>{HO.last=Date.now();sfx.pick();},
     tap:()=>hoFly(el,tgt(),hit),
     start:e=>{el.classList.remove('fly','glow');const r=el.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;el.style.zIndex=12;},
-    move:e=>{const a=$('hoArea').getBoundingClientRect();el.style.left=(e.clientX-a.left-ox)+'px';el.style.top=(e.clientY-a.top-oy)+'px';},
+    move:e=>{const a=$('hoArea').getBoundingClientRect();el.style.left=(e.clientX-a.left-ox)+'px';el.style.top=(e.clientY-a.top-oy)+'px';
+      const k=hoHot(el),t=tgt(),near=Math.hypot(parseFloat(el.style.left)+k.x-t.x,parseFloat(el.style.top)+k.y-t.y)<HO.G.fz*.28;
+      $('hoArea').querySelectorAll('.hotarget').forEach(r=>r.classList.toggle('hot',near));},
     drop:()=>{const k=hoHot(el),p={x:parseFloat(el.style.left)+k.x,y:parseFloat(el.style.top)+k.y},t=tgt();
       if(Math.hypot(p.x-t.x,p.y-t.y)<HO.G.fz*.28)hoFly(el,t,hit);else hoHome(el);},
     lost:()=>hoHome(el)});}
@@ -3894,7 +3920,7 @@ function hoFly(el,t,hit){const k=hoHot(el),g=HO.gen;HO.busy=true;el.classList.re
 function hoHome(el){el.classList.add('fly');el.style.left=el._home[0]+'px';el.style.top=el._home[1]+'px';el.style.zIndex='';setTimeout(()=>{el.classList.remove('fly');el.classList.add('glow');},520);
   if(Date.now()-HO.noT>2500){HO.noT=Date.now();say(HO_ASK[HO.stage]);}}
 // 청진기: 대면 콩닥(가슴) 또는 꾸르륵(배), 톡톡 두 번 더 들으면 다음 단계
-function hoStethHit(el){el.style.pointerEvents='none';HO.placed=true;HO.busy=false;HO.beat=0;hoBeat(true);}
+function hoStethHit(el){el.style.pointerEvents='none';hoRings(null);HO.placed=true;HO.busy=false;HO.beat=0;hoBeat(true);}
 function hoBeat(first){const k=HO.stage,now=Date.now();if(!HO.placed||now-HO.beatT<450)return;HO.beatT=now;HO.last=now;HO.beat++;
   const p=hoPt(k==='steth'?'c':'b'),A=$('hoArea'),belly=k==='stethB';
   if(belly)hoGurgle();else{tone({f:85,f2:50,d:.14,v:.55});tone({f:75,f2:45,t:.2,d:.14,v:.42});}
@@ -3904,7 +3930,7 @@ function hoBeat(first){const k=HO.stage,now=Date.now();if(!HO.placed||now-HO.bea
   if(first){say(HO_BEAT1[k]);return;}
   if(HO.beat>=3){HO.placed=false;HO.busy=true;const g=HO.gen;setTimeout(()=>{if(HO.gen===g)hoNext();},700);}}
 // 체온계: 이마에 대면 빨간 막대가 차오르고 삐빅
-function hoThermoHit(el){const g=HO.gen,A=$('hoArea'),fz=HO.G.fz,m=document.createElement('div');m.className='hometer';
+function hoThermoHit(el){const g=HO.gen,A=$('hoArea'),fz=HO.G.fz,m=document.createElement('div');m.className='hometer';hoRings(null);
   const w=fz*.34,h=fz*.075;Object.assign(m.style,{left:(parseFloat(el.style.left)+el.offsetWidth*.3)+'px',top:(parseFloat(el.style.top)-h*1.6)+'px',width:w+'px',height:h+'px'});
   m.innerHTML='<i></i>';A.appendChild(m);tone({f:400,f2:900,d:1.2,v:.05});
   setTimeout(()=>{if(HO.gen===g)m.firstChild.style.width='92%';},60);
@@ -3919,12 +3945,13 @@ function hoSpoonHit(el){const g=HO.gen,f=$('hoF'),im=el.querySelector('img');HO.
     setTimeout(()=>{if(HO.gen!==g)return;HO.noT=Date.now();hoHome(el);
       const b=document.querySelector('.hotool[data-k="syrup"]');if(b)b.animate([{transform:'none'},{transform:'rotate(-35deg)'},{transform:'rotate(-35deg)'},{transform:'none'}],{duration:800});
       setTimeout(()=>{if(HO.gen!==g)return;im.src='chars/ho_spoon.webp';tone({f:700,f2:400,d:.15,v:.1,type:'triangle'});HO.busy=false;},560);},900);return;}
-  say('꿀꺽! 약을 다 먹었어요!');f.classList.remove('fever');sparkle();setTimeout(()=>{if(HO.gen===g)hoNext();},1500);}
+  say('꿀꺽! 약을 다 먹었어요!');hoRings(null);f.classList.remove('fever');sparkle();setTimeout(()=>{if(HO.gen===g)hoNext();},1500);}
 // 반창고: 톡 누르면 아픈 자리로 날아가 착!
 function hoBandHit(el){const g=HO.gen,f=$('hoF'),G=HO.G,p=HO.spots[HO.band]||hoAn(HO.who).b,w=G.fz*.2,h=w/IMG_AR.ho_band,b=document.createElement('img');
   b.className='band';b.src=el.querySelector('img').src;Object.assign(b.style,{left:(p[0]*G.fz-w/2)+'px',top:(p[1]*G.fz-h/2)+'px',width:w+'px',height:h+'px',transform:`rotate(${(Math.random()-.5)*50}deg)`});
   f.appendChild(b);el.remove();sfx.snap(HO.band+2);HO.band++;const c=ctr(b);burst(c.x,c.y,10,c.w);
-  if(HO.band<Math.max(1,HO.spots.length)){say('짠!');HO.busy=false;return;}
+  if(HO.band<Math.max(1,HO.spots.length)){say('짠!');HO.busy=false;hoRings([HO.spots[HO.band]]);return;}
+  hoRings(null);
   say('짠! 반창고를 붙였어요! 하나도 안 아파요!');setTimeout(()=>{if(HO.gen===g)hoNext();},1500);}
 // 호~ 불기: 아픈 자리로 바람이 솔솔
 function hoBlow(){const now=Date.now();if(now-HO.blowT<600)return;HO.blowT=now;HO.last=now;HO.blow++;const A=$('hoArea'),fz=HO.G.fz;
@@ -3934,11 +3961,12 @@ function hoBlow(){const now=Date.now();if(now-HO.blowT<600)return;HO.blowT=now;H
     q.style.cssText=`left:${sx-z/2}px;top:${sy-z/2}px;width:${z}px;height:${z}px;--dx:${p.x-sx}px;--dy:${p.y-sy}px;animation-delay:${i*.08}s`;q.addEventListener('animationend',()=>q.remove());A.appendChild(q);}});
   HO.cv.style.transition='opacity .4s';HO.cv.style.opacity=Math.max(.55,1-HO.blow*.15);
   if(HO.blow<3){say(HO.blow===1?'호오~':'호오~ 호오~');return;}
-  HO.busy=true;const g=HO.gen;setTimeout(()=>{if(HO.gen===g)hoNext();},700);}
+  HO.busy=true;hoRings(null);const g=HO.gen;setTimeout(()=>{if(HO.gen===g)hoNext();},700);}
 // 문지르기(연고·약손·휴지): 손가락을 따라 도구가 움직이고, 아픈 자국이 지워져요
-function hoCursor(e,on){const s=$('hoCur'),cfg=HO_RUB[HO.stage];if(!on||!cfg||!cfg.cur||!HO.G){s.style.display='none';return;}
+function hoCursor(e,on){if(!on){const s=$('hoCur');s.style.display='none';s.style.transition='';return;}hoCursorAt(e.clientX,e.clientY);}
+function hoCursorAt(x,y){const s=$('hoCur'),cfg=HO_RUB[HO.stage];if(!cfg||!cfg.cur||!HO.G){s.style.display='none';return;}
   const z=HO.G.fz*(cfg.cur==='ho_tissue'?.26:.22),ar=IMG_AR[cfg.cur]||1;if(s.dataset.k!==cfg.cur){s.dataset.k=cfg.cur;s.src=`chars/${cfg.cur}.webp`;}
-  Object.assign(s.style,{display:'block',width:z+'px',height:(z/ar)+'px',transform:`translate(${e.clientX-z*(cfg.cur==='ho_cream'?.72:.5)}px,${e.clientY-z/ar*(cfg.cur==='ho_cream'?.12:.5)}px)`});}
+  Object.assign(s.style,{display:'block',width:z+'px',height:(z/ar)+'px',transform:`translate(${x-z*(cfg.cur==='ho_cream'?.72:.5)}px,${y-z/ar*(cfg.cur==='ho_cream'?.12:.5)}px)`});}
 function hoRub(e){const k=HO.stage,cfg=HO_RUB[k];if(!cfg||HO.busy)return;const r=HO.cv.getBoundingClientRect(),N=HO.N,s=N/r.width,px=(e.clientX-r.left)*s,py=(e.clientY-r.top)*s,R=N*cfg.R,x=HO.cx;
   if(px<-R||py<-R||px>N+R||py>N+R){HO.lp=null;return;}
   const lp=HO.lp||{x:px,y:py};x.globalCompositeOperation='destination-out';x.lineCap='round';x.lineWidth=R*2;x.beginPath();x.moveTo(lp.x,lp.y);x.lineTo(px+.01,py);x.stroke();
@@ -3952,15 +3980,15 @@ function hoRub(e){const k=HO.stage,cfg=HO_RUB[k];if(!cfg||HO.busy)return;const r
     if(k==='rubB')bell(mtof(PENT[Math.floor(Math.random()*6)]),0,.05,.4);else noise({f:k==='tissue'?1300+Math.random()*400:2600+Math.random()*500,d:.08,v:.06,q:k==='tissue'?.5:1});}
   if(now-HO.chk>300){HO.chk=now;hoCheck();}}
 function hoCheck(){if(!HO_RUB[HO.stage]||HO.busy)return;if(hoCount()/HO.init>.15)return;
-  const g=HO.gen,k=HO.stage;HO.busy=true;HO.pid=null;hoCursor(null,false);HO.cv.style.transition='opacity .5s';HO.cv.style.opacity=0;sparkle();
+  const g=HO.gen,k=HO.stage;HO.busy=true;HO.pid=null;hoCursor(null,false);hoRings(null);HO.cv.style.transition='opacity .5s';HO.cv.style.opacity=0;sparkle();
   if(k==='tissue')noise({f:420,f2:220,d:.3,v:.2,q:.8});
   setTimeout(()=>{if(HO.gen!==g)return;HO.cx.clearRect(0,0,HO.N,HO.N);HO.cv.style.transition='none';HO.cv.style.opacity=1;hoNext();},500);}
 // 다음 단계로 (마지막이면 다 나았어요)
-function hoNext(){const st=HO.story,k=st.steps[HO.si],nx=st.steps[HO.si+1],g=HO.gen;HO.placed=false;HO.busy=true;
+function hoNext(){const st=HO.story,k=st.steps[HO.si],nx=st.steps[HO.si+1],g=HO.gen;HO.placed=false;HO.held=false;HO.busy=true;hoRings(null);hoCursor(null,false);
   [...document.querySelectorAll('#hoArea .hotool')].forEach(t=>{t.classList.add('off');setTimeout(()=>t.remove(),450);});
   if(!nx){hoWell();return;}
   say(`${HO_DONE[k]} ${HO_ASK[nx]}`);setTimeout(()=>{if(HO.gen===g)hoStep(HO.si+1);},650);}
-function hoWell(){const g=HO.gen,ch=HO.who,f=$('hoF'),G=HO.G;HO.stage='well';hoProg();hoCursor(null,false);
+function hoWell(){const g=HO.gen,ch=HO.who,f=$('hoF'),G=HO.G;HO.stage='well';hoProg();hoCursor(null,false);hoRings(null);
   f.classList.remove('fever');const im=f.querySelector('img.who');im.onerror=null;im.src=ch.img||charSrc(ch);
   f.classList.remove('giggle');void f.offsetWidth;f.classList.add('giggle');
   const a=hoAn(ch),z=G.fz*.17,b=document.createElement('img');b.className='badge';b.src='chars/ho_badge.webp';b.onerror=()=>b.remove();
@@ -3970,20 +3998,22 @@ function hoWell(){const g=HO.gen,ch=HO.who,f=$('hoF'),G=HO.G;HO.stage='well';hoP
   setTimeout(()=>{if(HO.gen!==g||S.screen!=='hosp')return;HO.round++;hoRound();},5600);}
 const hoA=$('hoArea');
 hoA.addEventListener('pointerdown',e=>{if(S.screen!=='hosp'||HO.pid!=null||e.target.closest('.hotool'))return;e.preventDefault();HO.last=Date.now();const k=HO.stage;
-  if(HO_RUB[k]&&!HO.busy){try{hoA.setPointerCapture(e.pointerId);}catch(_){}HO.pid=e.pointerId;HO.lp=null;hoCursor(e,true);hoRub(e);return;}
+  if(HO_RUB[k]&&!HO.busy){if(!HO.held){const t=document.querySelector('#hoArea .hotool.pickup:not(.off)');if(t)hoPick(t,false);}   // 바로 문질러도 도구를 집어요
+    try{hoA.setPointerCapture(e.pointerId);}catch(_){}HO.pid=e.pointerId;HO.lp=null;hoCursor(e,true);hoRub(e);return;}
   if(k==='blow'&&!HO.busy){hoBlow();return;}
   if(HO.placed){hoBeat(false);return;}
   if(e.target.closest('.hof')){const f=$('hoF');if(HO.stage==='well'){f.classList.remove('giggle');void f.offsetWidth;f.classList.add('giggle');sfx.giggle();}
     else{f.classList.remove('shiver');void f.offsetWidth;f.classList.add('shiver');hoWhimper();}}});
 hoA.addEventListener('pointermove',e=>{if(HO.pid!==e.pointerId)return;hoCursor(e,true);hoRub(e);});
-const hoUp=e=>{if(HO.pid!==e.pointerId)return;HO.pid=null;HO.lp=null;hoCursor(e,false);hoCheck();};
+const hoUp=e=>{if(HO.pid!==e.pointerId)return;HO.pid=null;HO.lp=null;hoCheck();};   // 손가락을 떼도 도구는 그 자리에 들고 있어요
 ['pointerup','pointercancel','lostpointercapture'].forEach(t=>hoA.addEventListener(t,hoUp));
 // 가만히 있으면 손가락으로 알려 줘요
 setInterval(()=>{if(S.screen!=='hosp'||HO.pid!=null||!HO.G||HO.busy||!HO_ASK[HO.stage]||Date.now()-Math.max(lastTouch,HO.last)<6000)return;hoHint();},1000);
 function hoHint(){if(!HO.G||!HO_ASK[HO.stage])return;HO.last=Date.now();
   const k=HO.stage,G=HO.G,a=$('hoArea').getBoundingClientRect(),C=p=>({x:p.x+a.left,y:p.y+a.top});
-  if(HO_RUB[k]){const p=C(hoPt(HO.spots[0]||'b')),cur=HO_RUB[k].cur;
-    ghostHand(p.x-G.fz*.1,p.y,p.x+G.fz*.1,p.y+G.fz*.03,cur?{src:`chars/${cur}.webp`,w:G.fz*.22,h:G.fz*.22/(IMG_AR[cur]||1)}:null);}
+  if(HO_RUB[k]){const p=C(hoPt(HO.spots[0]||'b')),cur=HO_RUB[k].cur,t=document.querySelector('#hoArea .hotool.pickup:not(.off)');
+    if(cur&&!HO.held&&t){const c=ctr(t);ghostHand(c.x,c.y,c.x,c.y,null);}   // 먼저 연고(휴지)를 톡
+    else{ghostHand(p.x-G.fz*.1,p.y,p.x+G.fz*.1,p.y+G.fz*.03,null);if(HO.held&&HO_RUBSAY[k]){say(HO_RUBSAY[k]);return;}}}
   else if(k==='blow'){const p=C(hoPt(HO.spots[0]||'b'));ghostHand(p.x+G.fz*.2,p.y+G.fz*.15,p.x,p.y,null);}
   else if(HO.placed){const p=C(hoPt(k==='steth'?'c':'b'));ghostHand(p.x+G.fz*.12,p.y+G.fz*.12,p.x,p.y,null);say(HO_BEAT1[k]);return;}
   else{const t=document.querySelector('#hoArea .hotool:not(.deco):not(.off)');if(t){const c=ctr(t),p=C(k==='band'?hoPt(HO.spots[HO.band]||'b'):k==='thermo'?hoPt('f'):hoPt(k==='med'?'m':k==='steth'?'c':'b'));ghostHand(c.x,c.y,p.x,p.y,null);}}
