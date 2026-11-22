@@ -1,6 +1,6 @@
 // 유주 놀이터 오프라인 저장소. 앱을 고치면 VERSION 숫자를 올려주세요 (index.html의 APP_VERSION도 같이).
 const MUSIC_CACHE = 'yuju-music-1';
-const VERSION = 'yuju-v43';
+const VERSION = 'yuju-v44';
 const CORE = ['./', './index.html', './manifest.json', './chars/chars.js',
   './chars/bg_land.webp', './chars/bg_sea.webp', './chars/crab.webp', './chars/deer.webp', './chars/dolphin.webp',
   './chars/dress_blue.webp', './chars/dress_pink.webp', './chars/dress_yellow.webp', './chars/fish.webp', './chars/fish0.webp',
@@ -22,6 +22,7 @@ const CORE = ['./', './index.html', './manifest.json', './chars/chars.js',
   './chars/tr_signal.webp', './chars/tr_tunnel.webp', './chars/tr_station.webp',
   './chars/fr_basin.webp', './chars/ba_towel.webp', './chars/ba_bed.webp',
   './chars/fd_brush.webp', './chars/fd_cup.webp', './chars/pk_camera.webp',
+  './chars/zz_turtle.webp', './chars/zz_shark.webp', './chars/zz_fish.webp', './chars/zz_whale.webp', './chars/zz_penguin.webp', './chars/zz_octo.webp', './chars/zz_crab.webp', './chars/zz_dolphin.webp', './chars/zz_rabbit.webp', './chars/zz_deer.webp', './chars/zz_raccoon.webp', './chars/zz_tiger.webp', './chars/zz_puppy.webp', './chars/zz_giraffe.webp', './chars/zz_yuju.webp', './chars/zz_yuju_play.webp', './chars/zz_cat.webp', './chars/zz_bear.webp', './chars/zz_panda.webp', './chars/zz_elephant.webp', './chars/zz_lion.webp', './chars/zz_monkey.webp', './chars/zz_fox.webp', './chars/zz_squirrel.webp', './chars/zz_chick.webp', './chars/zz_pig.webp', './chars/zz_sheep.webp', './chars/zz_koala.webp', './chars/acc_crown.webp', './chars/acc_bow.webp', './chars/acc_flower.webp', './chars/acc_ears.webp', './chars/acc_hat.webp', './chars/acc_hglass.webp', './chars/acc_rglass.webp', './chars/acc_pearl.webp', './chars/acc_heartn.webp', './chars/acc_bowtie.webp', './chars/acc_tutu.webp', './chars/acc_tutup.webp', './chars/acc_wings.webp', './chars/acc_wand.webp', './chars/acc_bag.webp', './chars/acc_balloon.webp', './chars/note_pink.webp', './chars/note_blue.webp', './chars/note_yellow.webp', './chars/note_purple.webp', './chars/ic_star.webp', './chars/ba_paint1.webp', './chars/ba_paint2.webp', './chars/ba_paint3.webp', './chars/ba_paint4.webp', './chars/ba_paint5.webp', './chars/teeth_sea.webp', './chars/teeth_land.webp', './chars/fd_dirt1.webp', './chars/fd_dirt2.webp', './chars/fd_dirt3.webp', './chars/fd_dirt4.webp',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
 
 self.addEventListener('install', e => {

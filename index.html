@@ -19,7 +19,7 @@ body{font-family:'Jua',system-ui,sans-serif;color:var(--ink);background:linear-g
 button{font-family:inherit;color:inherit;cursor:pointer}
 img{-webkit-user-drag:none;pointer-events:none}
 /* 그림 자체를 누르는 것들은 다시 누를 수 있게 (그림자 놀이 친구, 생일 친구·선물, 목욕 오리) */
-img.shf,img.ckfr,img.baduck{pointer-events:auto}
+img.shf,img.ckfr,img.baduck,img.shd{pointer-events:auto}
 
 /* 배경 거품 */
 #bubbles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
@@ -118,8 +118,8 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 .slotHint{position:absolute;z-index:3;pointer-events:none;border-radius:1.2vmin;background:rgba(255,255,255,.5);
   box-shadow:inset 0 0 0 .8vmin #fff,0 0 3vmin 1vmin rgba(255,255,255,.9);animation:slotHint 1.6s ease-out forwards}
 .board.charb .guide{filter:drop-shadow(0 0 .35vmin #fff) drop-shadow(0 0 .35vmin #fff)}
-.piece.charp{filter:drop-shadow(0 0 .25vmin #fff) drop-shadow(0 0 .25vmin #fff) drop-shadow(0 .8vmin .7vmin rgba(0,50,100,.28))}
-.piece.charp.hold{filter:drop-shadow(0 0 .25vmin #fff) drop-shadow(0 0 .25vmin #fff) drop-shadow(0 2vmin 1.6vmin rgba(0,50,100,.3))}
+.piece.charp{filter:drop-shadow(0 0 .3vmin rgba(20,50,110,.5)) drop-shadow(0 .9vmin .9vmin rgba(0,40,90,.38))}
+.piece.charp.hold{filter:drop-shadow(0 0 .3vmin rgba(20,50,110,.5)) drop-shadow(0 2.2vmin 1.8vmin rgba(0,40,90,.4))}
 .piece.charp.locked{filter:none}
 .slotHint.shaped{background:none;box-shadow:none;border-radius:0;filter:drop-shadow(0 0 1.2vmin #fff)}
 @keyframes slotHint{0%,30%,60%{opacity:1}15%,45%{opacity:.25}100%{opacity:0}}
@@ -193,7 +193,7 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 .dtab.sel{background:#ff8fb8;transform:translateY(-.6vmin) scale(1.06)}
 .ditems{flex:1;min-height:0;overflow:hidden;touch-action:none;display:grid;grid-template-columns:repeat(4,1fr);gap:2vmin;align-content:start;padding:1vmin}
 .ditem{touch-action:none}
-.ditem.lift svg{opacity:.25}
+.ditem.lift svg,.ditem.lift img{opacity:.25}
 .dragItem{position:fixed;left:0;top:0;z-index:120;pointer-events:none;transform-origin:0 0;filter:drop-shadow(0 1.4vmin 1.2vmin rgba(150,40,90,.3))}
 .dragItem svg{width:100%;height:100%;display:block;overflow:visible}
 .dollStage{transition:box-shadow .2s}
@@ -276,11 +276,18 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 .fish.back{transition:left .4s cubic-bezier(.3,1.35,.5,1),top .4s cubic-bezier(.3,1.35,.5,1)}
 .fish.eaten{transition:left .28s ease-in,top .28s ease-in,transform .28s ease-in;transform:scale(.15)}
 .fish.hint .fb{animation:hint 1s}
+.fdmouth{position:absolute;z-index:14;border-radius:5vmin;overflow:hidden;background:#fff;touch-action:none;box-shadow:0 0 0 1.2vmin #fff,0 0 0 2vmin #ffc6dc,0 2vmin 4vmin rgba(0,40,90,.35);animation:mouthIn .5s cubic-bezier(.3,1.4,.5,1)}
+.fdmouth.out{animation:mouthOut .5s ease-in forwards}
+@keyframes mouthIn{from{transform:scale(.2);opacity:0}}@keyframes mouthOut{to{transform:scale(.2);opacity:0}}
+.fdmouth .tth,.fdmouth canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.fdmouth .fdbr{position:absolute;z-index:4;pointer-events:none;opacity:.95;transform:rotate(-8deg);filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.3))}
+.fdmouth .fdbr.on{opacity:1;animation:brWig .16s ease-in-out infinite alternate}
+@keyframes brWig{from{transform:rotate(-12deg)}to{transform:rotate(-4deg)}}
 .fdtool{position:absolute;z-index:12;touch-action:none;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.25));animation:popsoft .35s}
 .fdtool img{width:100%;height:100%;object-fit:contain;display:block}
 .fdtool.glow img{filter:drop-shadow(0 0 1.2vmin #fff) drop-shadow(0 0 2.6vmin #fff8b0)}
 .fdtool.glow{animation:hint 1.2s ease-in-out infinite}
-.fdshine{position:absolute;z-index:13;pointer-events:none;color:#fff;text-shadow:0 0 1.5vmin #fff8b0,0 0 .6vmin #ffe27a;animation:twk .45s ease-in-out infinite alternate}
+.fdshine{position:absolute;z-index:15;pointer-events:none;color:#fff;text-shadow:0 0 1.5vmin #fff8b0,0 0 .6vmin #ffe27a;animation:twk .45s ease-in-out infinite alternate}
 
 /* ===== 디자인 다듬기 ===== */
 .ico{width:64%;height:64%;display:block;overflow:visible}
@@ -331,6 +338,7 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 #album.on{display:flex;animation:fadein .2s}
 .abox{background:#fff;border-radius:3vmin;padding:3vmin;width:min(900px,100%);max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:2vmin}
 .abox h3{font-weight:400;font-size:clamp(22px,4.4vmin,40px);text-align:center}
+#albumClose{order:-1;position:sticky;top:0;z-index:2;align-self:center;flex:none;min-width:min(260px,40vw);font-size:clamp(20px,3.6vmin,30px);padding:1.2vmin 5vmin;box-shadow:0 .8vmin 0 rgba(30,90,140,.2),0 0 0 1vmin #fff}
 .agrid{display:grid;grid-template-columns:repeat(7,1fr);gap:1.6vmin}
 .acard{border:none;background:#f4f9ff;border-radius:2.4vmin;padding:1vmin;display:flex;flex-direction:column;align-items:center;gap:.4vmin;font-size:clamp(13px,2.2vmin,20px)}
 .acard img{width:100%;aspect-ratio:1;object-fit:contain}
@@ -339,7 +347,7 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 .bb.rainbow .bbw{background:radial-gradient(circle at 30% 27%,rgba(255,255,255,.95) 0 7%,rgba(255,255,255,.2) 20%,rgba(255,255,255,0) 50%),
   conic-gradient(from 0deg,rgba(255,120,160,.55),rgba(255,210,90,.55),rgba(120,220,140,.55),rgba(110,190,255,.55),rgba(190,140,255,.55),rgba(255,120,160,.55));
   box-shadow:inset 0 0 2.4vmin rgba(255,255,255,.9),0 0 3vmin rgba(255,230,140,.8)}
-.bb.tint .bbw{background:radial-gradient(circle at 30% 27%,rgba(255,255,255,.95) 0 7%,rgba(255,255,255,.25) 20%,color-mix(in srgb,var(--t) 30%,transparent) 55%,color-mix(in srgb,var(--t) 80%,transparent) 88%,#fff 100%)}
+.bb.tint .bbw{background:radial-gradient(circle at 30% 27%,rgba(255,255,255,.95) 0 7%,rgba(255,255,255,.25) 20%,color-mix(in srgb,var(--t) 55%,transparent) 50%,color-mix(in srgb,var(--t) 95%,transparent) 86%,#fff 100%)}
 .bb.mini{bottom:auto;animation:miniUp var(--dur) ease-out forwards}
 .bb.rain .bbw{background:radial-gradient(circle at 30% 27%,rgba(255,255,255,.95) 0 7%,rgba(255,255,255,.2) 20%,rgba(255,255,255,0) 50%),
   conic-gradient(from 0deg,rgba(255,120,160,.5),rgba(255,210,90,.5),rgba(120,220,140,.5),rgba(110,190,255,.5),rgba(190,140,255,.5),rgba(255,120,160,.5));box-shadow:inset 0 0 1.6vmin rgba(255,255,255,.9)}
@@ -393,7 +401,7 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 .key.next .bar{animation:nextGlow .9s ease-in-out infinite}
 .key.next img{animation:bob 1s ease-in-out infinite}
 @keyframes nextGlow{0%,100%{box-shadow:0 0 0 .6vmin #fff,0 0 3vmin #fff,inset 0 -1.4vmin 0 rgba(0,0,0,.12)}50%{box-shadow:0 0 0 1.2vmin #fff,0 0 6vmin #fff8b0,inset 0 -1.4vmin 0 rgba(0,0,0,.12)}}
-.key.sleep img{filter:grayscale(.55) brightness(.82) drop-shadow(0 1vmin .8vmin rgba(0,50,100,.22));animation:breathe 3s ease-in-out infinite}
+.key.sleep img{filter:grayscale(.3) brightness(.86) drop-shadow(0 1vmin .8vmin rgba(0,50,100,.22));animation:breathe 3s ease-in-out infinite}
 .key.sleep::after{content:'Z';position:absolute;right:6%;top:0;font-weight:700;font-size:4vmin;color:#fff;text-shadow:0 .3vmin .6vmin rgba(0,40,90,.4);opacity:0;animation:zz 2.6s ease-in infinite;pointer-events:none}
 .key.sleep:nth-child(2n)::after{animation-delay:-1.1s}
 #muStars{position:absolute;left:50%;transform:translateX(-50%);top:calc(max(14px,2.2vmin)*2 + clamp(26px,4.6vmin,44px) + 2.6vmin);z-index:59;pointer-events:none}
@@ -405,6 +413,7 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 .pzparty b.on{background:#ffd65a;box-shadow:0 0 0 .3vmin #fff}
 .pzProg .pzparty img.ready{opacity:1;filter:none;animation:bob 1s ease-in-out infinite}
 .mnote{position:fixed;z-index:60;pointer-events:none;font-size:clamp(26px,5vmin,48px);color:var(--c);text-shadow:0 2px 0 #fff;animation:noteUp 1.1s ease-out forwards}
+.mnote img{display:block;width:clamp(30px,6vmin,56px);height:auto;filter:drop-shadow(0 .4vmin .4vmin rgba(0,40,90,.2))}
 @keyframes noteUp{0%{transform:translate(-50%,0) scale(.5);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),-22vh) scale(1.2) rotate(var(--r));opacity:0}}
 /* ===== 그림자 맞추기 ===== */
 .shd{position:absolute;object-fit:contain;filter:brightness(0) opacity(.3);transition:filter .45s ease}
@@ -412,6 +421,8 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 .shd.cheer{animation:keyJump .5s ease}
 .shf{position:absolute;object-fit:contain;touch-action:none;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.25));transition:transform .15s}
 .shf.hold{transform:scale(1.12)}
+.shf.sel{transform:translateY(-10%) scale(1.12);filter:drop-shadow(0 0 1.2vmin #fff) drop-shadow(0 0 2.6vmin #fff8b0)}
+.shd.hint{animation:hint 1.2s ease-in-out infinite}
 .shf.back{transition:left .38s cubic-bezier(.3,1.35,.5,1),top .38s cubic-bezier(.3,1.35,.5,1),transform .15s}
 /* ===== 친구 꾸미기 ===== */
 #doll{animation:breathe 2.8s ease-in-out infinite;transform-origin:50% 95%}
@@ -472,6 +483,7 @@ body.land #dress{background:linear-gradient(180deg,#e6f7ff,#eafbe0 60%,#c9efb0)}
 .pzProg{align-self:center;display:flex;gap:.6vmin;background:rgba(255,255,255,.75);padding:.8vmin 1.6vmin;border-radius:99px;box-shadow:0 .6vmin 0 rgba(30,90,140,.15)}
 .pzProg img{width:clamp(28px,5.4vmin,50px);height:clamp(28px,5.4vmin,50px);object-fit:contain;opacity:.3;filter:grayscale(1);transition:all .3s}
 .pzProg img.done{opacity:1;filter:none}
+.pzProg.many{gap:.3vmin;padding:.6vmin 1.2vmin}.pzProg.many img{width:clamp(20px,3.6vmin,34px);height:clamp(20px,3.6vmin,34px)}
 .pzProg img.now{opacity:1;filter:none;animation:bob 1.2s ease-in-out infinite;transform-origin:50% 100%}
 #sceneLand{position:fixed;inset:0;z-index:0;pointer-events:none;display:none}
 #sceneLand svg{width:100%;height:100%;display:block}
@@ -518,7 +530,7 @@ body.land #scene,body.land #bubbles{display:none}
 @keyframes rewardIn{from{transform:scale(0) rotate(-30deg)}to{transform:none}}
 .rbtn.got{animation:got .6s ease 2}
 @keyframes got{50%{transform:scale(1.25);box-shadow:0 0 0 1vmin #ffd65a}}
-#cheer{position:fixed;left:50%;top:max(14px,3vh);width:min(72vw,620px);aspect-ratio:640/170;z-index:150;pointer-events:none;
+#cheer{position:fixed;left:50%;top:calc(max(14px,3vh) + 10vmin);width:min(72vw,620px);aspect-ratio:640/170;z-index:150;pointer-events:none;
   transform:translate(-50%,-180%) scale(.6);transition:transform .55s cubic-bezier(.3,1.5,.5,1);filter:drop-shadow(0 1vmin 1.2vmin rgba(150,30,80,.25))}
 #cheer.on{transform:translate(-50%,0) scale(1)}
 #cheer svg{width:100%;height:100%;display:block}
@@ -543,6 +555,7 @@ body.land #scene,body.land #bubbles{display:none}
 .drg.hold{transform:scale(1.12);z-index:30}
 .puff{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 35% 30%,#fff 0 35%,#eef3f8 70%,#dfe7ef);
   animation:puff 1.5s ease-out forwards;z-index:4}
+.puff.dimp{filter:brightness(.32)}
 @keyframes puff{from{transform:scale(.3);opacity:.95}to{transform:translate(var(--dx),-16vmin) scale(1.7);opacity:0}}
 
 /* ===== 기차 태우기 ===== */
@@ -565,6 +578,11 @@ body.land #scene,body.land #bubbles{display:none}
 .trp img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.2))}
 .trp.tun{z-index:6;pointer-events:none}
 .trp.sig{touch-action:none;transform-origin:50% 100%}
+.trp.duck{z-index:4;touch-action:none;animation:duckWad .5s ease-in-out infinite alternate}
+@keyframes duckWad{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+.train .te.glow::after{content:'';position:absolute;right:1%;top:46%;width:16%;aspect-ratio:1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,#fff 0 18%,#fff6a8 40%,rgba(255,220,80,.6) 62%,rgba(255,220,80,0) 72%);animation:headBlink .7s ease-in-out infinite alternate}   /* 터널: 앞등이 깜빡깜빡 */
+@keyframes headBlink{from{opacity:.25;transform:scale(.8)}to{opacity:1;transform:scale(1.25)}}
 .trp.sig .lamp{position:absolute;left:25%;width:50%;aspect-ratio:1;border-radius:50%;opacity:0;transition:opacity .25s}
 .trp.sig .lamp.r{top:12%;background:radial-gradient(circle at 35% 30%,#fff 0 7%,#ff8a8a 24%,#f03a3a 62%,#c61f2a);box-shadow:0 0 4vmin 1.4vmin rgba(255,70,70,.6)}
 .trp.sig .lamp.g{top:37%;background:radial-gradient(circle at 35% 30%,#fff 0 7%,#9dffa8 24%,#2fd35a 62%,#16a341);box-shadow:0 0 4vmin 1.4vmin rgba(60,230,110,.6)}
@@ -616,6 +634,8 @@ body.land #scene,body.land #bubbles{display:none}
 .fbasin.pop{animation:squash .45s}
 .fbasin.glow>img.bk,.fbask.glow>img.bk{filter:drop-shadow(0 0 1.2vmin #fff) drop-shadow(0 0 2.6vmin #fff8b0)}
 .fbasin.glow,.fbask.glow{animation:hint 1.2s ease-in-out infinite}
+.fbask.glow{transform-origin:50% 100%;animation:bkTilt 1.5s ease-in-out infinite}
+@keyframes bkTilt{0%,100%{transform:none}35%{transform:rotate(-12deg) translateX(-3%)}55%{transform:rotate(-9deg) translateX(-3%)}}
 .ffly{position:absolute;z-index:21;object-fit:contain}
 .fpal{position:absolute;z-index:5;touch-action:none}
 .fpal img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.25))}
@@ -962,6 +982,10 @@ if(GIRL)GIRL.svg=()=>wrap(charArt(GIRL),false,GIRL.c);
 // 놀이(기차·과일·생일·악단)에 나오는 유주는 옷을 입어요. 꾸미기 놀이와 목욕은 원래 그림
 const GIRL_PLAY=GIRL&&window.CHAR_IMG.yuju_play?{...GIRL,img:window.CHAR_IMG.yuju_play}:GIRL;
 if(GIRL_PLAY&&GIRL_PLAY!==GIRL)GIRL_PLAY.svg=()=>wrap(charArt(GIRL_PLAY),false,GIRL_PLAY.c);
+// 자는 얼굴 그림 (v44 코덱스): chars/zz_<id>.webp
+const ZZ_IDS='turtle shark fish whale penguin octo crab dolphin rabbit deer raccoon tiger puppy giraffe yuju yuju_play cat bear panda elephant lion monkey fox squirrel chick pig sheep koala'.split(' ');
+function zzSrc(ch){if(!ch||ch.photo)return null;const id=ch===GIRL_PLAY&&GIRL_PLAY!==GIRL?'yuju_play':ch.id;return ZZ_IDS.includes(id)?`chars/zz_${id}.webp`:null;}
+function zzSet(img,ch){const z=zzSrc(ch);if(!img||!z)return;const back=img.src;img.onerror=()=>{img.onerror=null;img.src=back;};img.src=z;}
 const FRIENDS=GIRL?[GIRL,...ALLCH]:ALLCH;
 const svgURL=s=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
 const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});
@@ -1024,7 +1048,7 @@ function audio(){
   if(!AU.ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
     AU.ctx=new C();AU.master=AU.ctx.createGain();AU.master.gain.value=.9;AU.master.connect(AU.ctx.destination);
     AU.bgm=AU.ctx.createGain();AU.bgm.gain.value=.3;AU.bgm.connect(AU.master);}
-  if(AU.ctx.state==='suspended')AU.ctx.resume();
+  if(AU.ctx.state==='suspended'&&!document.hidden)AU.ctx.resume();
   return AU.ctx;
 }
 const mtof=m=>440*Math.pow(2,(m-69)/12);
@@ -1165,8 +1189,20 @@ function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^ko/i.t
 try{pickVoice();speechSynthesis.addEventListener('voiceschanged',pickVoice);}catch(e){}
 // 화면 글씨의 기호(~ ♪ ★)는 소리 내어 읽지 않게 빼요. "후~"는 "후우"로 길게
 const sayText=t=>String(t).replace(/후~+/g,'후우').replace(/[~♪♫♬★☆♥♡…]+/g,' ').replace(/\s+/g,' ').trim();
-function say(txt){try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(sayText(txt));
-  u.lang='ko-KR';u.pitch=1.12;u.rate=+store.get('yj_rate','.9')||.9;u.volume=1;if(!KO_VOICE)pickVoice();if(KO_VOICE)u.voice=KO_VOICE;s.speak(u);}catch(e){}}
+const SAY={busy:false,end:0,q:null,qT:0,last:'',lastAt:0,rep:0,scr:'',u:null};
+function sayNow(t){try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(t);
+  u.lang='ko-KR';u.pitch=1.12;u.rate=+store.get('yj_rate','.9')||.9;u.volume=1;if(!KO_VOICE)pickVoice();if(KO_VOICE)u.voice=KO_VOICE;
+  SAY.u=u;SAY.busy=true;SAY.scr=S.screen;SAY.end=Date.now()+700+t.length*240/u.rate;   // 끝났다는 소식이 안 오는 기기도 있어서 예상 끝 시각
+  u.onend=u.onerror=()=>{if(SAY.u!==u)return;SAY.busy=false;sayFlush();};s.speak(u);}catch(e){}}
+function sayFlush(){clearTimeout(SAY.qT);const q=SAY.q;SAY.q=null;if(q&&q.scr===S.screen&&!document.hidden)sayNow(q.t);}
+function sayStop(){SAY.q=null;clearTimeout(SAY.qT);SAY.busy=false;SAY.u=null;try{speechSynthesis.cancel();}catch(e){}}
+function say(txt){const t=sayText(txt);if(!t)return;let lt=0;try{lt=lastTouch;}catch(e){}
+  if(t===SAY.last&&lt<=SAY.lastAt){if(++SAY.rep>=2)return;}else SAY.rep=0;   // 가만히 있을 때 같은 말 되풀이는 두 번까지
+  SAY.last=t;SAY.lastAt=Date.now();
+  if(SAY.busy&&Date.now()<SAY.end&&SAY.scr===S.screen){
+    if(t.replace(/[\s!?.,]/g,'').length<=5)return;   // 말하는 중에 짧은 반응 말(톡톡, 이름 등)은 버려요
+    SAY.q={t,scr:S.screen};clearTimeout(SAY.qT);SAY.qT=setTimeout(sayFlush,Math.max(0,Math.min(2500,SAY.end-Date.now())));return;}
+  sayNow(t);}
 // 받침에 따라 조사 고르기: 문어를 / 펭귄을
 const hasBatchim=w=>{const c=w.charCodeAt(w.length-1)-0xAC00;return c>=0&&c<11172&&c%28!==0;};
 const eul=w=>w+(hasBatchim(w)?'을':'를');
@@ -1194,7 +1230,7 @@ function show(id){if(id==='home'&&typeof pendingReload!=='undefined'&&pendingRel
   if(typeof S!=='undefined'&&S.screen&&S.screen!==id&&unlocked)bubbleWipe();
   sweepFloats(true);
   if(id!=='game'&&id!=='bubble')document.body.classList.remove('land');
-  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;bgmHoldScreen(id);}
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));S.screen=id;S.visit=(S.visit||0)+1;bgmHoldScreen(id);}
 function syncMusic(){document.querySelectorAll('.musicBtn').forEach(b=>{b.innerHTML=ic('music');b.classList.toggle('off',!S.music);
   b.setAttribute('aria-label',S.music?'배경음악 끄기':'배경음악 켜기');});}
 let toastT=0;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1800);}
@@ -1221,9 +1257,9 @@ document.querySelectorAll('.musicBtn').forEach(b=>b.onclick=()=>{S.music=!S.musi
 syncMusic();
 
 /* 거품 */
-setInterval(()=>{if(document.hidden)return;const b=document.createElement('div');b.className='bub';const s=12+Math.random()*44;
+setInterval(()=>{const B=$('bubbles');if(document.hidden||document.body.classList.contains('land')||B.childElementCount>40)return;const b=document.createElement('div');b.className='bub';const s=12+Math.random()*44;
   b.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}vw;--dx:${(Math.random()-.5)*120}px;animation-duration:${8+Math.random()*7}s`;
-  b.addEventListener('animationend',()=>b.remove());$('bubbles').appendChild(b);},900);
+  b.addEventListener('animationend',()=>b.remove());B.appendChild(b);},900);
 
 function burst(x,y,n=12,spread=120,long=false){const C=['#ffd65a','#ff8fb1','#5ccf95','#7ec8ff','#b8a6ff','#ffa733'];
   for(let i=0;i<n;i++){const s=document.createElement('span');s.className='pt'+(long?' long':'');s.textContent=rand(['★','♥','●','✦','★']);
@@ -1309,7 +1345,7 @@ const PZ=(()=>{let s={};try{s=JSON.parse(store.get('yj_pz','{}'))||{};}catch(e){
 const savePZ=()=>store.set('yj_pz',JSON.stringify(PZ));
 const PZ_S={met:[],gen:0,tapped:0,ending:false,endT:0};   // 이번에 맞춘 친구들 (세 명이 모이면 파티)
 function pzList(){return PZ.world==='sea'?CHARS:[...LAND,...S.photos.map(p=>({id:p.id,photo:true,src:p.src,name:''}))];}
-function pzEnsure(){const L=pzList(),ids=L.map(x=>x.id);
+function pzEnsure(){const L=pzList(),ids=L.map(x=>x.id);if(!Array.isArray(PZ.order))PZ.order=[];PZ.idx=Math.max(0,Math.floor(+PZ.idx||0));PZ.solved=+PZ.solved||0;
   if(PZ.order.length!==ids.length||PZ.order.some(id=>!ids.includes(id))){PZ.order=shuffle(ids.slice());PZ.idx=Math.min(PZ.idx,0);savePZ();}}
 function pzItem(){pzEnsure();const L=pzList();return L.find(x=>x.id===PZ.order[PZ.idx])||L[0];}
 // 난이도: 처음 3판은 4조각, 그다음 8판은 6조각, 그 뒤로는 6·9조각이 섞여 나옴. 조각 모양도 점점 다양하게(무작위)
@@ -1321,16 +1357,18 @@ function pzAdvance(){PZ.solved++;PZ.idx++;let sw=null;
   if(PZ.idx>=PZ.order.length){PZ.world=PZ.world==='sea'?'land':'sea';PZ.order=[];PZ.idx=0;sw=PZ.world;}
   savePZ();return sw;}
 function renderProg(){const L=pzList();pzEnsure();
+  $('pzProg').classList.toggle('many',PZ.order.length>10);
   $('pzProg').innerHTML=PZ.order.map((id,i)=>{const ch=L.find(x=>x.id===id);if(!ch)return'';
     return `<img class="${i<PZ.idx?'done':i===PZ.idx?'now':''}" src="${charSrc(ch)}" alt="">`;}).join('')+
     `<span class="pzparty">${[0,1,2].map(i=>`<b class="${i<PZ_S.met.length?'on':''}"></b>`).join('')}<img class="${PZ_S.met.length>=3?'ready':''}" src="chars/gift.webp" alt=""></span>`;}
 function worldChange(sw){const toLand=sw==='land';document.body.classList.toggle('land',toLand);
   const t=toLand?'숲속 친구들을 만나요!':'바다 친구들에게 돌아가요!';cheer(t);say(toLand?'바다 친구들을 다 맞췄어요! 이제 숲속 친구들을 만나요!':'숲속 친구들을 다 맞췄어요! 다시 바다로 가요!');
   sfx.fanfare();burst(innerWidth/2,innerHeight/2,50,Math.min(innerWidth,innerHeight)*.45,true);stage.innerHTML='';renderProg();
-  setTimeout(()=>{if(S.screen==='game')startGame();},3200);}
+  const v=S.visit;setTimeout(()=>{if(S.screen==='game'&&S.visit===v)startGame();},3200);}
 
 /* ================= 퍼즐 게임 ================= */
 const stage=$('stage');let G=null;
+const PZ_CARD={sea:'#fff3d9',land:'#e4e9ff'};   // 흩어진 조각 바탕 카드 색
 const ov=(x,y,w,h,X,Y,W,H)=>Math.max(0,Math.min(x+w,X+W)-Math.max(x,X))*Math.max(0,Math.min(y+h,Y+H)-Math.max(y,Y));
 
 async function startGame(){
@@ -1381,7 +1419,15 @@ async function startGame(){
     const p={el:cv,tx:bx+ox+c*pw,ty:by+oy+r*ph,w:pw,h:ph,m:mg,path,cm,x:0,y:0,locked:false};cv.__p=p;
     if(cm){ // 캐릭터가 거의 안 걸린 조각(구석 등)은 처음부터 제자리에 붙여둠
       const a=x.getImageData(0,0,cv.width,cv.height).data;let n=0;for(let i=3;i<a.length;i+=16)if(a[i]>40)n++;
-      if(n*4<cv.width*cv.height*.06)p.pre=true;}
+      if(n*4<cv.width*cv.height*.06)p.pre=true;
+      // 흩어져 있는 동안은 바탕 카드 + 흰 테두리 (배경 그림에 묻히지 않게). 제자리에 붙으면 카드 없이 다시 그려요
+      const sx=-(ox+c*pw),sy=-(oy+r*ph),bw=Math.max(4,J.k*.05);
+      p.paint=card=>{x.save();x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);x.restore();
+        x.save();x.clip(path);if(card){x.fillStyle=PZ_CARD[PZ.world]||PZ_CARD.sea;x.fill(path);}
+        x.drawImage(full,sx,sy,B,B);
+        if(card){x.lineJoin='round';x.lineWidth=(bw+2.5)*2;x.strokeStyle='rgba(40,80,150,.35)';x.stroke(path);x.lineWidth=bw*2;x.strokeStyle='#fff';x.stroke(path);}
+        x.restore();p.card=card;};
+      if(!p.pre)p.paint(true);}
     P.push(p);}
   // 판을 피해서 흩어 놓기
   const m=14,placed=[];
@@ -1450,7 +1496,7 @@ function goHome(p){sfx.drop();const el=p.el;el.classList.add('back');p.x=p.hx;p.
     Object.assign(h.style,{left:p.tx+'px',top:p.ty+'px',width:p.w+'px',height:p.h+'px'});}
   h.addEventListener('animationend',()=>h.remove());stage.appendChild(h);
   if(Date.now()-lastHereSay>4000){lastHereSay=Date.now();setTimeout(()=>say('여기에 놓아요'),250);}}
-function lock(p){p.locked=true;p.x=p.tx;p.y=p.ty;p.el.classList.add('locked');p.el.style.zIndex=2;pos(p);setTimeout(()=>{p.el.classList.remove('squish');void p.el.offsetWidth;p.el.classList.add('squish');},230);
+function lock(p){p.locked=true;p.x=p.tx;p.y=p.ty;if(p.card)p.paint(false);p.el.classList.add('locked');p.el.style.zIndex=2;pos(p);setTimeout(()=>{p.el.classList.remove('squish');void p.el.offsetWidth;p.el.classList.add('squish');},230);
   sfx.snap(G.done++);burst(p.tx+p.w/2,p.ty+p.h/2,14,Math.min(p.w,p.h)*.7);
   if(G.done===G.P.length)finish();}
 const INTRO={shark:'나는 아기 상어야! 바다에서 헤엄치는 걸 좋아해',penguin:'나는 펭귄이야! 뒤뚱뒤뚱 걸어',whale:'나는 고래야! 머리에서 물을 뿜어',
@@ -1460,7 +1506,7 @@ const INTRO={shark:'나는 아기 상어야! 바다에서 헤엄치는 걸 좋�
   cat:'나는 고양이야! 야옹!',bear:'나는 곰이야! 꿀을 좋아해',panda:'나는 판다야! 대나무를 냠냠 먹어',elephant:'나는 코끼리야! 코가 아주 길어',
   lion:'나는 사자야! 갈기가 멋지지? 어흥!',monkey:'나는 원숭이야! 바나나를 좋아해',fox:'나는 여우야! 꼬리가 복슬복슬해',squirrel:'나는 다람쥐야! 도토리를 모아',
   chick:'나는 병아리야! 삐약삐약!',pig:'나는 돼지야! 꿀꿀!',sheep:'나는 양이야! 털이 몽글몽글해',koala:'나는 코알라야! 나무에 매달려 자는 걸 좋아해'};
-const iyeot=w=>w+(hasBatchim(w)?'이었어요':'였어요');
+const iyeot=w=>w+(hasBatchim(w)?'이에요':'예요');   // 짧고 쉬운 말로 (○○예요)
 function finish(){G.over=true;const b=G.board,r=b.getBoundingClientRect(),it=G.it,me=G,nm=it&&!it.photo?it.name:'';
   if(nm){PZ.album=PZ.album||{};PZ.album[it.id]=(PZ.album[it.id]||0)+1;savePZ();if(!PZ_S.met.some(m=>m.id===it.id))PZ_S.met.push(it);renderProg();}
   setTimeout(()=>{b.classList.add('cheer');G.P.forEach(p=>p.el.style.visibility='hidden');sfx.fanfare();
@@ -1506,14 +1552,16 @@ setInterval(()=>{if(S.screen!=='game'||!G||G.over)return;if(Date.now()-G.last<60
   ghostHand(p.x+p.w/2,p.y+p.h/2,p.tx+p.w/2,p.ty+p.h/2,src?{src,w:p.w+2*p.m,h:p.h+2*p.m}:null);},1000);
 
 $('gameBack').onclick=()=>{sfx.tap();show('home');};
-function openAlbum(){const g=$('albumGrid');g.innerHTML='';const al=PZ.album||{};
+let albNoT=0,albAt=0;
+function openAlbum(){const g=$('albumGrid');g.innerHTML='';const al=PZ.album||{};albAt=Date.now();
   ALLCH.forEach(ch=>{const n=al[ch.id]||0,b=document.createElement('button');b.className='acard'+(n?'':' no');
     b.innerHTML=`<img src="${charSrc(ch)}" alt=""><span>${n?ch.name:'?'}</span><span class="st">${'★'.repeat(Math.min(n,5))}</span>`;
     b.onclick=()=>{if(n){sfx.bubble();say(INTRO[ch.id]||ch.name);b.querySelector('img').animate([{transform:'none'},{transform:'translateY(-12%) scale(1.1)'},{transform:'none'}],{duration:500});}
-      else{sfx.nope();say('아직 못 만났어요. 퍼즐을 맞추면 만날 수 있어요');}};g.appendChild(b);});
+      else{sfx.nope();if(Date.now()-albNoT>4000){albNoT=Date.now();say('아직 못 만난 친구예요. 퍼즐에서 만나요!');}}};g.appendChild(b);});
   const got=ALLCH.filter(c=>al[c.id]).length;$('album').querySelector('h3').textContent=`퍼즐 도감 (${got} / ${ALLCH.length})`;$('album').classList.add('on');}
 $('albumBtn').onclick=()=>{sfx.tap();say('퍼즐 도감이에요');openAlbum();};
 $('albumClose').onclick=()=>{sfx.tap();$('album').classList.remove('on');};
+$('album').addEventListener('click',e=>{if(e.target.id==='album'&&Date.now()-albAt>700){sfx.tap();$('album').classList.remove('on');}});
 /* 뒤로가기(제스처·버튼)를 눌러도 앱이 꺼지지 않고 한 화면씩 뒤로 */
 history.pushState({yj:1},'');
 addEventListener('popstate',()=>{history.pushState({yj:1},'');
@@ -1522,7 +1570,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='home')return;const b=document.querySelector('#'+S.screen+' [id$="Back"]');b?b.click():show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v43';
+const APP_VERSION='v44';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -1630,17 +1678,17 @@ function stampAt(p,e){const img=STAMPS[D.stampIdx],s=PH*.26;pctx.globalComposite
 
 let FST=null;
 function floodFill(p,e,col){col=col||D.color;const x0=Math.floor(p.x),y0=Math.floor(p.y);if(x0<0||y0<0||x0>=PW||y0>=PH)return;
-  const L=D.lineAlpha,i0=y0*PW+x0;if(L&&L[i0]>=60)return;
+  const L=D.lineAlpha,i0=y0*PW+x0,SL=D.page&&D.sil;if(L&&L[i0]>=60)return;if(SL&&!SL[i0]){sfx.nope();return;}   // 친구 바깥은 칠하지 않아요
   const img=pctx.getImageData(0,0,PW,PH),d=img.data,k0=i0*4,tr=d[k0],tg=d[k0+1],tb=d[k0+2],ta=d[k0+3];
   const n=parseInt(col.slice(1),16),fr=n>>16,fg=(n>>8)&255,fb=n&255;
   if(ta===255&&Math.abs(tr-fr)<8&&Math.abs(tg-fg)<8&&Math.abs(tb-fb)<8)return;
   const seen=new Uint8Array(PW*PH);if(!FST)FST=new Int32Array(PW*PH);let sp=0;FST[sp++]=i0;seen[i0]=1;
   const T=48,match=i=>{const k=i*4;return Math.abs(d[k+3]-ta)<=T&&(ta<10||(Math.abs(d[k]-tr)<=T&&Math.abs(d[k+1]-tg)<=T&&Math.abs(d[k+2]-tb)<=T));};
-  const visit=j=>{if(seen[j])return;if(match(j)||(L&&L[j]>=60)){seen[j]=1;FST[sp++]=j;}};
+  const visit=j=>{if(seen[j]||(SL&&!SL[j]))return;if(match(j)||(L&&L[j]>=60)){seen[j]=1;FST[sp++]=j;}};
   while(sp){const i=FST[--sp],k=i*4;d[k]=fr;d[k+1]=fg;d[k+2]=fb;d[k+3]=255;
     if(L&&L[i]>=60)continue; // 선 밑까지만 칠하고 더 퍼지지 않기
     const x=i%PW;if(x>0)visit(i-1);if(x<PW-1)visit(i+1);if(i>=PW)visit(i-PW);if(i<PW*(PH-1))visit(i+PW);}
-  pctx.putImageData(img,0,0);sfx.pour();burst(e.clientX,e.clientY,12,90);setTimeout(checkColoring,300);}
+  pctx.putImageData(img,0,0);D.fills=(D.fills||0)+1;sfx.pour();burst(e.clientX,e.clientY,12,90);setTimeout(checkColoring,300);}
 // 반짝이 붓: 별가루를 뿌려요
 function sprinkle(p,n){const r=pctx.lineWidth*1.1;pctx.globalCompositeOperation='source-over';
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,q=Math.random()*r,x=p.x+Math.cos(a)*q,y=p.y+Math.sin(a)*q,z=3+Math.random()*8;
@@ -1649,7 +1697,7 @@ function sprinkle(p,n){const r=pctx.lineWidth*1.1;pctx.globalCompositeOperation=
 // 색칠공부를 많이 칠하면 그림 속 친구가 살아나서 고마워해요
 let colorCheckT=0;function checkColoring(){if(!D.page||D.alive||!D.sil)return;const now=Date.now();if(now-colorCheckT<700)return;colorCheckT=now;
   const a=pctx.getImageData(0,0,PW,PH).data;let tot=0,hit=0;for(let i=0;i<D.sil.length;i+=6){if(!D.sil[i])continue;tot++;if(a[i*4+3]>40)hit++;}
-  if(tot&&hit/tot>=.6){D.alive=true;const ch=CHARS.find(c=>c.id===D.page);if(!ch)return;const r=paper.getBoundingClientRect(),z=Math.min(r.width,r.height)*.7;
+  if(tot&&((hit/tot>=.6&&(D.fills||0)>=3)||hit/tot>=.85)){D.alive=true;   // 세 칸 넘게 칠했거나 거의 다 칠했을 때const ch=CHARS.find(c=>c.id===D.page);if(!ch)return;const r=paper.getBoundingClientRect(),z=Math.min(r.width,r.height)*.7;
     sfx.fanfare();dance(charSrc(ch),{left:r.left+r.width/2-z/2,top:r.top+r.height/2-z/2,width:z,height:z});
     say(`나는 ${iya(ch.name)}! 예쁘게 칠해줘서 고마워!`);cheer('예쁘게 칠했어요!');burst(r.left+r.width/2,r.top+r.height/2,40,z*.7,true);
     setTimeout(()=>giveSticker('c:'+ch.id),3400);}}
@@ -1668,27 +1716,28 @@ async function lineArt(ch){if(LINE[ch.id])return LINE[ch.id];const N=900,img=awa
   for(let y=0;y<N;y++)for(let xx=0;xx<N;xx++){let v=0;for(let q=-r;q<=r&&!v;q++){const Y=y+q;if(Y>=0&&Y<N&&t[Y*N+xx])v=1;}o[y*N+xx]=v;}
   const out=x.createImageData(N,N);for(let i=0;i<N*N;i++)if(o[i]){const k=i*4;out.data[k]=43;out.data[k+1]=58;out.data[k+2]=85;out.data[k+3]=255;}
   x.putImageData(out,0,0);LINE[ch.id]=c;return c;}
-async function setPage(ch){D.undo=[];pctx.clearRect(0,0,PW,PH);lctx.clearRect(0,0,PW,PH);D.page=ch?ch.id:null;D.lineAlpha=null;D.alive=false;D.sil=null;
+async function setPage(ch){D.undo=[];D.fills=0;pctx.clearRect(0,0,PW,PH);lctx.clearRect(0,0,PW,PH);D.page=ch?ch.id:null;D.lineAlpha=null;D.alive=false;D.sil=null;
   if(ch){const c=await lineArt(ch),s=PH*.94;lctx.drawImage(c,(PW-s)/2,(PH-s)/2,s,s);
     // 칠할 수 있는 곳(캐릭터 모양) 기억해두기
     try{const im=await loadImg(svgURL(ch.lineSvg())),cv=document.createElement('canvas');cv.width=PW;cv.height=PH;const x=cv.getContext('2d',{willReadFrequently:true});
       x.drawImage(im,(PW-s)/2,(PH-s)/2,s,s);const d=x.getImageData(0,0,PW,PH).data,M=new Uint8Array(PW*PH);for(let i=0;i<M.length;i++)M[i]=d[i*4+3]>100?1:0;D.sil=M;}catch(e){}
     const a=lctx.getImageData(0,0,PW,PH).data,L=new Uint8Array(PW*PH);for(let i=0;i<L.length;i++)L[i]=a[i*4+3];D.lineAlpha=L;
     if(D.tool==='eraser'||D.tool==='stamp')D.tool='crayon';renderTools();}}
+let pageAt=0;
 async function openPagePick(){const g=$('pageGrid');g.innerHTML='';
   const blank=document.createElement('button');blank.className='pic blank';blank.textContent='빈 종이';
   blank.onclick=()=>{sfx.tap();setPage(null);$('pagePick').classList.remove('on');};g.appendChild(blank);
   for(const ch of CHARS){const b=document.createElement('button');b.className='pic';b.innerHTML=`<img alt=""><b>${ch.name}</b>`;g.appendChild(b);
     b.onclick=()=>{sfx.tap();say(ch.name);setPage(ch);$('pagePick').classList.remove('on');};}
-  $('pagePick').classList.add('on');
+  $('pagePick').classList.add('on');pageAt=Date.now();
   const imgs=g.querySelectorAll('.pic:not(.blank) img');
   for(let i=0;i<CHARS.length;i++){const c=await lineArt(CHARS[i]);imgs[i].src=c.toDataURL();}}
 
 $('goDraw').onclick=()=>{sfx.tap();show('draw');renderTools();renderColors();fitPaper();requestAnimationFrame(fitPaper);
-  if(!D.started){D.started=true;const ch=pick(CHARS);setPage(ch);say(`${eul(ch.name)} 예쁘게 칠해 볼까요? 톡 누르면 칠해져요`);}else say('그림 그려요');};
+  if(!D.started){D.started=true;const ch=pick(CHARS);setPage(ch);say(`${eul(ch.name)} 예쁘게 칠해요! 톡 눌러 봐요`);}else say('그림 그려요');};
 $('drawBack').onclick=()=>{sfx.tap();show('home');};
 $('pageBtn').onclick=()=>{sfx.tap();openPagePick();};
-$('pagePick').addEventListener('click',e=>{if(e.target.id==='pagePick')$('pagePick').classList.remove('on');});
+$('pagePick').addEventListener('click',e=>{if(e.target.id==='pagePick'&&Date.now()-pageAt>700)$('pagePick').classList.remove('on');});
 $('undoBtn').onclick=()=>{const u=D.undo.pop();if(!u){sfx.nope();return;}pctx.putImageData(u,0,0);sfx.undo();};
 $('clearBtn').onclick=()=>{pushUndo();pctx.clearRect(0,0,PW,PH);sfx.whoosh();paper.classList.remove('wig');void paper.offsetWidth;paper.classList.add('wig');};
 $('saveBtn').onclick=()=>{if(Date.now()-D.lastSave<3000)return;D.lastSave=Date.now();
@@ -1902,7 +1951,7 @@ $('dSaveBtn').onclick=async()=>{if(Date.now()-dLastSave<3000)return;dLastSave=Da
     a.download=`유주옷입히기-${dt.getFullYear()}${p(dt.getMonth()+1)}${p(dt.getDate())}-${p(dt.getHours())}${p(dt.getMinutes())}${p(dt.getSeconds())}.png`;
     document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);},'image/png');
   sfx.shutter();say('예쁘게 찍었어요');happyFace();drawDoll();setTimeout(()=>giveSticker(pick(['i:crown','i:heart']),'dress'),1200);};
-$('doll').addEventListener('pointerdown',()=>{sfx.bubble();happyFace();drawDoll();hop();say(pick(['안녕!','나 예뻐?','좋아!']));});
+$('doll').addEventListener('pointerdown',()=>{sfx.bubble();happyFace();drawDoll();hop();say(pick(['안녕!','같이 놀자!','좋아!']));});
 $('goDress').onclick=()=>{sfx.tap();say('옷 입혀 볼까요?');show('dress');drawDoll();renderCloset();};
 $('dressBack').onclick=()=>{sfx.tap();show('home');};
 
@@ -1919,7 +1968,7 @@ const NUM=['하나','둘','셋','넷','다섯','여섯','일곱','여덟','아�
 const BTINT=[['#ff8fc7','분홍'],['#7ec8ff','파란'],['#ffd93d','노란'],['#7ddc8a','초록']];
 function bbGo(){BB.step=0;bbStart();}
 function bbStart(){show('bubble');const g=++BB.gen;BB.count=0;BB.party=false;document.body.classList.toggle('land',BB.world==='land');$('bbArea').innerHTML='';
-  clearInterval(BB.timer);BB.timer=null;BB.mode=BB.step===1?'color':'free';BB.goal=BB.step===1?5:8;
+  clearInterval(BB.timer);BB.timer=null;BB.mode=BB.step===1?'color':'free';BB.goal=5;
   if(BB.step===0)BB.giant=pick(BB.world==='land'&&LAND.length?LAND:CHARS);   // 이번 이야기에서 방울에 갇힐 친구
   if(BB.step===1)BB.target=pick(BTINT);
   bbProg();
@@ -1966,7 +2015,7 @@ function bbGiant(g){const A=$('bbArea'),W=A.clientWidth,H=A.clientHeight,z=Math.
   const b=document.createElement('div');b.className='bb giant';b.id='bbGiant';Object.assign(b.style,{left:(W/2-z/2)+'px',top:(H*.56-z/2)+'px',width:z+'px',height:z+'px'});
   b.innerHTML=`<div class="bbw"><img src="${charSrc(ch)}" alt=""></div>`;b.addEventListener('pointerdown',e=>{e.preventDefault();bbGiantTap(g);});A.appendChild(b);
   b.animate([{transform:`translateY(${H*.7}px)`},{transform:'none'}],{duration:1800,easing:'ease-out'});
-  setTimeout(()=>{if(BB.gen===g&&BB.gt===0)say(`어머! ${ga(ch.name)} 큰 비눗방울에 갇혔어요! 톡톡 눌러서 꺼내 줘요!`);},900);
+  setTimeout(()=>{if(BB.gen===g&&BB.gt===0)say(`어머! ${ga(ch.name)} 큰 비눗방울 안에 있어요! 톡톡 눌러요!`);},900);
   BB.hintT=setInterval(()=>{if(BB.gen!==g||S.screen!=='bubble'||BB.gt>=3){clearInterval(BB.hintT);return;}if(Date.now()-lastTouch<6000)return;
     const c=ctr(b);ghostHand(c.x+c.w*.3,c.y+c.h*.3,c.x,c.y,null);say('큰 방울을 톡톡 눌러요!');},6500);}
 function bbGiantTap(g){const b=$('bbGiant');if(BB.gen!==g||!b||BB.gt>=3)return;const n=++BB.gt,w=b.querySelector('.bbw');
@@ -1985,7 +2034,7 @@ function bbRain(g){const A=$('bbArea'),W=A.clientWidth,H=A.clientHeight,z=Math.m
   const f=document.createElement('div');f.className='pal2';f.innerHTML=`<img src="${charSrc(ch)}" alt="">`;
   Object.assign(f.style,{left:(W/2-z/2)+'px',top:(H-z-H*.04)+'px',width:z+'px',height:z+'px'});A.appendChild(f);
   f.addEventListener('pointerdown',e=>{e.preventDefault();f.classList.remove('jump');void f.offsetWidth;f.classList.add('jump');sfx.giggle();});
-  say(`${ga(ch.name)} 고맙다고 무지개 방울을 불어 줘요! 마음껏 터뜨려요!`);
+  say(`고마워! ${ga(ch.name)} 무지개 방울을 불어요! 톡톡 터뜨려요!`);
   const t0=Date.now();let k=0;
   const iv=setInterval(()=>{if(BB.gen!==g||S.screen!=='bubble'){clearInterval(iv);return;}
     if(Date.now()-t0>10000){clearInterval(iv);bbRainEnd(g,f);return;}
@@ -2076,7 +2125,7 @@ $('pkBack').onclick=()=>{sfx.tap();PK.gen++;clearTimeout(PK.hintT);show('home');
 // 4단계: 찾은 친구들이 모여서 다 같이 사진 찰칵
 function pkPhoto(){if(S.screen!=='peek')return;clearTimeout(PK.hintT);const g=++PK.gen,A=$('pkArea'),W=A.clientWidth,H=A.clientHeight;A.innerHTML='';
   PK.busy=false;PK.snap=false;PK.step=3;pkProg();document.body.classList.toggle('land',pkInLand());
-  const list=PK.cast.filter(Boolean),n=list.length,z=Math.min(W*.8/n,H*.34,W*.2),y=H*.4-z/2;
+  const list=PK.cast.filter(Boolean),n=list.length,z=Math.min(W*.86/n,H*.44,W*.25),y=H*.38-z/2;
   list.forEach((ch,i)=>{const d=document.createElement('div');d.className='pal2';d.innerHTML=`<img src="${charSrc(ch)}" alt="" style="animation-delay:-${(i*.4).toFixed(1)}s">`;
     Object.assign(d.style,{left:(W/2+(i-(n-1)/2)*z*1.05-z/2)+'px',top:(y+(i%2?z*.06:0))+'px',width:z+'px',height:z+'px'});
     d.animate([{transform:`translateY(${H*.8}px)`},{transform:'translateY(-10%)',offset:.75},{transform:'none'}],{duration:700,delay:i*180,easing:'ease-out',fill:'backwards'});
@@ -2123,8 +2172,8 @@ const sharkSVG=()=>`<svg viewBox="0 0 600 600"><g transform="translate(600 0) sc
 // 밥 주는 친구: 바다는 상어+색깔 물고기, 숲속은 토끼+색깔 과일. 배부를 때마다(5번) 번갈아
 const FEEDS={
  sea:{who:'상어',wait:'shark_open',chew:'shark_closed',full:'shark_closed',toggle:true,mouth:[.41,.61],flip:true,
-   items:FISH_COLS.map(i=>({img:'fish'+i,say:FCOL[i][2]+' 물고기',wrong:`이건 ${FCOL[i][3]}이에요.`}))},
- land:{who:'토끼',wait:'rabbit_open',chew:'rabbit_open',full:'rabbit_closed',toggle:false,mouth:[.45,.57],flip:false,
+   items:FISH_COLS.map(i=>({img:'fish'+i,say:FCOL[i][2]+' 물고기',wrong:`이건 ${FCOL[i][2]} 물고기예요.`}))},
+ land:{who:'토끼',wait:'rabbit_open',chew:'rabbit_open',full:'rabbit_closed',toggle:false,mouth:[.5,.57],flip:false,
    items:[['fr_apple','빨간 사과'],['fr_banana','노란 바나나'],['fr_blueberry','파란 블루베리'],['fr_peach','분홍 복숭아'],['fr_orange','주황 오렌지'],['fr_grape','보라 포도']]
      .map(([img,s])=>({img,say:s,wrong:`이건 ${s}예요.`}))}};
 const FD={fed:0,target:null,busy:false,last:0,fish:[],shark:null,S:0,timer:null,world:'sea',need:1,got:0,cycles:0,stage:'eat',act:false,n:0,tool:null,mv:false,gen:0};
@@ -2137,22 +2186,23 @@ function fdFace(kind){const sh=FD.shark;if(!sh)return;sh.querySelector('.so').sr
 function fdStart(){show('feed');FD.fed=0;FD.stage='eat';FD.act=false;FD.mv=false;FD.busy=true;FD.gen++;document.body.classList.toggle('land',FD.world==='land');fdBuild();fdProg();fdRound();
   clearInterval(FD.timer);FD.timer=setInterval(()=>{if(S.screen!=='feed'){clearInterval(FD.timer);FD.timer=null;return;}
     if(Date.now()-Math.max(FD.last,lastTouch)<7000)return;
+    if(FD.stage==='brush'){if(!FD.act||!FD.mouth)return;FD.last=Date.now();fdScrubHint();say('쓱쓱 문질러서 닦아 줘요!');return;}
     if(FD.stage!=='eat'){if(!FD.act||FD.mv)return;FD.last=Date.now();const el=FD.stage==='burp'?FD.shark:FD.tool;if(!el)return;const c=ctr(el);   // 단계별 손가락 힌트
       if(FD.tool){FD.tool.classList.remove('glow');void FD.tool.offsetWidth;FD.tool.classList.add('glow');setTimeout(()=>FD.tool&&FD.tool.classList.remove('glow'),2400);}
       ghostHand(c.x+c.w*.35,c.y+c.h*.35,c.x,c.y,null);say(FD.stage==='burp'?'배를 톡톡 두드려 줘요!':FD.stage==='brush'?'칫솔을 톡 눌러요! 치카치카':'컵을 톡 눌러요! 가글가글');return;}
     if(FD.busy)return;FD.last=Date.now();const f=FD.fish.find(f=>f.c===FD.target);
     if(f){f.el.classList.remove('hint');void f.el.offsetWidth;f.el.classList.add('hint');const m=mouthXY();
       ghostHand(f.x+f.w/2,f.y+f.h/2,m.x,m.y,{html:f.el.querySelector('.fb').innerHTML,w:f.w,h:f.h});}say(FD.askText||`${FD.target.say} 주세요!`);},1000);}
-function fdBuild(){const A=$('fdArea');A.innerHTML='';FD.tool=null;const W=A.clientWidth,H=A.clientHeight,land=W>=H,w=FW();
-  const Sz=land?Math.min(W*.46,H*.72):Math.min(W*.72,H*.42);FD.S=Sz;FD.land=land;
+function fdBuild(){const A=$('fdArea');A.innerHTML='';FD.tool=null;FD.mouth=null;const W=A.clientWidth,H=A.clientHeight,land=W>=H,w=FW();
+  const S0=land?Math.min(W*.46,H*.72):Math.min(W*.72,H*.42),Sz=S0*(FD.world==='land'?.85:1);FD.S=Sz;FD.land=land;   // 숲속 토끼는 조금 작게
   const sh=document.createElement('div');sh.className='shark open';
   sh.innerHTML=`<div class="sb"><img class="sc" src="chars/${w.chew}.webp" alt=""><img class="so" src="chars/${w.wait}.webp" alt=""><i class="mHit" style="left:${w.mouth[0]*100}%;top:${w.mouth[1]*100}%"></i></div>`;
-  const sx=land?W-Sz-W*.03:(W-Sz)/2,sy=land?(H-Sz)/2+H*.08:H-Sz-H*.03;
+  const sx=land?W-S0-W*.03+(S0-Sz)/2:(W-Sz)/2,sy=land?(H-S0)/2+H*.08+(S0-Sz):H-Sz-H*.03;
   Object.assign(sh.style,{left:sx+'px',top:sy+'px',width:Sz+'px',height:Sz+'px'});A.appendChild(sh);FD.shark=sh;
   sh.addEventListener('pointerdown',()=>{if(FD.stage!=='eat'){fdPoke();return;}if(FD.busy)return;sh.classList.remove('squish');void sh.offsetWidth;sh.classList.add('squish');sfx.giggle();FD.last=Date.now();});
   FD.region=land?{x:W*.03,y:Math.min(130,H*.16),w:sx-W*.06,h:H-Math.min(130,H*.16)-H*.04}:{x:W*.04,y:Math.min(130,H*.14),w:W*.92,h:sy-Math.min(130,H*.14)-H*.04};
   const ask=document.createElement('div');ask.className='ask';ask.id='fdAsk';A.appendChild(ask);
-  Object.assign(ask.style,land?{left:(sx-Sz*.05)+'px',top:Math.max(Math.min(130,H*.16)-H*.04,sy-Sz*.08)+'px'}:{left:(W*.5)+'px',top:(sy-H*.02)+'px',transform:'translateX(-50%)'});}
+  Object.assign(ask.style,land?{left:(sx-Sz*.05)+'px',top:Math.max(Math.min(130,H*.16)-H*.04,sy-Sz*(FD.world==='land'?.15:.08))+'px'}:{left:(W*.5)+'px',top:(sy-H*.02)+'px',transform:'translateX(-50%)'});}
 function fdRound(){if(S.screen!=='feed')return;FD.busy=false;FD.last=Date.now();FD.fish.forEach(f=>f.el.remove());FD.fish=[];
   const w=FW(),pickd=shuffle(w.items.slice()).slice(0,3);FD.target=pickd[0];
   // 한 번 배부르게 먹인 뒤부터는 가끔 "두 마리 주세요" (숫자 세기)
@@ -2219,29 +2269,70 @@ function fdPoke(){const sh=FD.shark;if(!sh)return;FD.last=Date.now();sh.classLis
 function fdTool(img,ar){const A=$('fdArea'),R=FD.region,z=Math.min(R.w*.5,R.h*.55,FD.S*.5),w=z,h=z/ar,el=document.createElement('div');el.className='fdtool';
   el.innerHTML=`<img src="chars/${img}.webp" alt="">`;Object.assign(el.style,{left:(R.x+R.w/2-w/2)+'px',top:(R.y+R.h/2-h/2)+'px',width:w+'px',height:h+'px'});
   A.appendChild(el);if(FD.tool)FD.tool.remove();FD.tool=el;return el;}
-// 3단계: 칫솔로 치카치카 네 번
-function fdBrush(g){if(FD.gen!==g||S.screen!=='feed')return;FD.stage='brush';FD.act=true;FD.n=0;FD.last=Date.now();fdProg();fdFace('wait');
-  const el=fdTool('fd_brush',IMG_AR.fd_brush);el.addEventListener('pointerdown',e=>{e.preventDefault();fdBrushGo();});
-  say('밥 먹었으면 치카치카! 칫솔을 톡 눌러요');}
-function fdBrushGo(){if(FD.stage!=='brush'||!FD.act||FD.mv||!FD.tool)return;FD.mv=true;FD.last=Date.now();const g=FD.gen,el=FD.tool,A=$('fdArea'),a=A.getBoundingClientRect();
-  const r=el.getBoundingClientRect(),m=mouthXY(),dx=m.x-(r.left+r.width*.78),dy=m.y-(r.top+r.height*.22);   // 칫솔모(오른쪽 위)가 입에 닿게
-  fdFace('wait');const T=(x,y,rt=0)=>`translate(${dx+x}px,${dy+y}px) rotate(${rt}deg)`,q=r.width*.1;
-  el.animate([{transform:'none'},{transform:T(0,-r.height*.1),offset:.25},{transform:T(-q,0,-6),offset:.37},{transform:T(q,0,6),offset:.49},{transform:T(-q,0,-6),offset:.61},
-    {transform:T(q,0,6),offset:.73},{transform:T(0,0),offset:.8},{transform:'none'}],{duration:1700,easing:'ease-in-out'});
-  for(let i=0;i<4;i++)setTimeout(()=>{if(FD.gen!==g)return;noise({f:3200+Math.random()*900,d:.12,v:.09,q:1.3});
-    const f=document.createElement('i');f.className='foam';const z=FD.S*(.05+Math.random()*.04);
-    f.style.cssText=`left:${m.x-a.left-z/2+(Math.random()-.5)*FD.S*.12}px;top:${m.y-a.top-z/2+(Math.random()-.5)*FD.S*.08}px;width:${z}px;height:${z}px;z-index:11`;
-    f.addEventListener('animationend',e=>{if(e.animationName==='foamFade')f.remove();});A.appendChild(f);},500+i*200);
-  const n=++FD.n;setTimeout(()=>{if(FD.gen===g)say(['치카치카!','위에도 치카치카!','아래도 치카치카!','반짝반짝!'][Math.min(n,4)-1]);},450);
-  setTimeout(()=>{if(FD.gen!==g)return;FD.mv=false;if(n<4)return;FD.act=false;fdShine(m.x-a.left,m.y-a.top);say('이가 반짝반짝 깨끗해요!');
-    setTimeout(()=>fdRinse(g),2000);},1750);}
-function fdShine(x,y){const A=$('fdArea');sparkle();for(let i=0;i<5;i++){const t=document.createElement('i');t.className='fdshine';t.textContent='✦';const z=FD.S*(.06+Math.random()*.05);
-  t.style.cssText=`left:${x-z/2+(Math.random()-.5)*FD.S*.2}px;top:${y-z/2+(Math.random()-.5)*FD.S*.14}px;font-size:${z.toFixed(0)}px;animation-delay:-${(i*.13).toFixed(2)}s`;
+// 3단계: 칫솔질 — 입 속을 크게 보고, 이에 묻은 찌꺼기를 손가락으로 쓱쓱 문질러 닦아요 (목욕처럼)
+const TEETH={"sea":[[0.362,0.258,0.125,0.148],[0.513,0.258,0.125,0.148],[0.232,0.285,0.117,0.137],[0.651,0.285,0.117,0.137],[0.779,0.297,0.115,0.141],[0.104,0.301,0.115,0.137],[0.122,0.641,0.117,0.145],[0.763,0.641,0.115,0.148],[0.237,0.684,0.12,0.168],[0.646,0.684,0.12,0.168],[0.365,0.703,0.13,0.18],[0.508,0.703,0.13,0.18]],"land":[[0.346,0.266,0.151,0.207],[0.503,0.266,0.151,0.207],[0.253,0.316,0.086,0.117],[0.661,0.316,0.086,0.117],[0.164,0.344,0.081,0.098],[0.755,0.344,0.076,0.098],[0.195,0.691,0.083,0.121],[0.719,0.691,0.083,0.113],[0.281,0.738,0.089,0.125],[0.628,0.738,0.091,0.125],[0.375,0.758,0.102,0.137],[0.523,0.758,0.099,0.137]]};   // 이 자리 [x,y,w,h] (teeth_*.webp 비율)
+let FD_DIRT=null;
+async function fdBrush(g){if(FD.gen!==g||S.screen!=='feed')return;FD.stage='brush';FD.act=false;FD.n=0;FD.mv=false;FD.last=Date.now();fdProg();fdFace('wait');
+  if(FD.tool){FD.tool.remove();FD.tool=null;}
+  say('밥 다 먹었어요! 아~ 입 속을 볼까요?');
+  const A=$('fdArea'),W=A.clientWidth,H=A.clientHeight,pw=Math.min(W*.8,H*.86*1.5),ph=pw/1.5,dpr=Math.min(2,devicePixelRatio||1);
+  const P=document.createElement('div');P.className='fdmouth';P.id='fdMouth';
+  Object.assign(P.style,{left:(W-pw)/2+'px',top:(H-ph)/2+'px',width:pw+'px',height:ph+'px'});
+  P.innerHTML=`<img class="tth" src="chars/teeth_${FD.world==='land'?'land':'sea'}.webp" alt=""><canvas></canvas><img class="fdbr" src="chars/fd_brush.webp" alt="">`;
+  const cv=P.querySelector('canvas');cv.width=Math.round(pw*dpr);cv.height=Math.round(ph*dpr);
+  A.appendChild(P);const M=FD.mouth={P,cv,br:P.querySelector('.fdbr'),pw,ph,tot:1,ptr:new Set(),dist:0,lastP:null,chk:0,said:0,g};
+  if(!FD_DIRT){try{FD_DIRT=await Promise.all([1,2,3,4].map(i=>loadImg(`chars/fd_dirt${i}.webp`)));}catch(e){FD_DIRT=[];}}
+  if(FD.gen!==g||FD.mouth!==M)return;
+  // 찌꺼기는 이 위에만 붙어요 (이 모양 밖으로 나가지 않게 잘라요)
+  const x=cv.getContext('2d'),TT=TEETH[FD.world==='land'?'land':'sea'],C=cv.width,R=cv.height;
+  x.save();x.beginPath();TT.forEach(([a,b,c,d])=>{if(x.roundRect)x.roundRect(a*C,b*R,c*C,d*R,c*C*.28);else x.rect(a*C,b*R,c*C,d*R);});x.clip();
+  shuffle(TT.slice()).slice(0,7).forEach(([a,b,c,d],i)=>{const cx=(a+c*(.3+Math.random()*.4))*C,cy=(b+d*(.3+Math.random()*.4))*R,z=Math.max(c,.1)*C*(.7+Math.random()*.3);
+    const sp=FD_DIRT.length?FD_DIRT[i%FD_DIRT.length]:null;x.save();x.translate(cx,cy);x.rotate((Math.random()-.5)*1.2);
+    if(sp){const k=sp.naturalWidth/sp.naturalHeight;x.drawImage(sp,-z/2,-z/2/k,z,z/k);}else{x.fillStyle='#d9b24c';x.beginPath();x.arc(0,0,z/2.4,0,6.283);x.fill();}x.restore();});
+  x.restore();M.tot=Math.max(1,fdDirtLeft());
+  const down=e=>{e.preventDefault();try{P.setPointerCapture(e.pointerId);}catch(_){}M.ptr.add(e.pointerId);M.lastP=null;fdScrub(e);};
+  const rest=()=>{const bw=pw*.3,bh=bw/IMG_AR.fd_brush;Object.assign(M.br.style,{left:(pw-bw*1.02)+'px',top:(ph-bh*1.05)+'px',width:bw+'px',height:bh+'px'});};rest();
+  const up=e=>{M.ptr.delete(e.pointerId);if(!M.ptr.size){M.lastP=null;M.br.classList.remove('on');rest();}};
+  P.addEventListener('pointerdown',down);P.addEventListener('pointermove',e=>{if(M.ptr.has(e.pointerId))fdScrub(e);});
+  ['pointerup','pointercancel'].forEach(t=>P.addEventListener(t,up));
+  setTimeout(()=>{if(FD.gen!==g||FD.mouth!==M)return;FD.act=true;FD.last=Date.now();
+    say('이에 뭐가 묻었어요! 쓱쓱 문질러서 닦아 줘요');fdScrubHint();},2400);}
+// 남은 찌꺼기 양 (작게 줄여서 세요)
+function fdDirtLeft(){const M=FD.mouth;if(!M)return 0;const c=M.sm||(M.sm=document.createElement('canvas'));c.width=120;c.height=80;
+  const x=c.getContext('2d',{willReadFrequently:true});x.clearRect(0,0,120,80);x.drawImage(M.cv,0,0,120,80);
+  const d=x.getImageData(0,0,120,80).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>60)n++;return n;}
+// 손가락(칫솔) 자리 찌꺼기를 지워요. 칫솔이 손가락을 따라오고 거품이 보글보글
+function fdScrub(e){const M=FD.mouth;if(!M||FD.stage!=='brush'||!FD.act||FD.gen!==M.g)return;FD.last=Date.now();
+  const r=M.cv.getBoundingClientRect(),lx=e.clientX-r.left,ly=e.clientY-r.top,k=M.cv.width/r.width,px=lx*k,py=ly*k;
+  const bw=M.pw*.3,bh=bw/IMG_AR.fd_brush;Object.assign(M.br.style,{left:(lx-bw*.78)+'px',top:(ly-bh*.22)+'px',width:bw+'px',height:bh+'px'});M.br.classList.add('on');
+  const x=M.cv.getContext('2d'),L=M.lastP||{x:px,y:py};x.save();x.globalCompositeOperation='destination-out';x.lineCap='round';x.lineWidth=M.cv.width*.14;
+  x.beginPath();x.moveTo(L.x,L.y);x.lineTo(px+.01,py);x.stroke();x.restore();
+  M.dist+=Math.hypot(px-L.x,py-L.y)/k;M.lastP={x:px,y:py};
+  if(M.dist>M.pw*.07||!e.movementX&&!M.chk){M.dist=0;noise({f:3000+Math.random()*1000,d:.1,v:.08,q:1.3});   // 쓱쓱 소리
+    const f=document.createElement('i');f.className='foam';const z=M.pw*(.04+Math.random()*.04);
+    f.style.cssText=`left:${lx-z/2+(Math.random()-.5)*M.pw*.06}px;top:${ly-z/2+(Math.random()-.5)*M.pw*.05}px;width:${z}px;height:${z}px;z-index:3`;
+    f.addEventListener('animationend',ev=>{if(ev.animationName==='foamFade')f.remove();});M.P.appendChild(f);}
+  if(Date.now()-M.chk<250)return;M.chk=Date.now();const left=fdDirtLeft()/M.tot;
+  if(left<.06){fdBrushDone();return;}
+  if(left<.55&&M.said<1){M.said=1;say('치카치카! 깨끗해지고 있어요!');}
+  else if(left<.25&&M.said<2){M.said=2;say('조금만 더 쓱쓱!');}}
+function fdBrushDone(){const M=FD.mouth;if(!M||!FD.act)return;FD.act=false;const g=FD.gen;M.br.classList.remove('on');
+  M.cv.getContext('2d').clearRect(0,0,M.cv.width,M.cv.height);fdShine(parseFloat(M.P.style.left)+M.pw/2,parseFloat(M.P.style.top)+M.ph*.45,M.pw);
+  say('이가 반짝반짝 깨끗해요!');cheer('반짝반짝 깨끗해요!');
+  setTimeout(()=>{if(FD.gen!==g)return;M.P.classList.add('out');setTimeout(()=>{M.P.remove();if(FD.mouth===M)FD.mouth=null;},500);fdRinse(g);},2400);}
+// 가만히 있으면 손가락이 찌꺼기 위를 쓱쓱 문질러 보여 줘요
+function fdScrubHint(){const M=FD.mouth;if(!M)return;const r=M.cv.getBoundingClientRect(),TT=TEETH[FD.world==='land'?'land':'sea'],[a,b,c,d]=pick(TT);
+  const y=r.top+(b+d/2)*r.height;ghostHand(r.left+(a-.05)*r.width,y,r.left+(a+c+.05)*r.width,y,null);}
+// 칫솔을 톡 (시험·도움용): 이 세 개를 저절로 닦아요
+function fdBrushGo(){const M=FD.mouth;if(!M||FD.stage!=='brush'||!FD.act)return;FD.n++;const r=M.cv.getBoundingClientRect(),TT=TEETH[FD.world==='land'?'land':'sea'];
+  shuffle(TT.slice()).slice(0,3).forEach(([a,b,c,d])=>{for(let t=0;t<=6;t++){const ev={clientX:r.left+(a+c*t/6)*r.width,clientY:r.top+(b+d*(t%2?.3:.7))*r.height,movementX:1};fdScrub(ev);if(!FD.act)return;M.chk=0;}M.lastP=null;});}
+function fdShine(x,y,span){const A=$('fdArea'),sp=span||FD.S*.2;sparkle();for(let i=0;i<(span?9:5);i++){const t=document.createElement('i');t.className='fdshine';t.textContent='✦';const z=FD.S*(.06+Math.random()*.05);
+  t.style.cssText=`left:${x-z/2+(Math.random()-.5)*sp}px;top:${y-z/2+(Math.random()-.5)*sp*.6}px;font-size:${z.toFixed(0)}px;animation-delay:-${(i*.13).toFixed(2)}s`;
   A.appendChild(t);setTimeout(()=>t.remove(),2000);}}
 // 4단계: 컵으로 가글가글 퉤 (두 번)
 function fdRinse(g){if(FD.gen!==g||S.screen!=='feed')return;FD.stage='rinse';FD.act=true;FD.n=0;FD.last=Date.now();fdProg();fdFace('full');
   const el=fdTool('fd_cup',IMG_AR.fd_cup);el.addEventListener('pointerdown',e=>{e.preventDefault();fdRinseGo();});
-  say('물로 가글가글 헹궈요! 컵을 톡 눌러요');}
+  say('이제 물로 가글가글! 컵을 톡 눌러요');}
 function fdRinseGo(){if(FD.stage!=='rinse'||!FD.act||FD.mv||!FD.tool)return;FD.mv=true;FD.last=Date.now();const g=FD.gen,el=FD.tool,A=$('fdArea'),a=A.getBoundingClientRect();
   const r=el.getBoundingClientRect(),m=mouthXY(),dx=m.x-(r.left+r.width*.5),dy=m.y-(r.top+r.height*.1);
   el.animate([{transform:'none'},{transform:`translate(${dx*.6}px,${dy*.6-r.height*.3}px)`,offset:.3},{transform:`translate(${dx}px,${dy}px) rotate(-40deg)`,offset:.5},
@@ -2276,23 +2367,24 @@ function shRound(){if(S.screen!=='shadow')return;SH.gen++;const A=$('shArea');A.
   // 한 이야기 = 바다 친구 → 숲속 친구 → 섞여서 (2쌍 → 3쌍 → 4쌍, 처음 이야기는 2·2·3쌍)
   const n=(SH.story===0?[2,2,3]:[2,3,4])[SH.step],mix=SH.step===2&&LAND.length,inLand=LAND.length&&SH.step>0;document.body.classList.toggle('land',!!inLand);
   const pool=shuffle((mix?[...CHARS,...LAND]:inLand?LAND:CHARS).slice()).slice(0,n),z=Math.min(W/n*(land?.62:.8),H*.3);
-  SH.items=[];SH.done=0;SH.n=n;SH.last=Date.now();pool.forEach(c=>{if(!SH.met.includes(c))SH.met.push(c);});
+  SH.items=[];SH.done=0;SH.n=n;SH.last=Date.now();SH.sel=null;clearTimeout(SH.hintT);pool.forEach(c=>{if(!SH.met.includes(c))SH.met.push(c);});
   // 친구 줄은 그림자 줄과 순서가 꼭 다르게 (바로 밑에 자기 그림자가 있으면 맞출 게 없어요)
   const so=shuffle(pool.slice());let fo;do fo=shuffle(pool.slice());while(n>1&&fo.every((c,i)=>c===so[i]));
   so.forEach((ch,i)=>{const s=document.createElement('img');s.className='shd';s.src=charSrc(ch);s.alt='';
-    const x=W*(i+.5)/n-z/2,y=H*.36-z/2;Object.assign(s.style,{left:x+'px',top:y+'px',width:z+'px',height:z+'px'});A.appendChild(s);SH.items.push({ch,shd:s,sx:x,sy:y,z});});
+    const x=W*(i+.5)/n-z/2,y=H*.36-z/2;Object.assign(s.style,{left:x+'px',top:y+'px',width:z+'px',height:z+'px'});A.appendChild(s);const t={ch,shd:s,sx:x,sy:y,z};SH.items.push(t);
+    s.addEventListener('pointerdown',e=>{e.preventDefault();shPick(t);});});
   fo.forEach((ch,i)=>{const it=SH.items.find(t=>t.ch===ch),f=document.createElement('img');f.className='shf';f.src=charSrc(ch);f.alt='';
     it.f=f;it.hx=it.x=W*(i+.5)/n-z/2;it.hy=it.y=H*.76-z/2;Object.assign(f.style,{left:it.x+'px',top:it.y+'px',width:z+'px',height:z+'px'});A.appendChild(f);shDrag(it);});
   stepBar('shStars',shIcons(),SH.step);
-  setTimeout(()=>{if(S.screen!=='shadow')return;say(SH.step===0?(SH.story===0?'친구를 자기 그림자에 쏙 넣어줘요! 톡 눌러도 돼요':'바다 친구들 그림자예요!'):SH.step===1?'이번엔 숲속 친구들 그림자예요!':'바다 친구랑 숲속 친구가 섞였어요! 누구 그림자일까요?');},500);}
+  setTimeout(()=>{if(S.screen!=='shadow')return;say(SH.step===0?(SH.story===0?'친구를 톡 누르고, 같은 그림자를 톡 눌러요!':'바다 친구들 그림자예요!'):SH.step===1?'이번엔 숲속 친구들 그림자예요!':'바다 친구랑 숲속 친구가 섞였어요! 누구 그림자일까요?');},500);}
 // 끌어서 맞추거나, 톡 누르면 자기 그림자로 폴짝 날아가요 (아기는 끌기보다 톡을 먼저 해요)
 function shDrag(it){const el=it.f;let ox=0,oy=0;
   const rel=()=>{it.drag=false;el.classList.remove('hold');el.style.zIndex='';SH.last=Date.now();};
   dragTap(el,{can:()=>!it.ok&&!it.fly,
-    down:e=>{ox=e.clientX-it.x;oy=e.clientY-it.y;el.classList.remove('back');sfx.pick();SH.last=Date.now();},
+    down:e=>{ox=e.clientX-it.x;oy=e.clientY-it.y;el.classList.remove('back');sfx.pick();SH.last=Date.now();if(SH.sel&&SH.sel!==it){SH.sel.f.classList.remove('sel');SH.sel=null;}},
     start:()=>{it.drag=true;el.classList.add('hold');el.style.zIndex=20;},
     move:e=>{it.x=e.clientX-ox;it.y=e.clientY-oy;el.style.left=it.x+'px';el.style.top=it.y+'px';},
-    tap:()=>shFly(it),
+    tap:()=>shSel(it),
     drop:()=>{rel();const cx=it.x+it.z/2,cy=it.y+it.z/2,near=SH.items.filter(t=>!t.ok).map(t=>({t,dd:Math.hypot(cx-(t.sx+t.z/2),cy-(t.sy+t.z/2))})).sort((a,b)=>a.dd-b.dd)[0];
       if(near&&near.dd<it.z*.55){if(near.t===it)shMatch(it);else shWrong(it,near.t);}else shHome(it);},
     lost:()=>{rel();shHome(it);}});}
@@ -2301,6 +2393,16 @@ function shFly(it){const el=it.f,g=SH.gen;it.fly=true;el.style.zIndex=20;SH.last
     el.style.left=it.sx+'px';el.style.top=it.sy+'px';el.getAnimations().forEach(a=>a.cancel());shMatch(it);});}
 function shHome(it){sfx.drop();it.f.classList.add('back');it.x=it.hx;it.y=it.hy;it.f.style.left=it.x+'px';it.f.style.top=it.y+'px';}
 let shNo=0;
+// 톡: 친구를 고르고(반짝) → 그림자를 톡 하면 맞춰 봐요. 고른 친구를 한 번 더 톡 하면 도와줘요(날아가요)
+function shSel(it){if(it.ok||it.fly)return;SH.last=Date.now();
+  if(SH.sel===it){it.f.classList.remove('sel');SH.sel=null;shFly(it);return;}
+  if(SH.sel)SH.sel.f.classList.remove('sel');SH.sel=it;it.f.classList.add('sel');say(`${it.ch.name}! 어느 그림자일까요?`);
+  const g=SH.gen;clearTimeout(SH.hintT);SH.hintT=setTimeout(()=>{if(SH.gen!==g||SH.sel!==it||it.ok)return;it.shd.classList.add('hint');setTimeout(()=>it.shd.classList.remove('hint'),2400);},5000);}
+function shPick(t){if(!t||t.ok)return;SH.last=Date.now();const it=SH.sel;
+  if(!it){t.shd.animate([{transform:'none'},{transform:'scale(1.06)'},{transform:'none'}],{duration:300});if(Date.now()-shNo>2500){shNo=Date.now();say('친구를 먼저 톡 눌러요!');}return;}
+  if(t===it){it.f.classList.remove('sel');SH.sel=null;clearTimeout(SH.hintT);shFly(it);return;}
+  sfx.nope();t.shd.animate([{transform:'none'},{transform:'rotate(-6deg)'},{transform:'rotate(6deg)'},{transform:'none'}],{duration:450});
+  if(Date.now()-shNo>2500){shNo=Date.now();say(`여기는 ${eul(t.ch.name).slice(0,-1)} 그림자예요`);}}
 function shWrong(it,t){sfx.nope();t.shd.animate([{transform:'none'},{transform:'rotate(-6deg)'},{transform:'rotate(6deg)'},{transform:'none'}],{duration:450});
   if(Date.now()-shNo>2500){shNo=Date.now();say(`여기는 ${eul(t.ch.name).slice(0,-1)} 그림자예요`);}shHome(it);}
 function shMatch(it){it.ok=true;it.f.classList.add('back');it.x=it.sx;it.y=it.sy;it.f.style.left=it.x+'px';it.f.style.top=it.y+'px';
@@ -2332,11 +2434,11 @@ const MU_COL=['#ff6b6b','#ff9f43','#ffd93d','#6fd36f','#4fc3f7','#5b8def','#a77b
 const MU_NAME=['도','레','미','파','솔','라','시','도'];
 // 옛날부터 내려오는 동요 가락 (저작권이 끝난 곡)
 const MU_SONGS=[
- {id:'star',name:'작은 별',seq:[0,0,4,4,5,5,4, 3,3,2,2,1,1,0, 4,4,3,3,2,2,1, 4,4,3,3,2,2,1, 0,0,4,4,5,5,4, 3,3,2,2,1,1,0]},
- {id:'bfly',name:'나비야',seq:[4,2,2, 3,1,1, 0,1,2,3,4,4,4, 4,2,2,2, 3,1,1,1, 0,2,4,4,2,2,2]},
- {id:'plane',name:'비행기',seq:[2,1,0,1,2,2,2, 1,1,1, 2,4,4, 2,1,0,1,2,2,2, 1,1,2,1,0]},
- {id:'bridge',name:'런던 다리',seq:[4,5,4,3,2,3,4, 1,2,3, 2,3,4, 4,5,4,3,2,3,4, 1,4,2,0]},
- {id:'boat',name:'노 젓기',seq:[0,0,0,1,2, 2,1,2,3,4, 7,7,7,4,4,4,2,2,2,0,0,0, 4,3,2,1,0]},
+ {id:'star',name:'작은 별',kid:14,seq:[0,0,4,4,5,5,4, 3,3,2,2,1,1,0, 4,4,3,3,2,2,1, 4,4,3,3,2,2,1, 0,0,4,4,5,5,4, 3,3,2,2,1,1,0]},
+ {id:'bfly',name:'나비야',kid:13,seq:[4,2,2, 3,1,1, 0,1,2,3,4,4,4, 4,2,2,2, 3,1,1,1, 0,2,4,4,2,2,2]},
+ {id:'plane',name:'비행기',kid:10,seq:[2,1,0,1,2,2,2, 1,1,1, 2,4,4, 2,1,0,1,2,2,2, 1,1,2,1,0]},
+ {id:'bridge',name:'런던 다리',kid:10,seq:[4,5,4,3,2,3,4, 1,2,3, 2,3,4, 4,5,4,3,2,3,4, 1,4,2,0]},
+ {id:'boat',name:'노 젓기',kid:10,seq:[0,0,0,1,2, 2,1,2,3,4, 7,7,7,4,4,4,2,2,2,0,0,0, 4,3,2,1,0]},
 ];
 const MU={song:null,pos:0,keys:[],lastNo:0,idleT:0,world:'sea',step:0,awake:[],gen:0,demo:false,nameT:0};
 const muIcon=(c,two)=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path fill="${c}" d="${two?'M22 14 L52 8 V44 a8 7 0 1 1 -5 -6.5 V20 L27 24 V50 a8 7 0 1 1 -5 -6.5 Z':'M30 8 h6 c2 8 14 10 14 22 c-4 -6 -9 -8 -14 -8 V48 a10 8.5 0 1 1 -6 -7.8 Z'}"/></svg>`);
@@ -2351,8 +2453,8 @@ function muStart(){muLandBand=null;show('music');document.body.classList.toggle(
 // 1단계: 자는 친구들을 톡톡 깨워요
 function muStory0(msg){const g=++MU.gen;MU.step=0;MU.awake=[];MU.song=null;MU.demo=false;$('muSongs').classList.remove('pick');muSongs();muBuild();muProg();MU.idleT=Date.now();
   setTimeout(()=>{if(MU.gen===g&&S.screen==='music')say(msg);},500);}
-function muWake(i){if(MU.awake[i])return;MU.awake[i]=true;const k=MU.keys[i];k.classList.remove('sleep');const ch=muBand()[i];
-  if(MU.keys.every((_,j)=>MU.awake[j])){const g=MU.gen;MU.step=1;muProg();cheer('모두 일어났어요!');setTimeout(()=>{if(MU.gen===g)say('모두 일어났어요! 이제 같이 연주해요!');},400);
+function muWake(i){if(MU.awake[i])return;MU.awake[i]=true;const k=MU.keys[i];k.classList.remove('sleep');const ch=muBand()[i];{const im=k.querySelector('img');if(im&&ch){im.onerror=null;im.src=charSrc(ch);}}
+  if(MU.keys.every((_,j)=>MU.awake[j])){const g=MU.gen;MU.step=1;muProg();cheer('모두 일어났어요!');setTimeout(()=>{if(MU.gen===g)say('모두 일어났어요! 이제 같이 띵띵 쳐요!');},400);
     MU.keys.forEach((kk,j)=>setTimeout(()=>{if(MU.gen===g)muHit(j);},900+j*110));setTimeout(()=>muEcho(g,0),3200);return;}
   if(ch&&Date.now()-MU.nameT>700){MU.nameT=Date.now();say(`${ch.name}!`);}}
 // 2단계: 따라 하기 (친구들이 먼저 들려주면 똑같이)
@@ -2364,9 +2466,9 @@ function muEcho(g,k){if(MU.gen!==g||S.screen!=='music')return;MU.step=1;muProg()
 // 3단계: 노래 고르기
 function muPick(g){if(MU.gen!==g||S.screen!=='music')return;MU.step=2;muProg();MU.idleT=Date.now();$('muSongs').classList.add('pick');say('어떤 노래 할까요? 노래를 골라요!');}
 // 4단계: 불을 끄고 친구들이 공연해요 (따라 쳐도 돼요)
-function muShow(done){const g=++MU.gen;MU.step=3;muProg();MU.song=null;muMark();cheer(`${done.name} 다 연주했어요!`);say('와! 정말 잘했어요! 이제 불을 끄고 공연해요!');
+function muShow(done){const g=++MU.gen;MU.step=3;muProg();MU.song=null;muMark();cheer(`${done.name} 다 쳤어요!`);say('와! 정말 잘했어요! 이제 불을 끄고 공연해요!');
   const A=$('muArea'),n=document.createElement('div');n.className='munight';n.innerHTML='<i class="lite"></i>';A.prepend(n);
-  const seq=done.seq.slice(0,28),T=360,t0=2800;
+  const seq=done.seq.slice(0,20),T=360,t0=2800;
   seq.forEach((i,j)=>setTimeout(()=>{if(MU.gen!==g)return;muHit(i);const k=MU.keys[i],l=n.querySelector('.lite');if(k&&l)l.style.left=(k.offsetLeft+k.offsetWidth/2)+'px';},t0+j*T));
   const end=t0+seq.length*T+500;
   setTimeout(()=>{if(MU.gen!==g)return;for(let t=0;t<26;t++)noise({t:t*.08+Math.random()*.04,f:1800+Math.random()*1500,d:.06,v:.12,q:2});sfx.fanfare();
@@ -2378,36 +2480,46 @@ function muShow(done){const g=++MU.gen;MU.step=3;muProg();MU.song=null;muMark();
     muStory0(MU.world==='land'?'이번엔 숲속 친구 악단이에요! 친구들을 깨워요':'이번엔 바다 친구 악단이에요! 친구들을 깨워요');},end+4800);}
 function muWorldBtn(){const other=MU.world==='land'?CHARS[0]:(LAND[0]||CHARS[1]);$('muWorld').innerHTML=`<img src="${charSrc(other)}" alt="" style="width:80%;height:80%;object-fit:contain">`;}
 function muBuild(){const A=$('muArea');A.innerHTML='';MU.keys=[];const W=A.clientWidth,H=A.clientHeight,cw=W*.94/8,x0=W*.03;
-  muBand().forEach((ch,i)=>{const k=document.createElement('div');k.className='key'+(MU.step===0&&!MU.awake[i]?' sleep':'');const bh=H*(.36-i*.022),fz=Math.min(cw*.98,H*.27);
+  muBand().forEach((ch,i)=>{const k=document.createElement('div');k.className='key'+(MU.step===0&&!MU.awake[i]?' sleep':'');const bh=H*(.36-i*.022),fz=Math.min(cw*.98,H*.27)*(ch===GIRL_PLAY?1.3:1);
     Object.assign(k.style,{left:(x0+i*cw)+'px',width:cw+'px',bottom:(H*.05)+'px',height:(bh+fz)+'px'});
     const bw=cw*.84,cap=Math.min(bh*.42,bw/0.303*0.2);   // 그림 너비/높이 0.303, 끝 부분 0.2
     k.innerHTML=`<div class="bar pic" style="--c:${MU_COL[i]};height:${bh}px;border-width:${cap}px 0;border-image-source:url(chars/mu_bar${i}.webp)"></div><img src="${charSrc(ch)}" alt="" style="bottom:${bh-fz*.12}px;width:${fz}px;height:${fz}px">`;
+    if(k.classList.contains('sleep'))zzSet(k.querySelector('img'),ch);
     k.addEventListener('pointerdown',e=>{e.preventDefault();muTap(i);});A.appendChild(k);MU.keys.push(k);});
   muMark();}
 function muSongs(){const g=$('muSongs');g.innerHTML='';
-  const icon={star:`<svg viewBox="0 0 64 64">${star(32,34,26,'#ffd65a')}</svg>`,bfly:`<img src="chars/st_butterfly.webp" alt="">`,plane:`<img src="chars/st_cloud.webp" alt="">`,
+  const icon={star:`<img src="chars/ic_star.webp" alt="">`,bfly:`<img src="chars/st_butterfly.webp" alt="">`,plane:`<img src="chars/st_cloud.webp" alt="">`,
     bridge:`<img src="chars/st_rainbow.webp" alt="">`,boat:`<img src="chars/fish2.webp" alt="">`};
   MU_SONGS.forEach(sg=>{const b=document.createElement('button');b.className=MU.song===sg?'sel':'';b.innerHTML=icon[sg.id]+`<span>${sg.name}</span>`;
-    b.onclick=()=>{if(MU.step===3)return;
-      if(MU.step<2){MU.gen++;MU.demo=false;MU.keys.forEach((k,j)=>{MU.awake[j]=true;k.classList.remove('sleep');});MU.step=2;muProg();}   // 먼저 노래를 고르면 바로 연주로
+    b.onclick=()=>{if(MU.step===3)return;if(MU.demo&&MU.step>=2){MU.gen++;MU.demo=false;}
+      if(MU.step<2){MU.gen++;MU.demo=false;MU.keys.forEach((k,j)=>{MU.awake[j]=true;if(k.classList.contains('sleep')){const im=k.querySelector('img');if(im){im.onerror=null;im.src=charSrc(muBand()[j]);}}k.classList.remove('sleep');});MU.step=2;muProg();}   // 먼저 노래를 고르면 바로 연주로
       $('muSongs').classList.remove('pick');
-      if(MU.song===sg){MU.song=null;say('마음대로 연주해요');}else{MU.song=sg;MU.pos=0;say(`${sg.name} 같이 연주해요! 반짝이는 친구를 눌러요`);}muSongs();muMark();};g.appendChild(b);});}
+      if(MU.song===sg){MU.pos=0;say('처음부터 다시 쳐요!');}else{MU.song=sg;MU.pos=0;say(`${sg.name} 같이 쳐요! 반짝이는 친구를 눌러요`);}muSongs();muMark();};g.appendChild(b);});}
+function noteImg(){return `<img src="chars/note_${pick(['pink','blue','yellow','purple'])}.webp" alt="">`;}
 function muMark(){MU.keys.forEach((k,i)=>k.classList.toggle('next',!!MU.song&&MU.song.seq[MU.pos]===i));}
 function muHit(i){const k=MU.keys[i];if(!k)return;muNote(i);k.classList.remove('hit');void k.offsetWidth;k.classList.add('hit');
-  const r=k.querySelector('img').getBoundingClientRect(),n=document.createElement('span');n.className='mnote';n.textContent=pick(['♪','♫','♬']);
+  const r=k.querySelector('img').getBoundingClientRect(),n=document.createElement('span');n.className='mnote';n.innerHTML=noteImg();
   n.style.cssText=`left:${r.left+r.width/2}px;top:${r.top}px;--c:${MU_COL[i]};--dx:${(Math.random()-.5)*12}vmin;--r:${(Math.random()*60-30)|0}deg`;
   n.addEventListener('animationend',()=>n.remove());document.body.appendChild(n);}
 function muTap(i){const k=MU.keys[i];if(!k)return;muHit(i);MU.idleT=Date.now();
   if(MU.step===0){muWake(i);return;}
   if(!MU.song||MU.demo)return;
-  if(MU.song.seq[MU.pos]!==i){if(Date.now()-MU.lastNo>3000){MU.lastNo=Date.now();const nx=MU.keys[MU.song.seq[MU.pos]];nx&&nx.animate([{transform:'none'},{transform:'translateY(-6%)'},{transform:'none'}],{duration:400});}return;}
-  MU.pos++;if(MU.pos<MU.song.seq.length){muMark();return;}
-  // 노래 끝! 친구들이 차례로 폴짝, 박수
+  if(MU.song.seq[MU.pos]!==i){if(Date.now()-MU.lastNo>3000){MU.lastNo=Date.now();const nx=MU.keys[MU.song.seq[MU.pos]];nx&&nx.animate([{transform:'none'},{transform:'translateY(-6%)'},{transform:'none'}],{duration:400});}
+    if(Date.now()-(MU.noSay||0)>7000){MU.noSay=Date.now();say('반짝이는 친구를 눌러요!');}return;}   // 틀렸을 때 다음 친구를 알려 줘요
+  MU.pos++;
+  if(MU.song.kid&&MU.song.echo===undefined&&MU.pos===MU.song.kid&&MU.pos<MU.song.seq.length){muFriends();return;}   // 첫 줄을 다 치면 나머지는 친구들이
+  if(MU.pos<MU.song.seq.length){muMark();return;}
+  muSongEnd();}
+function muFriends(){const sg=MU.song,g=MU.gen;MU.demo=true;MU.keys.forEach(k=>k.classList.remove('next'));sparkle();cheer('첫 줄 다 쳤어요!');
+  say('잘했어요! 이제 친구들이 끝까지 쳐요!');const rest=sg.seq.slice(MU.pos),T=380,t0=2300;
+  rest.forEach((i,j)=>setTimeout(()=>{if(MU.gen!==g||MU.song!==sg)return;muHit(i);MU.pos++;},t0+j*T));
+  setTimeout(()=>{if(MU.gen!==g||MU.song!==sg)return;MU.demo=false;MU.pos=sg.seq.length;muSongEnd();},t0+rest.length*T+400);}
+function muSongEnd(){   // 노래 끝! 친구들이 차례로 폴짝, 박수
   const done=MU.song;MU.song=null;muMark();
   if(done.echo!==undefined){const g=MU.gen;sparkle();   // 따라 하기 끝
     if(done.echo===0){say('잘했어요! 한 번 더 해요');setTimeout(()=>muEcho(g,1),2400);}else{cheer('따라 하기 최고!');setTimeout(()=>muPick(g),2000);}return;}
   muSongs();if(MU.step===2){muShow(done);return;}
-  cheer(`${done.name} 다 연주했어요!`);setTimeout(()=>say('와! 정말 잘 연주했어요!'),400);
+  cheer(`${done.name} 다 쳤어요!`);setTimeout(()=>say('와! 정말 잘 쳤어요!'),400);
   MU.keys.forEach((kk,j)=>setTimeout(()=>{muNote(j);kk.classList.remove('hit');void kk.offsetWidth;kk.classList.add('hit');},600+j*110));
   setTimeout(()=>{for(let t=0;t<14;t++)noise({t:t*.09+Math.random()*.04,f:1800+Math.random()*1500,d:.06,v:.12,q:2});sfx.fanfare();},1600);}
 // 노래 따라하기 중에 가만히 있으면 손가락이 반짝이는 친구를 톡
@@ -2421,8 +2533,10 @@ setInterval(()=>{if(S.screen!=='music'||MU.demo||Date.now()-Math.max(MU.idleT,la
 $('goMusic').onclick=()=>{sfx.tap();muStart();};
 $('muBack').onclick=()=>{sfx.tap();MU.gen++;MU.song=null;MU.demo=false;show('home');};
 $('muWorld').onclick=()=>{MU.world=MU.world==='land'?'sea':'land';muLandBand=null;sfx.bubble();document.body.classList.toggle('land',MU.world==='land');muWorldBtn();
-  muStory0(MU.world==='land'?'숲속 친구 악단이에요! 친구들을 깨워요':'바다 친구 악단이에요! 친구들을 깨워요');};
-addEventListener('resize',()=>{if(S.screen==='music')muBuild();});
+  if(MU.step===0){muStory0(MU.world==='land'?'숲속 친구 악단이에요! 친구들을 깨워요':'바다 친구 악단이에요! 친구들을 깨워요');return;}
+  muRebuild();say(MU.world==='land'?'숲속 친구 악단이에요!':'바다 친구 악단이에요!');};   // 이야기는 하던 데서 이어요
+function muRebuild(){const n=document.querySelector('#muArea .munight');muBuild();if(n)$('muArea').prepend(n);}
+addEventListener('resize',()=>{if(S.screen==='music')muRebuild();});
 
 /* ================= 디자인: 아이콘 채우기, 바다 배경, 첫 화면 그림, 칭찬 리본 ================= */
 document.querySelectorAll('[data-ic]').forEach(e=>e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic)));
@@ -2562,7 +2676,7 @@ function placedEl(s){const A=$('seaArea'),z=seaSize(s.k),el=document.createEleme
   el.style.cssText=`width:${z}px;height:${z}px;left:${s.x*A.clientWidth-z/2}px;top:${s.y*A.clientHeight-z/2}px;animation-delay:-${(s.id%3).toFixed(2)}s`;
   el.innerHTML=stkInner(s.k);el.__s=s;bindStk(el,s,false);return el;}
 function renderTray(){const T=$('tray');T.innerHTML='';const left=ST.list.filter(s=>!s.placed);
-  if(!left.length){T.innerHTML=`<div class="empty">${ST.list.length?'바다에 다 붙였어요! 놀이를 하면 또 받아요':'놀이를 하면 스티커를 받아요!'}</div>`;return;}
+  if(!left.length){T.innerHTML=`<div class="empty">${ST.list.length?'바다에 다 붙였어요! 놀이하고 또 받아요':'놀이하고 스티커 받아요!'}</div>`;return;}
   left.slice().reverse().forEach(s=>{const w=document.createElement('div');w.className='ti'+(s.seen?'':' new');
     const el=document.createElement('div');el.className='stk'+(s.shiny?' shiny':'');el.innerHTML=stkInner(s.k);w.appendChild(el);bindStk(w,s,true);T.appendChild(w);});
   left.forEach(s=>s.seen=true);saveST();}
@@ -2598,13 +2712,18 @@ function longPress(el,ms,fn,onState){let t=0;const start=e=>{e.preventDefault();
   const stop=()=>{clearTimeout(t);onState&&onState(false);};
   el.addEventListener('pointerdown',start);['pointerup','pointercancel','pointerleave'].forEach(ev=>el.addEventListener(ev,stop));}
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;};
-function playRec(){let r={};try{r=JSON.parse(store.get('yj_time','{}'))||{};}catch(e){}if(r.d!==today())r={d:today(),s:0,extra:0};return r;}
+function playRec(){let r={};try{r=JSON.parse(store.get('yj_time','{}'))||{};}catch(e){}if(typeof r!=='object'||r.d!==today())r={d:today(),s:0,extra:0};r.s=+r.s||0;r.extra=+r.extra||0;return r;}
 const limitMin=()=>+store.get('yj_limit','0')||0;
 function isOver(){const L=limitMin();if(!L)return false;const r=playRec();return r.s>=(L+r.extra)*60;}
 let sleeping=false;
-function showSleep(){if(sleeping)return;sleeping=true;$('sleep').classList.add('on');bgmStop();try{speechSynthesis.cancel();}catch(e){}
+function showSleep(){if(sleeping)return;sleeping=true;
+  if(S.screen!=='home'){const b=document.querySelector('#'+S.screen+' [id$="Back"]');b?b.click():show('home');}   // 놀이를 멈춰요 (뒤에서 계속 말하거나 노래하지 않게)
+  ['album','pagePick','parent'].forEach(id=>$(id)&&$(id).classList.remove('on'));
+  $('sleep').classList.add('on');bgmStop();sayStop();
   setTimeout(()=>say('오늘은 여기까지! 내일 또 같이 놀자'),600);}
-setInterval(()=>{if(document.hidden||!unlocked||sleeping)return;const r=playRec();r.s+=10;store.set('yj_time',JSON.stringify(r));if(isOver())showSleep();},10000);
+function sleepWake(){if(sleeping&&!isOver()){sleeping=false;$('sleep').classList.remove('on');if(S.music&&unlocked)bgmStart();}}   // 날이 바뀌면 다시 놀 수 있어요
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)sleepWake();});
+setInterval(()=>{if(sleeping){sleepWake();return;}if(document.hidden||!unlocked)return;const r=playRec();r.s+=10;store.set('yj_time',JSON.stringify(r));if(isOver())showSleep();},10000);
 longPress($('sleepHold'),3000,()=>{const r=playRec();r.extra+=10;store.set('yj_time',JSON.stringify(r));sleeping=false;$('sleep').classList.remove('on');
   if(S.music&&unlocked)bgmStart();sfx.tap();},on=>$('sleepHold').classList.toggle('ing',on));
 if(isOver())showSleep();
@@ -2623,7 +2742,7 @@ function openParent(){const P=$('parent');P.classList.add('on');
   if(!vs.length)vl.innerHTML='<div class="none">탭에 한국어 목소리가 없어요. 설정 → 일반 → 텍스트 음성 변환에서 받을 수 있어요.</div>';
   vs.forEach(v=>{const b=document.createElement('button');b.textContent='▶ '+v.name.replace(/\s*\(.*?\)\s*/g,' ').trim();b.className=KO_VOICE&&KO_VOICE.name===v.name?'sel':'';
     b.onclick=()=>{store.set('yj_voice',v.name);KO_VOICE=v;say('안녕! 나는 유주 놀이터 친구야. 같이 놀자!');openParent();};vl.appendChild(b);});}
-longPress($('title'),2000,()=>{sfx.tap();openParent();});
+longPress($('title'),3000,()=>{sfx.tap();openParent();});
 $('parentClose').onclick=()=>$('parent').classList.remove('on');
 /* ================= 친구 꾸미기 (옷입히기 자리) ================= */
 // 친구 그림 안에서 머리 위(h)·눈(e)·목(n)·배(b)의 위치(가로, 세로, 폭)와 손(p) 자리. 그림 크기에 대한 비율(0~1)
@@ -2653,7 +2772,7 @@ const FITEMS=[
  {id:'hglass',slot:'face',name:'하트 안경',src:'f1',k:1.5},{id:'rglass',slot:'face',name:'동그란 안경',src:'f2',k:1.5},
  {id:'pearl',slot:'neck',name:'진주 목걸이',src:'n1',k:1.1},{id:'heartn',slot:'neck',name:'하트 목걸이',src:'n2',k:1},
  {id:'bowtie',slot:'neck',name:'나비넥타이',box:'165 280 70 40',k:.75,svg:`<path d="M200 300 L168 282 L168 318 Z M200 300 L232 282 L232 318 Z" fill="#ff5a6e"/><circle cx="200" cy="300" r="8" fill="#e04e44"/>`},
- {id:'tutu',slot:'body',name:'보라 튜튜',box:'90 395 220 120',k:1.02,svg:''},{id:'tutup',slot:'body',name:'분홍 튜튜',box:'90 395 220 120',k:1.02,svg:''},
+ {id:'tutu',slot:'body',name:'보라 치마',box:'90 395 220 120',k:1.02,svg:''},{id:'tutup',slot:'body',name:'분홍 치마',box:'90 395 220 120',k:1.02,svg:''},
  {id:'wings',slot:'back',name:'요정 날개',src:'b1',k:2.2},
  {id:'wand',slot:'hand',name:'요술봉',src:'w1',k:.42,hang:'bottom'},{id:'bag',slot:'hand',name:'핸드백',src:'w4',k:.4,hang:'top'},
  {id:'balloon',slot:'hand',name:'풍선',box:'262 250 86 180',k:.36,hang:'bottom',svg:`<path d="M305 425 Q296 390 306 342" stroke="#9aa7b8" stroke-width="3" fill="none"/><ellipse cx="305" cy="300" rx="38" ry="46" fill="#ff6b9a"/><path d="M299 344 L311 344 L305 352 Z" fill="#e0457a"/><ellipse cx="292" cy="284" rx="9" ry="14" fill="#fff" opacity=".5"/>`},
@@ -2664,6 +2783,7 @@ FITEMS.unshift({id:'dpink',slot:'body',name:'분홍 공주 드레스',img:'dress
 FITEMS.forEach(f=>{if(f.src){const d=DI[f.src];f.box=d.box;f.svg=d.svg;}if(f.img)f.box='0 0 100 100';});
 {const tut=(a,b)=>`<path d="M150 398 L250 398 L310 478 L290 474 L285 500 L262 484 L250 508 L228 488 L212 512 L200 490 L188 512 L172 488 L150 508 L138 484 L115 500 L110 474 L90 478 Z" fill="${a}"/><path d="M155 398 L245 398 L290 462 L268 462 L258 482 L238 468 L222 488 L200 470 L178 488 L162 468 L142 482 L132 462 L110 462 Z" fill="${b}"/><rect x="148" y="392" width="104" height="14" rx="7" fill="${a}"/>`;
  FITEMS.find(f=>f.id==='tutu').svg=tut('#b8a6ff','#e3dbff');FITEMS.find(f=>f.id==='tutup').svg=tut('#ff8fb8','#ffd1e3');}
+'crown bow flower ears hat hglass rglass pearl heartn bowtie tutu tutup wings wand bag balloon'.split(' ').forEach(id=>{const f=FITEMS.find(x=>x.id===id);if(f)f.img='acc_'+id;});   // v44 코덱스 그림 (box는 옛 SVG 그대로)
 const FI=Object.fromEntries(FITEMS.map(f=>[f.id,f]));
 const FS=(()=>{let s={};try{s=JSON.parse(store.get('yj_friend','{}'))||{};}catch(e){}return Object.assign({friend:'shark',out:{}},s);})();
 const saveFS=()=>store.set('yj_friend',JSON.stringify(FS));
@@ -2699,11 +2819,11 @@ function renderFriendCloset(){
     b.innerHTML=id==='friend'?`<img src="${charSrc(curFriend())}" alt="" style="width:78%;height:78%;object-fit:contain">`:ic({head:'crown',face:'glasses',neck:'bow',body:'skirt',back:'wings',hand:'wand'}[id]);
     b.onclick=()=>{fTab=id;sfx.bubble();say(name);renderFriendCloset();};t.appendChild(b);});
   const g=$('dItems');g.innerHTML='';
-  if(fTab==='friend'){g.style.gridTemplateColumns='repeat(5,1fr)';
+  if(fTab==='friend'){g.style.gridTemplateColumns='repeat(7,minmax(0,1fr))';g.style.gap='1.4vmin';g.style.overflowY='auto';g.style.touchAction='pan-y';
     FRIENDS.forEach(ch=>{const b=document.createElement('button');b.className='ditem'+(ch.id===FS.friend?' on':'');
       b.innerHTML=`<img src="${charSrc(ch)}" alt="" style="width:100%;height:100%;object-fit:contain">`;
       b.onclick=()=>{FS.friend=ch.id;saveFS();sfx.tap();say(ch.name);document.body.classList.toggle('land',!!ch.land);fsRender();friendSquish();renderFriendCloset();};g.appendChild(b);});return;}
-  const list=FITEMS.filter(f=>f.slot===fTab&&(!f.only||f.only===FS.friend));g.style.gridTemplateColumns='repeat(4,1fr)';
+  const list=FITEMS.filter(f=>f.slot===fTab&&(!f.only||f.only===FS.friend));g.style.gridTemplateColumns='repeat(4,minmax(0,1fr))';g.style.gap='';g.style.overflowY='';g.style.touchAction='';g.scrollTop=0;
   list.forEach(f=>{const b=document.createElement('button');b.className='ditem'+(outfit()[f.slot]===f.id?' on':'');b.innerHTML=accSVG(f);fsBind(f,b);g.appendChild(b);});}
 // 끌어서 친구에게 붙이기 (가까이 가면 딱), 톡 누르면 날아가서 붙기, 입은 걸 톡 누르면 벗기
 let FG=null;
@@ -2731,7 +2851,7 @@ function fsSnap(d,dur){fgSet(d.T.x,d.T.y,d.T.w,d.T.h,dur);setTimeout(()=>{outfit
 function fgEnd(d){d.el.remove();d.tile.classList.remove('lift');if(FG===d)FG=null;}
 // 기존 인형 화면 대신 친구 꾸미기로 연결
 {const old=$('doll'),nd=old.cloneNode(false);old.replaceWith(nd);
- nd.addEventListener('pointerdown',()=>{sfx.bubble();friendSquish();say(pick(['안녕!','나 예뻐?','좋아!','고마워!']));});}
+ nd.addEventListener('pointerdown',()=>{sfx.bubble();friendSquish();say(pick(['안녕!','같이 놀자!','좋아!','고마워!']));});}
 drawDoll=()=>{};renderCloset=renderFriendCloset;
 $('goDress').onclick=()=>{sfx.tap();say('친구를 꾸며 볼까요?');show('dress');document.body.classList.toggle('land',!!curFriend().land);fsRender();renderFriendCloset();};
 $('magicBtn').onclick=()=>{const o={},pk=s=>pick(FITEMS.filter(f=>f.slot===s)).id;
@@ -2754,18 +2874,21 @@ $('dSaveBtn').onclick=async()=>{if(Date.now()-dLastSave<3000)return;dLastSave=Da
 addEventListener('resize',()=>{if(S.screen==='dress')fsRender();});
 // 패션쇼: 조명이 켜지고 음악에 맞춰 친구가 무대에서 춤, 친구들이 박수
 let showing=false;
-$('showBtn').onclick=()=>{if(showing)return;showing=true;const st=$('dollStage'),d=$('doll');st.classList.add('show');d.classList.remove('dancing');void d.offsetWidth;d.classList.add('dancing');
+$('showBtn').onclick=()=>{if(showing)return;showing=true;const st=$('dollStage'),d=$('doll'),v=S.visit;st.classList.add('show');d.classList.remove('dancing');void d.offsetWidth;d.classList.add('dancing');
   say(`${curFriend().name} 패션쇼 시작!`);
   [72,76,79,84,79,76,79,84,88,84].forEach((m,i)=>{bell(mtof(m),.6+i*.3,.13,.4);tone({f:mtof(m-24),t:.6+i*.3,d:.25,v:.07,type:'triangle'});});
-  const r=st.getBoundingClientRect();[900,1800,2700,3600].forEach(t=>setTimeout(()=>burst(r.left+r.width*(.2+Math.random()*.6),r.top+r.height*.3,18,r.width*.35),t));
-  setTimeout(()=>{for(let i=0;i<14;i++)noise({t:i*.09+Math.random()*.04,f:1800+Math.random()*1500,d:.06,v:.12,q:2});say('와, 정말 멋져요!');cheer('멋진 패션쇼!');},3900);
-  setTimeout(()=>{st.classList.remove('show');d.classList.remove('dancing');showing=false;giveSticker(pick(['i:crown','i:heart','i:rainbow']),'show');},5200);};
+  const r=st.getBoundingClientRect(),here=()=>S.visit===v&&S.screen==='dress';[900,1800,2700,3600].forEach(t=>setTimeout(()=>{if(here())burst(r.left+r.width*(.2+Math.random()*.6),r.top+r.height*.3,18,r.width*.35);},t));
+  setTimeout(()=>{if(!here())return;for(let i=0;i<14;i++)noise({t:i*.09+Math.random()*.04,f:1800+Math.random()*1500,d:.06,v:.12,q:2});say('와, 정말 멋져요!');cheer('멋진 패션쇼!');},3900);
+  setTimeout(()=>{st.classList.remove('show');d.classList.remove('dancing');showing=false;if(here())giveSticker(pick(['i:crown','i:heart','i:rainbow']),'show');},5200);};
 $('goDress').querySelector('b').textContent='꾸미기';
 {const el=document.querySelector('.card .art[data-art="dress"]');if(el){const f=FI.crown;
   el.innerHTML=`<svg viewBox="0 0 120 100"><image href="${charSrc(CHARS[1])}" x="22" y="18" width="78" height="78"/><svg x="36" y="2" width="44" height="30" viewBox="${f.box}">${f.svg}</svg>
    <svg x="6" y="40" width="34" height="46" viewBox="${FI.balloon.box}">${FI.balloon.svg}</svg></svg>`;}}
 
-$('pzReset').onclick=()=>{Object.assign(PZ,{world:'sea',order:[],idx:0,solved:0});savePZ();$('pzReset').textContent='처음부터 다시 시작해요 ✓';};
+let pzResetT=0;
+$('pzReset').onclick=()=>{const b=$('pzReset');
+  if(Date.now()-pzResetT>4000){pzResetT=Date.now();b.textContent='정말요? 한 번 더 누르면 처음부터';setTimeout(()=>{if(Date.now()-pzResetT>=3900)b.textContent='처음부터 다시';},4000);return;}
+  pzResetT=0;Object.assign(PZ,{world:'sea',order:[],idx:0,solved:0});savePZ();b.textContent='처음부터 다시 시작해요 ✓';};
 if($('goSea'))$('goSea').onclick=()=>{sfx.tap();say('내 바다를 꾸며요');seaOpen();};
 $('seaBack').onclick=()=>{sfx.tap();show('home');syncBadge();};
 syncBadge();
@@ -2802,7 +2925,7 @@ function hopTo(el,dx,dy,k=1,dur=600,up=60){el.style.transformOrigin='50% 50%';
 function flyIn(el,dx,dy,dur=480){return el.animate([{transform:`translate(${dx}px,${dy}px) scale(1.2)`},{transform:`translate(${dx/2}px,${dy/2-50}px) scale(1.12)`,offset:.5},
   {transform:'none'}],{duration:dur,easing:'ease-in-out'}).finished;}
 const ctr=el=>{const r=el.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height/2,w:r.width,h:r.height};};
-function puffAt(A,x,y,s){const p=document.createElement('i');p.className='puff';const z=s*(.7+Math.random()*.5);
+function puffAt(A,x,y,s){const p=document.createElement('i');p.className='puff'+(A.querySelector('.trnight:not(.lit)')?' dimp':'');const z=s*(.7+Math.random()*.5);
   p.style.cssText=`left:${x-z/2}px;top:${y-z/2}px;width:${z}px;height:${z}px;--dx:${((Math.random()-.6)*8).toFixed(1)}vmin`;p.addEventListener('animationend',()=>p.remove());A.appendChild(p);}
 // 놀이마다 따로 쓰는 소리 통로: 미리 예약해 둔 소리(칙칙폭폭·노래·물소리)도 나가면 바로 꺼요
 const BUS={};
@@ -2814,7 +2937,7 @@ function stepBar(id,icons,k){const el=$(id);el.classList.add('steps');
 // 화면을 돌리면(가로↔세로) 지금 판을 새 크기로 다시 놓기
 let ngRT=0,ngWH=[innerWidth,innerHeight];
 const ngMark=()=>{ngWH=[innerWidth,innerHeight];};
-addEventListener('resize',()=>{clearTimeout(ngRT);ngRT=setTimeout(()=>{const [w,h]=ngWH;if(Math.abs(innerWidth-w)<40&&Math.abs(innerHeight-h)<40)return;ngMark();
+addEventListener('resize',()=>{clearTimeout(ngRT);ngRT=setTimeout(()=>{const [w,h]=ngWH;if((innerWidth>=innerHeight)===(w>=h))return;ngMark();
   if(S.screen==='train')trRound();else if(S.screen==='fruit')ftRound();else if(S.screen==='cake')ckRound();else if(S.screen==='bath')baRound();},300);});
 
 /* ================= 기차 여행: 친구 태우기 → 빨간 신호등 → 깜깜한 터널 → 기차역 도착 (4단계 이야기) ================= */
@@ -2827,7 +2950,7 @@ function trGeo(){const A=$('trArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H,
   const ry=H*(land?.9:.84),tw=n*cw*1.03+ew,x0=(W-tw)/2;
   return{W,H,land,n,cw,ch,ew,eh,ry,tw,x0,top:ry-eh,rz:cw*.68};}
 // 위쪽 이야기 진행: 태우기 · 신호등 · 터널 · 기차역
-function trProg(){stepBar('trStars',TR_ICON,TR.stage==='done'?9:TR_STEP.indexOf(TR.stage));}
+function trProg(){stepBar('trStars',TR.round%2===1?['tr_car','duck','tr_tunnel','tr_station']:TR_ICON,TR.stage==='done'?9:TR_STEP.indexOf(TR.stage));}
 function trRound(){if(S.screen!=='train')return;busHush('tr');const g=++TR.gen,A=$('trArea');A.innerHTML='';
   TR.n=TR.round<2?2:TR.round<5?3:4;const G=trGeo();Object.assign(TR,{G,busy:true,last:Date.now(),cars:[],wait:[],drag:0,stage:'board',act:false,off:0,sig:null,door:null});
   document.body.classList.add('land');
@@ -2886,23 +3009,36 @@ function trBoard(w,car){if(!car||w.going){trHome(w);return;}w.going=true;car.ch=
     trDepart(g);});}
 function trDepart(g){TR.busy=true;
   setTimeout(()=>{if(TR.gen!==g)return;say('모두 탔어요! 칙칙폭폭 출발!');cheer('칙칙폭폭 출발!');trToot();},350);
-  setTimeout(()=>{if(TR.gen!==g||S.screen!=='train')return;trLeave(g,()=>trScene('signal',g));},2300);}
+  setTimeout(()=>{if(TR.gen!==g||S.screen!=='train')return;trLeave(g,()=>trScene('signal',g));},2300);
+  if(TR.round<2)setTimeout(()=>{if(TR.gen===g)say('기차를 톡 누르면 빵빵 해요!');},3300);}   // 가는 동안 할 거리
 function trProp(cls,x,y,w,h,img){const p=document.createElement('div');p.className='trp '+cls;Object.assign(p.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});
   p.innerHTML=`<img src="chars/${img}.webp" alt="">`;$('trArea').appendChild(p);return p;}
 // 다음 장면: 소품을 바꾸고 기차가 다시 들어와요
 function trScene(st,g){if(TR.gen!==g||S.screen!=='train')return;const A=$('trArea'),G=TR.G,top=Math.max(90,G.H*.1);
   TR.stage=st;TR.act=false;TR.off=0;trProg();A.querySelectorAll('.trp,.trnight').forEach(e=>e.remove());TR.el.classList.remove('dim');
-  if(st==='signal'){const by=G.ry-G.eh*.35,h=Math.min(G.H*(G.land?.55:.4),by-top),w=h*IMG_AR.tr_signal,x=G.W-w-G.W*.03;
+  if(st==='signal'&&TR.round%2===1){   // 오리 가족이 기찻길을 건너요 (신호등 대신, 판마다 번갈아)
+    const z=Math.min(G.eh*.62,G.W*.085),x0=G.W*.6,y=G.ry-z*.92;TR.ducks=[];TR.sig=null;
+    [1,.72,.72].forEach((k,i)=>{const w=z*k,el=trProp('duck',x0+i*z*1.05,y+(z-w),w,w,'duck');const d={el,gone:false};TR.ducks.push(d);
+      el.addEventListener('pointerdown',e=>{e.preventDefault();trDuck(d);});});
+    TR.off=Math.min(0,x0-z*.4-(G.x0+G.tw));
+    trEnter(g,()=>{TR.act=true;TR.last=Date.now();say('앗, 오리 가족이 기찻길을 건너요! 오리를 톡 눌러서 건너게 도와줘요!');});}
+  else if(st==='signal'){const by=G.ry-G.eh*.35,h=Math.min(G.H*(G.land?.55:.4),by-top),w=h*IMG_AR.tr_signal,x=G.W-w-G.W*.03;
     const p=trProp('sig',x,by-h,w,h,'tr_signal');p.insertAdjacentHTML('beforeend','<i class="lamp r on"></i><i class="lamp g"></i>');TR.sig=p;
     p.addEventListener('pointerdown',e=>{e.preventDefault();trGreen();});
     TR.off=Math.min(0,x+w*.2-(G.x0+G.tw));   // 기관차가 신호등 바로 앞에 멈춰요
-    trEnter(g,()=>{TR.act=true;TR.last=Date.now();say('앗, 빨간불이에요! 멈춰요. 신호등을 톡 눌러서 초록불로 바꿔 줘요!');});}
+    trEnter(g,()=>{TR.act=true;TR.last=Date.now();say('앗, 빨간불이에요! 멈춰요. 신호등을 톡 눌러요!');});}
   else if(st==='tunnel'){const h=G.eh*1.4,w=h*IMG_AR.tr_tunnel;trProp('tun',G.W-w*.72,G.ry+G.eh*.06-h,w,h,'tr_tunnel');
     setTimeout(()=>{if(TR.gen===g)say('저기 터널이 있어요! 칙칙폭폭 들어가요!');},900);
     trPass(g,()=>trDark(g));}   // 멈추지 않고 터널 속으로 쏙
   else{const by=G.top+G.eh*.2,w=Math.min(G.W*.5,(by-top)*IMG_AR.tr_station),h=w/IMG_AR.tr_station;
     trProp('sta',(G.W-w)/2,by-h,w,h,'tr_station');TR.door={x:G.W/2,y:by-h*.26};
     trEnter(g,()=>{TR.act=true;TR.last=Date.now();trToot(true);say('기차역에 도착했어요! 친구들을 톡 눌러서 내려 줘요!');});}}
+function trDuck(d){if(TR.stage!=='signal'||!TR.act||d.gone)return;d.gone=true;TR.last=Date.now();const g=TR.gen,G=TR.G;
+  tone({f:620,f2:420,d:.12,v:.16,type:'sawtooth'});tone({f:600,f2:400,t:.17,d:.12,v:.14,type:'sawtooth'});   // 꽥꽥
+  d.el.animate([{transform:'none'},{transform:'translateY(-30%)',offset:.3},{transform:`translateY(${G.H*.32}px) scale(.85)`,opacity:0}],{duration:900,easing:'ease-in',fill:'forwards'});
+  if(TR.ducks.some(x=>!x.gone)){say('꽥꽥!');return;}
+  TR.act=false;setTimeout(()=>{if(TR.gen===g){say('오리 가족이 다 건넜어요! 출발해요!');cheer('오리야 안녕!');}},700);
+  setTimeout(()=>{if(TR.gen!==g)return;trTootT=0;trToot();trLeave(g,()=>trScene('tunnel',g));},2600);}
 function trGreen(){if(TR.stage!=='signal'||!TR.act)return;TR.act=false;const g=TR.gen,p=TR.sig;TR.last=Date.now();
   p.querySelector('.r').classList.remove('on');p.querySelector('.g').classList.add('on');bell(mtof(84),0,.22,.8);bell(mtof(88),.16,.2,.8);
   p.animate([{transform:'none'},{transform:'scale(1.06)'},{transform:'none'}],{duration:350});say('초록불이에요! 출발해요!');
@@ -2921,7 +3057,7 @@ function trGetOff(car){const rd=car.rd;if(!rd||!TR.act)return;car.rd=null;const 
   hopTo(rd,a.left+d.x-c.x,a.top+d.y-c.y,.45,650,G.H*.1).then(()=>{if(TR.gen!==g)return;rd.remove();heartBurst(a.left+d.x,a.top+d.y-20);
     const left=TR.cars.filter(k=>k.rd).length;bell(mtof(PENT[Math.min(G.n-left+1,8)]),0,.2,.6);
     if(left>0){say(`${ga(ch.name)} 내렸어요!`);return;}trFinale(g);});}
-function trFinale(g){TR.act=false;TR.stage='done';trProg();
+function trFinale(g){if(TR.stage==='done')return;TR.act=false;TR.stage='done';trProg();
   setTimeout(()=>{if(TR.gen!==g)return;cheer('즐거운 기차 여행!');say('모두 도착했어요! 즐거운 기차 여행이었어요!');sfx.fanfare();
     [0,500].forEach(t=>setTimeout(()=>burst(innerWidth*(.3+Math.random()*.4),innerHeight*.35,40,Math.min(innerWidth,innerHeight)*.4,true),t));},400);
   setTimeout(()=>{if(TR.gen!==g||S.screen!=='train')return;TR.round++;trRound();},4800);}
@@ -2938,9 +3074,9 @@ setInterval(()=>{if(S.screen!=='train'||TR.drag>0||Date.now()-Math.max(lastTouch
     const w=TR.wait.find(w=>!w.going),car=w&&trNearCar(w.el);if(!w||!car)return;const a=ctr(w.el),b=ctr(car.el);
     car.el.classList.add('glow');setTimeout(()=>car.el.classList.remove('glow'),2400);ghostHand(a.x,a.y,b.x,b.y-b.h*.3,{src:charSrc(w.ch),w:a.w,h:a.h});return;}
   if(!TR.act)return;TR.last=Date.now();
-  const el=TR.stage==='signal'?TR.sig.querySelector('.r'):TR.stage==='tunnel'?TR.eng:(TR.cars.find(k=>k.rd)||{}).rd;if(!el)return;const c=ctr(el);
+  const dk=(TR.ducks||[]).find(d=>!d.gone),el=TR.stage==='signal'?(TR.sig?TR.sig.querySelector('.r'):dk&&dk.el):TR.stage==='tunnel'?TR.eng:(TR.cars.find(k=>k.rd)||{}).rd;if(!el)return;const c=ctr(el);
   ghostHand(c.x+c.w*.8,c.y+c.h*.6,c.x,c.y,null);
-  say(TR.stage==='signal'?'신호등을 톡 눌러요!':TR.stage==='tunnel'?'기차를 톡 눌러서 불을 켜요!':'친구를 톡 눌러서 내려 줘요!');},1000);
+  say(TR.stage==='signal'?(TR.sig?'신호등을 톡 눌러요!':'오리를 톡 눌러요!'):TR.stage==='tunnel'?'기차를 톡 눌러서 불을 켜요!':'친구를 톡 눌러서 내려 줘요!');},1000);
 $('goTrain').onclick=()=>{sfx.tap();say('기차 놀이해요! 칙칙폭폭');trStart();};
 $('trBack').onclick=()=>{sfx.tap();TR.gen++;busHush('tr');show('home');};
 
@@ -2970,7 +3106,7 @@ function ftRound(){if(S.screen!=='fruit')return;const g=++FT.gen,A=$('frArea');A
   Object.assign(FT,{G,fr:[],got:0,inB:0,busy:false,last:Date.now(),stage:'pick',act:false,pe:[],wf:[],nIn:0,inW:0,scrub:0,given:0});document.body.classList.add('land');
   // 순서: 한 가지 과일 나무(다섯 개) → "빨간 사과 두 개" 찾기 → 다른 과일 나무 → …
   FT.mode=FT.round%2===0?'free':'mission';let list;
-  if(FT.mode==='free'){FT.kind=FRUITS[(FT.k0+FT.round/2)%FRUITS.length];FT.target=FT.kind;FT.need=5;list=Array(7).fill(FT.kind);}
+  if(FT.mode==='free'){FT.kind=FRUITS[(FT.k0+FT.round/2)%FRUITS.length];FT.target=FT.kind;FT.need=4;list=Array(6).fill(FT.kind);}   // 네 개 → 두 친구가 두 개씩
   else{FT.target=pick(FRUITS.filter(f=>f!==FT.kind));FT.need=FT.round<4?2:3;const ot=shuffle(FRUITS.filter(f=>f!==FT.target)).slice(0,2);
     list=[...Array(FT.need+1).fill(FT.target),...Array(6-FT.need).fill(0).map((_,i)=>ot[i%2])];}
   list=shuffle(list);const spots=shuffle(FSPOT.slice());
@@ -2986,7 +3122,7 @@ function ftRound(){if(S.screen!=='fruit')return;const g=++FT.gen,A=$('frArea');A
   const ask=document.createElement('div');ask.className='ask';ask.id='ftAsk';ask.style.fontSize='clamp(18px,3.6vmin,36px)';
   ask.innerHTML=`${`<img src="chars/${FT.target.img}.webp" alt="" style="width:clamp(40px,7vmin,70px)">`.repeat(FT.mode==='free'?1:FT.need)}<span>${t}</span>`;
   Object.assign(ask.style,G.land?{left:((G.tx+G.tw+G.W)/2)+'px',top:Math.max(100,G.H*.17)+'px',transform:'translateX(-50%)'}:{left:'50%',top:(G.ty+G.th+6)+'px',transform:'translateX(-50%)'});
-  A.appendChild(ask);FT.pals=friendPool(Math.floor(FT.round/2)%2===1,Math.min(3,FT.need),true);ftProg();
+  A.appendChild(ask);FT.pals=friendPool(Math.floor(FT.round/2)%2===1,FT.need%3===0?3:2,true);   // 똑같이 나눠지게 (2개→2명, 3개→3명, 4개→2명)ftProg();
   setTimeout(()=>{if(FT.gen===g)say(FT.mode==='free'?`${FT.kind.name} 나무예요! ${t}`:t);},400);}
 function ftTap(it){if(FT.busy||it.picked||FT.stage!=='pick')return;FT.last=Date.now();
   if(FT.mode==='mission'&&it.f!==FT.target){it.el.classList.remove('no');void it.el.offsetWidth;it.el.classList.add('no');sfx.nope();
@@ -3034,7 +3170,7 @@ function ftToBasin(){if(FT.stage!=='wash')return;const ps=[...$('fbask').querySe
     Object.assign(e.style,{left:(G.wz*s[0]-z/2)+'px',top:(G.wh*s[1]-z/2)+'px',width:z+'px',height:z+'px',animationDelay:`-${(k*.37).toFixed(2)}s`});
     $('fbasin').appendChild(e);FT.wf.push(e);ftPlop();ftSplash(tx,ty,5);const n=++FT.inW;
     if(n<FT.need){say(`${NUM[n-1]}, 퐁당!`);return;}
-    FT.stage='scrub';FT.last=Date.now();say('다 들어갔어요! 대야를 톡톡 눌러서 깨끗이 씻어요!');setTimeout(()=>{if(FT.gen===g&&FT.stage==='scrub')$('fbasin').classList.add('glow');},600);}).catch(()=>{});}
+    FT.stage='scrub';FT.last=Date.now();say('다 들어갔어요! 물통을 톡톡 눌러서 씻어요!');setTimeout(()=>{if(FT.gen===g&&FT.stage==='scrub')$('fbasin').classList.add('glow');},600);}).catch(()=>{});}
 function ftScrub(){if(FT.stage!=='scrub')return;FT.last=Date.now();const g=FT.gen,G=FT.G,w=$('fbasin');const n=++FT.scrub;
   w.classList.remove('pop','glow');void w.offsetWidth;w.classList.add('pop');
   FT.wf.forEach((e,i)=>e.animate([{transform:'none'},{transform:`rotate(${i%2?24:-24}deg) translateY(-14%)`},{transform:`rotate(${i%2?-14:14}deg)`},{transform:'none'}],{duration:520}));
@@ -3067,13 +3203,13 @@ function ftGive(it){if(FT.stage==='party'&&it){it.el.classList.remove('munch','j
   it.ate++;const g=FT.gen,G=FT.G,e=left[0],L=ftLift(e),a=$('frArea').getBoundingClientRect();
   const [px,py,pz]=G.pal(FT.pe.indexOf(it),FT.pe.length),c={x:a.left+px+pz/2,y:a.top+py+pz/2,w:pz,h:pz};   // 걸어 들어오는 중이어도 설 자리로
   FT.wf=FT.wf.filter(x=>x!==e);it.el.classList.remove('glow');tone({f:700,f2:1100,d:.09,v:.12});
-  hopTo(L.f,c.x-a.left-L.x,c.y-a.top-c.h*.12-L.y,1.3,620,G.H*.16).then(()=>{if(FT.gen!==g)return;L.f.remove();
+  hopTo(L.f,c.x-a.left-L.x,c.y-a.top-c.h*.12-L.y,.85,620,G.H*.16).then(()=>{if(FT.gen!==g)return;L.f.remove();
     sfx.chomp();it.el.classList.remove('munch','jump');void it.el.offsetWidth;it.el.classList.add('munch');heartBurst(c.x,c.y-c.h*.25);
     const n=++FT.given;say(n>=FT.need?`${it.ch.name}도 냠냠! 다 나눠 줬어요!`:pick([`${it.ch.name}, 냠냠!`,`${it.ch.name}, 맛있어요!`,'고마워요!']));
     if(n>=FT.need){FT.act=false;setTimeout(()=>ftParty(g),2400);}}).catch(()=>{});}
 // 4단계: 다 같이 폴짝폴짝 냠냠 파티
 function ftParty(g){if(FT.gen!==g||S.screen!=='fruit')return;FT.stage='party';ftProg();
-  cheer('나눠 먹으니 맛있어요!');sfx.fanfare();say('다 같이 냠냠! 나눠 먹으니 더 맛있어요!');burst(innerWidth/2,innerHeight/2,40,Math.min(innerWidth,innerHeight)*.4,true);
+  cheer('나눠 먹으니 맛있어요!');sfx.fanfare();say('다 같이 냠냠! 같이 먹어서 맛있어요!');burst(innerWidth/2,innerHeight/2,40,Math.min(innerWidth,innerHeight)*.4,true);
   FT.pe.forEach((p,i)=>[0,1].forEach(j=>setTimeout(()=>{if(FT.gen!==g)return;p.el.classList.remove('munch','jump');void p.el.offsetWidth;p.el.classList.add('jump');
     if(!j){const c=ctr(p.el);heartBurst(c.x,c.y-c.h*.3);}bell(mtof(PENT[(i+j*2+3)%PENT.length]),0,.16,.5);},400+i*330+j*1300)));
   setTimeout(()=>{if(FT.gen!==g||S.screen!=='fruit')return;FT.round++;ftRound();},4600);}
@@ -3086,7 +3222,7 @@ setInterval(()=>{if(S.screen!=='fruit'||Date.now()-Math.max(lastTouch,FT.last)<6
   if(FT.stage!=='pick'){if(!FT.act)return;FT.last=Date.now();const min=Math.min(...FT.pe.map(p=>p.ate));
     const el=FT.stage==='wash'?$('fbask'):FT.stage==='scrub'?$('fbasin'):(FT.pe.find(p=>p.ate===min)||{}).el;if(!el)return;const c=ctr(el);
     el.classList.remove('glow');void el.offsetWidth;el.classList.add('glow');setTimeout(()=>el.classList.remove('glow'),2400);ghostHand(c.x+c.w*.4,c.y+c.h*.3,c.x,c.y,null);
-    say(FT.stage==='wash'?'바구니를 톡 눌러요! 과일이 퐁당':FT.stage==='scrub'?'대야를 톡톡 눌러서 씻어요!':'친구한테 과일을 줘요!');return;}
+    say(FT.stage==='wash'?'바구니를 톡 눌러요! 과일이 퐁당':FT.stage==='scrub'?'물통을 톡톡 눌러요!':'친구한테 과일을 줘요!');return;}
   if(FT.busy)return;FT.last=Date.now();
   const it=FT.fr.find(it=>!it.picked&&it.f===FT.target);if(!it)return;const c=ctr(it.el);
   it.el.classList.remove('hintme');void it.el.offsetWidth;it.el.classList.add('hintme');ghostHand(c.x+c.w*.6,c.y-c.h*.9,c.x,c.y,null);say(FT.askText);},1000);
@@ -3098,7 +3234,7 @@ const CK_DECO=['fr_strawberry','fr_blueberry','st_heart','st_flower','fr_orange'
 const CK_NAME={fr_strawberry:'딸기',fr_blueberry:'블루베리',st_heart:'하트',st_flower:'꽃',fr_orange:'오렌지',st_butterfly:'나비',fr_peach:'복숭아'};
 const CK_TINT=['hue-rotate(0deg)','hue-rotate(-40deg) saturate(1.1)','hue-rotate(25deg)'];
 const CK_SPOT=[[.5,.35],[.22,.22],[.78,.22],[.34,.31],[.66,.31],[.31,.12],[.69,.12]];   // 케이크 윗면 가장자리 (앞쪽부터). 가운데 뒤쪽은 초 자리라 비워 둬요
-const CK_STEP=['deco','candle','song','blow'],CK_ICON=['fr_strawberry','candle','st_heart','gift'];
+const CK_STEP=['deco','candle','song','blow'],CK_ICON=['fr_strawberry','ic_cake','st_heart','gift'];
 const ckProg=()=>stepBar('ckStars',CK_ICON,CK.stage==='done'?9:CK_STEP.indexOf(CK.stage));
 const CK={round:0,gen:0,stage:'deco',n:0,need:5,nc:3,cands:[],used:[],last:0,who:null,G:null};
 // 생일 축하 노래 가락 (옛날부터 내려오는 곡): [음, 박자]
@@ -3111,14 +3247,23 @@ function ckGeo(){const A=$('ckArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H;
   else{w=Math.min(W*.8,H*.4*IMG_AR.cake);cx=W/2;cy=H*.56;fz=Math.min(W*.34,H*.2);fx=W*.06;fy=Math.max(90,H*.1);}
   const h=w/IMG_AR.cake;return{W,H,land,w,h,x:cx-w/2,y:cy-h/2,fz,fx,fy,tray:land?'right':'bottom'};}
 function ckRound(){ckHush();if(S.screen!=='cake')return;const g=++CK.gen,A=$('ckArea');A.innerHTML='';A.classList.remove('dark');const G=ckGeo();
-  Object.assign(CK,{G,stage:'deco',n:0,cands:[],used:[],last:Date.now(),nc:[2,3,4][CK.round%3]});document.body.classList.add('land');
-  const who=pick(friendPool(CK.round%2===1,4,true).filter(c=>c!==CK.who))||CHARS[0];CK.who=who;
+  Object.assign(CK,{G,stage:'pick',n:0,cands:[],used:[],last:Date.now(),nc:[2,3,4][CK.round%3]});document.body.classList.add('land');
+  // 누구 생일일까요? 세 친구 중에서 골라요
+  const cs=shuffle(friendPool(CK.round%2===1,5,true).filter(c=>c!==CK.who)).slice(0,3),z=Math.min(G.W*.24,G.H*.38);ckProg();
+  cs.forEach((ch,i)=>{const e=document.createElement('img');e.className='ckfr ckpick';e.src=charSrc(ch);e.alt='';
+    Object.assign(e.style,{left:(G.W*(.2+.3*i)-z/2)+'px',top:(G.H*.52-z/2)+'px',width:z+'px',height:z+'px'});A.appendChild(e);
+    e.animate([{transform:'scale(0)'},{transform:'scale(1.1)',offset:.7},{transform:'scale(1)'}],{duration:450,delay:i*180,fill:'backwards'});
+    e.addEventListener('pointerdown',ev=>{ev.preventDefault();if(CK.stage==='pick'&&CK.gen===g)ckChoose(g,ch,e);});});
+  setTimeout(()=>{if(CK.gen===g&&CK.stage==='pick')say('오늘은 누구 생일일까요? 친구를 골라요!');},500);}
+function ckChoose(g,who,el){const A=$('ckArea'),G=CK.G;CK.stage='deco';CK.who=who;CK.last=Date.now();sfx.giggle();
+  A.querySelectorAll('.ckpick').forEach(e=>{if(e!==el)e.animate([{opacity:1},{opacity:0,transform:'scale(.5)'}],{duration:350,fill:'forwards'}).finished.then(()=>e.remove()).catch(()=>{});else e.remove();});
   const fr=document.createElement('img');fr.className='ckfr';fr.id='ckWho';fr.src=charSrc(who);fr.alt='';Object.assign(fr.style,{left:G.fx+'px',top:G.fy+'px',width:G.fz+'px',height:G.fz+'px'});
   fr.addEventListener('pointerdown',e=>{e.preventDefault();fr.classList.remove('yay');void fr.offsetWidth;fr.classList.add('yay');sfx.giggle();});A.appendChild(fr);
   const ck=document.createElement('div');ck.className='ckc';ck.id='ckCake';Object.assign(ck.style,{left:G.x+'px',top:G.y+'px',width:G.w+'px',height:G.h+'px'});
   ck.innerHTML=`<img class="cb" src="chars/cake.webp" alt="" style="filter:${CK_TINT[CK.round%CK_TINT.length]} drop-shadow(0 1.4vmin 1vmin rgba(80,40,60,.2))">`;A.appendChild(ck);
+  fr.animate([{transform:'scale(.6) translateY(20%)'},{transform:'scale(1.08)',offset:.7},{transform:'none'}],{duration:500});
   ckTray(shuffle(CK_DECO.slice()).slice(0,4),false);ckProg();
-  setTimeout(()=>{if(CK.gen===g)say(`오늘은 ${who.name} 생일이에요! 케이크를 예쁘게 꾸며 줘요!`);},400);}
+  setTimeout(()=>{if(CK.gen===g)say(`오늘은 ${who.name} 생일이에요! 케이크를 예쁘게 꾸며 줘요!`);},300);}
 function ckTray(items,glow){const A=$('ckArea'),G=CK.G;let t=$('ckTray');if(t)t.remove();t=document.createElement('div');t.className='cktray';t.id='ckTray';
   Object.assign(t.style,G.tray==='right'?{right:'3vmin',top:'50%',transform:'translateY(-50%)',flexDirection:'column'}:{left:'50%',bottom:'3vmin',transform:'translateX(-50%)'});
   items.forEach((img,i)=>{const b=document.createElement('div');b.className='ti'+(glow?' glow':'');b.style.animationDelay=(i*.08)+'s';b.innerHTML=`<img src="chars/${img}.webp" alt="">`;
@@ -3158,16 +3303,21 @@ function ckSong(g){if(CK.gen!==g||S.screen!=='cake')return;const A=$('ckArea'),G
   others.forEach((ch,i)=>{const e=document.createElement('img');e.className='ckfr sway';e.src=charSrc(ch);e.alt='';e.style.animationDelay=`-${i*.4}s`;
     Object.assign(e.style,{left:G.W*pos[i][0]+'px',top:G.H*pos[i][1]+'px',width:z+'px',height:z+'px'});A.appendChild(e);
     e.animate([{transform:'scale(0)'},{transform:'scale(1.1)',offset:.7},{transform:'scale(1)'}],{duration:450,delay:i*200,fill:'backwards'});});
-  $('ckWho').classList.add('sway');say('다 같이 생일 축하 노래 불러요!');
+  $('ckWho').classList.add('sway');say('다 같이 생일 축하 노래 불러요! 톡톡 박수 쳐요!');
   setTimeout(()=>{if(CK.gen!==g)return;const spb=.42,out=busOut('ck');let t=0;   // 소리가 안 나도 음표와 다음 단계는 그대로
     HB.forEach(([m,b])=>{const f=mtof(m),d=Math.min(1.3,b*spb+.35);
       if(out)try{tone({f,t,d,v:.2,out});tone({f:f*2,t,d:d*.5,v:.056,out});tone({f:f*3.01,t,d:d*.25,v:.02,out});
         tone({f:mtof(m-12),t,d:Math.min(.9,b*spb),v:.05,type:'triangle',out});}catch(e){}
       const tt=t;setTimeout(()=>{if(CK.gen===g)ckNote();},tt*1000);t+=b*spb;});
     setTimeout(()=>{if(CK.gen!==g)return;CK.stage='blow';ckProg();CK.last=Date.now();document.querySelectorAll('#ckArea .ckfr').forEach(e=>e.classList.remove('sway'));
-      say(`사랑하는 ${CK.who.name}, 생일 축하해요! 이제 촛불을 후~ 불어요!`);},t*1000+300);},2300);}
+      say(`사랑하는 ${CK.who.name}, 생일 축하해요! 이제 촛불을 톡 눌러요! 후~`);
+      setTimeout(()=>{if(CK.gen!==g||CK.stage!=='blow')return;const c=CK.cands.find(k=>!k.out);if(!c)return;const r=ctr(c.el);ghostHand(r.x+r.w*4,r.y-r.h*.9,r.x,r.y-r.h*.55,null);},2200);},t*1000+300);},2300);}
+let ckClapT=0;
+$('ckArea').addEventListener('pointerdown',e=>{if(CK.stage!=='song'||Date.now()-ckClapT<140)return;ckClapT=Date.now();CK.last=Date.now();   // 노래할 때 톡 = 짝짝
+  for(let i=0;i<3;i++)noise({t:i*.05,f:1800+Math.random()*1500,d:.06,v:.14,q:2});heartBurst(e.clientX,e.clientY);
+  const fs=[...document.querySelectorAll('#ckArea .ckfr')];const f=pick(fs);if(f){f.classList.remove('yay');void f.offsetWidth;f.classList.add('yay');}});
 function ckNote(){const fs=[...document.querySelectorAll('#ckArea .ckfr')];if(!fs.length)return;const r=pick(fs).getBoundingClientRect(),n=document.createElement('span');
-  n.className='mnote';n.textContent=pick(['♪','♫','♬']);n.style.cssText=`left:${r.left+r.width*(.3+Math.random()*.4)}px;top:${r.top+r.height*.1}px;--c:${pick(MU_COL)};--dx:${(Math.random()-.5)*12}vmin;--r:${(Math.random()*60-30)|0}deg`;
+  n.className='mnote';n.innerHTML=noteImg();n.style.cssText=`left:${r.left+r.width*(.3+Math.random()*.4)}px;top:${r.top+r.height*.1}px;--c:${pick(MU_COL)};--dx:${(Math.random()-.5)*12}vmin;--r:${(Math.random()*60-30)|0}deg`;
   n.addEventListener('animationend',()=>n.remove());document.body.appendChild(n);}
 function ckBlow(c,g){c.out=true;c.el.classList.add('out');CK.last=Date.now();const A=$('ckArea'),r=c.el.getBoundingClientRect(),a=A.getBoundingClientRect();
   noise({f:900,f2:300,d:.45,v:.25,q:.5});puffAt(A,r.left-a.left+r.width/2,r.top-a.top-r.height*.2,r.width*2.4);
@@ -3184,7 +3334,8 @@ function ckBlow(c,g){c.out=true;c.el.classList.add('out');CK.last=Date.now();con
 setInterval(()=>{if(S.screen!=='cake'||Date.now()-Math.max(lastTouch,CK.last)<6000)return;CK.last=Date.now();
   if(CK.stage==='deco'||CK.stage==='candle'){const ti=document.querySelector('#ckTray .ti');if(!ti)return;const a=ctr(ti),cr=$('ckCake').getBoundingClientRect();
     ghostHand(a.x,a.y,cr.left+cr.width/2,cr.top+cr.height*.2,{html:ti.innerHTML,w:a.w*.7,h:a.h*.7});}
-  else if(CK.stage==='blow'){const c=CK.cands.find(k=>!k.out);if(!c)return;const r=ctr(c.el);ghostHand(r.x+r.w*4,r.y-r.h*.9,r.x,r.y-r.h*.55,null);say('촛불을 톡 눌러서 후~ 불어요!');}},1000);
+  else if(CK.stage==='pick'){const c=document.querySelector('#ckArea .ckpick');if(!c)return;const r=ctr(c);ghostHand(r.x+r.w*.5,r.y+r.h*.5,r.x,r.y,null);say('친구를 톡 눌러요!');}
+  else if(CK.stage==='blow'){const c=CK.cands.find(k=>!k.out);if(!c)return;const r=ctr(c.el);ghostHand(r.x+r.w*4,r.y-r.h*.9,r.x,r.y-r.h*.55,null);say('촛불을 톡 눌러요! 후~');}},1000);
 $('goCake').onclick=()=>{sfx.tap();ckStart();};
 $('ckBack').onclick=()=>{sfx.tap();CK.gen++;ckHush();show('home');};
 
@@ -3214,11 +3365,12 @@ function baRound(){if(S.screen!=='bath')return;busHush('ba');bgmHold('lullaby',f
   baProg();
   const cv=f.querySelector('canvas'),N=Math.round(Math.min(480,G.fz));cv.width=cv.height=N;BA.cv=cv;BA.cx=cv.getContext('2d',{willReadFrequently:true});BA.N=N;
   baMud(src,g).then(()=>{if(BA.gen!==g)return;BA.stage='rub';BA.last=Date.now();
-    say(`${ga(ch.name)} ${BA.kind==='mud'?'진흙 놀이를':'물감 놀이를'} 했어요! 쓱쓱 문질러서 씻겨 줘요!`);});}
+    say(`${ga(ch.name)} ${BA.kind==='mud'?'진흙 놀이를':'물감 놀이를'} 했어요! 쓱쓱 문질러 줘요!`);});}
 // 진흙(또는 물감) 점을 그린 다음, 친구 모양 안쪽에만 남겨요 (욕조 거품에 가려지는 아래쪽은 빼고)
-let BA_SPLAT=null;   // 진흙 자국 그림 3장 (못 불러오면 둥근 점으로)
+let BA_SPLAT=null,BA_PAINT=null;   // 진흙 자국 그림 3장 (못 불러오면 둥근 점으로)
 async function baMud(src,g){let im=null;try{im=await loadImg(src);}catch(e){}
   if(BA.kind==='mud'&&!BA_SPLAT){try{BA_SPLAT=await Promise.all([1,2,3].map(i=>loadImg(`chars/ba_mud${i}.webp`)));}catch(e){BA_SPLAT=[];}}
+  if(BA.kind!=='mud'&&!BA_PAINT){try{BA_PAINT=await Promise.all([1,2,3,4,5].map(i=>loadImg(`chars/ba_paint${i}.webp`)));}catch(e){BA_PAINT=[];}}
   if(BA.gen!==g)return;BA.im=im;const N=BA.N,x=BA.cx,mud=BA.kind==='mud';
   const m=document.createElement('canvas');m.width=m.height=N;const mx=m.getContext('2d');
   const cols=mud?['#8a5a2e','#7a4b22','#9c6b3c','#6e4320','#a0703f']:['#ff6b6b','#ffd93d','#4fc3f7','#6fd36f','#a77bf3','#ff8fc7','#ff9f43'];
@@ -3226,7 +3378,8 @@ async function baMud(src,g){let im=null;try{im=await loadImg(src);}catch(e){}
   for(let tr=0;tr<3;tr++){x.globalCompositeOperation='source-over';x.clearRect(0,0,N,N);
     if(im)x.drawImage(im,0,0,N,N);else{x.fillStyle='#000';x.beginPath();x.ellipse(N/2,N*.42,N*.36,N*.4,0,0,6.283);x.fill();}
     mx.clearRect(0,0,N,N);
-    if(mud&&BA_SPLAT&&BA_SPLAT.length)for(let i=0;i<7;i++){const sp=pick(BA_SPLAT),r=N*(.09+Math.random()*.07),cx=N*(.2+Math.random()*.6),cy=N*(.14+Math.random()*.34);
+    const SPL=mud?BA_SPLAT:BA_PAINT;
+    if(SPL&&SPL.length)for(let i=0;i<(mud?7:8);i++){const sp=mud?pick(SPL):SPL[i%SPL.length],r=N*(mud?.09+Math.random()*.07:.07+Math.random()*.05),cx=N*(.2+Math.random()*.6),cy=N*(.14+Math.random()*.34);
       mx.save();mx.translate(cx,cy);mx.rotate((Math.random()-.5)*1.4);const k=sp.naturalWidth/sp.naturalHeight,w=k>=1?r*2:r*2*k,h=k>=1?r*2/k:r*2;mx.drawImage(sp,-w/2,-h/2,w,h);mx.restore();}
     else for(let i=0;i<(mud?19:24);i++){const r=N*(.05+Math.random()*.06),cx=N*(.18+Math.random()*.64),cy=N*(.14+Math.random()*.42);mx.fillStyle=pick(cols);mx.beginPath();
       for(let k=0;k<6;k++){const a=Math.random()*6.283,d=r*.7*Math.random(),rr=r*(.45+Math.random()*.55),px=cx+Math.cos(a)*d,py=cy+Math.sin(a)*d;mx.moveTo(px+rr,py);mx.arc(px,py,rr,0,6.283);}
@@ -3255,7 +3408,7 @@ function baFoam(x,y){const A=$('baArea');if(A.querySelectorAll('.foam').length>2
 function baCheck(){if(BA.stage!=='rub'&&BA.stage!=='dry')return;const left=baCount()/BA.init;
   if(left>.12)return;if(BA.stage==='dry'){baSleep();return;}
   BA.stage='rinse';baProg();BA.cv.style.transition='opacity .5s';BA.cv.style.opacity=0;sparkle();BA.last=Date.now();
-  say('뽀득뽀득! 이제 샤워기를 톡 눌러서 거품을 씻어요!');$('baShow').classList.add('glow');}
+  say('뽀득뽀득! 이제 샤워기를 톡 눌러요! 쏴아~');$('baShow').classList.add('glow');}
 const baA=$('baArea');
 baA.addEventListener('pointerdown',e=>{if(S.screen!=='bath'||BA.pid!=null||e.target.closest('.bashow,.baduck'))return;e.preventDefault();
   if(BA.stage==='sleep'||BA.stage==='night'){baPat();return;}   // 잠자기: 어디를 눌러도 토닥토닥
@@ -3312,7 +3465,7 @@ function baPat(){const b=document.querySelector('.babed'),w=b&&b.querySelector('
   if(BA.stage!=='sleep'){bell(mtof(PENT[2+Math.floor(Math.random()*4)]),0,.08,.6);return;}
   const n=++BA.pat;bell(mtof(PENT[n+1]),0,.12,.7);
   if(n<3){say(n===1?'토닥토닥':'자장자장');return;}
-  BA.stage='night';
+  BA.stage='night';zzSet(w,BA.who);
   [0,1,2].forEach(i=>{const z=document.createElement('i');z.className='bazz';z.textContent='Z';
     z.style.cssText=`left:${parseFloat(w.style.left)+parseFloat(w.style.width)*.78}px;top:${parseFloat(w.style.top)-parseFloat(w.style.width)*.05}px;font-size:${(7-i*1.5)}vmin;animation-delay:${i}s`;b.appendChild(z);});
   say(`잘 자요, ${BA.who.name}!`);cheer('잘 자요!');
