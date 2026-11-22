@@ -1,13 +1,15 @@
 // 유주 놀이터 오프라인 저장소. 앱을 고치면 VERSION 숫자를 올려주세요 (index.html의 APP_VERSION도 같이).
 const MUSIC_CACHE = 'yuju-music-1';
-const VERSION = 'yuju-v42';
+const VERSION = 'yuju-v43';
 const CORE = ['./', './index.html', './manifest.json', './chars/chars.js',
   './chars/bg_land.webp', './chars/bg_sea.webp', './chars/crab.webp', './chars/deer.webp', './chars/dolphin.webp',
   './chars/dress_blue.webp', './chars/dress_pink.webp', './chars/dress_yellow.webp', './chars/fish.webp', './chars/fish0.webp',
   './chars/fish1.webp', './chars/fish2.webp', './chars/fish4.webp', './chars/fish5.webp', './chars/fish6.webp',
   './chars/fr_apple.webp', './chars/fr_banana.webp', './chars/fr_blueberry.webp', './chars/fr_grape.webp', './chars/fr_orange.webp',
   './chars/fr_peach.webp', './chars/giraffe.webp', './chars/ic_bubble.webp', './chars/ic_draw.webp', './chars/ic_dress.webp',
-  './chars/ic_peek.webp', './chars/ic_puzzle.webp', './chars/l_bush.webp', './chars/l_flowers.webp', './chars/l_hay.webp',
+  './chars/ic_peek.webp', './chars/ic_puzzle.webp',
+  './chars/ic_music.webp', './chars/ic_shadow.webp', './chars/ic_train.webp', './chars/ic_fruit.webp', './chars/ic_cake.webp', './chars/ic_bath.webp', './chars/ba_mud1.webp', './chars/ba_mud2.webp', './chars/ba_mud3.webp',
+  './chars/mu_bar0.webp', './chars/mu_bar1.webp', './chars/mu_bar2.webp', './chars/mu_bar3.webp', './chars/mu_bar4.webp', './chars/mu_bar5.webp', './chars/mu_bar6.webp', './chars/mu_bar7.webp', './chars/l_bush.webp', './chars/l_flowers.webp', './chars/l_hay.webp',
   './chars/l_mushroom.webp', './chars/l_rock.webp', './chars/l_stump.webp', './chars/octo.webp', './chars/p_chest.webp',
   './chars/p_coral.webp', './chars/p_pearl.webp', './chars/p_rock.webp', './chars/p_shell.webp', './chars/p_star.webp',
   './chars/p_weed.webp', './chars/penguin.webp', './chars/puppy.webp', './chars/rabbit.webp', './chars/rabbit_closed.webp',

@@ -40,9 +40,9 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 .musicBtn{position:relative}
 #ver{position:absolute;right:max(12px,2vmin);bottom:max(8px,1.4vmin);font-size:clamp(12px,1.8vmin,16px);color:rgba(255,255,255,.85);pointer-events:none}
 .musicBtn.off::after{content:'';position:absolute;left:16%;right:16%;top:calc(50% - 3px);height:6px;border-radius:6px;background:#ff5a6e;transform:rotate(-40deg)}
-#toast{position:fixed;left:50%;top:max(18px,3vmin);transform:translate(-50%,-150%);z-index:200;pointer-events:none;background:rgba(43,58,85,.88);color:#fff;
-  padding:1.4vmin 3.2vmin;border-radius:99px;font-size:clamp(16px,2.8vmin,26px);white-space:nowrap;transition:transform .3s ease}
-#toast.on{transform:translate(-50%,0)}
+#toast{position:fixed;left:50%;top:max(18px,3vmin);transform:translate(-50%,-150%);opacity:0;z-index:200;pointer-events:none;background:rgba(43,58,85,.88);color:#fff;
+  padding:1.4vmin 3.2vmin;border-radius:99px;font-size:clamp(16px,2.8vmin,26px);white-space:nowrap;transition:transform .3s ease,opacity .3s}
+#toast.on{transform:translate(-50%,0);opacity:1}
 
 /* 홈 */
 .homeWrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5vmin}
@@ -382,6 +382,10 @@ img.shf,img.ckfr,img.baduck{pointer-events:auto}
 .key .bar{position:absolute;left:8%;right:8%;bottom:0;border-radius:2.4vmin;background:var(--c);box-shadow:inset 0 -1.4vmin 0 rgba(0,0,0,.12),0 1vmin 0 rgba(0,0,0,.08)}
 .key .bar::before,.key .bar::after{content:'';position:absolute;left:50%;width:2.2vmin;height:2.2vmin;margin-left:-1.1vmin;border-radius:50%;background:rgba(255,255,255,.7)}
 .key .bar::before{top:8%}.key .bar::after{bottom:14%}
+.key .bar.pic{background:none;box-shadow:none;border-radius:0;border-style:solid;border-color:transparent;border-image-slice:20.0% 0 fill;border-image-repeat:stretch;filter:drop-shadow(0 .8vmin 0 rgba(0,0,0,.1))}
+.key .bar.pic::before,.key .bar.pic::after{display:none}
+.key.next .bar.pic{animation:nextGlowPic .9s ease-in-out infinite}
+@keyframes nextGlowPic{0%,100%{filter:drop-shadow(0 0 .8vmin #fff) drop-shadow(0 0 1.6vmin #fff)}50%{filter:drop-shadow(0 0 1.4vmin #fff) drop-shadow(0 0 3.4vmin #fff8b0)}}
 .key img{position:absolute;left:0;right:0;margin:auto;object-fit:contain;transform-origin:50% 100%;filter:drop-shadow(0 1vmin .8vmin rgba(0,50,100,.22))}
 .key.hit img{animation:keyJump .42s ease-out}
 .key.hit .bar{filter:brightness(1.25)}
@@ -955,6 +959,9 @@ const ALLCH=[...CHARS,...LAND];
 // 꾸미기 전용 친구: 여자아이 유주 (드레스를 입을 수 있어요)
 const GIRL=(window.CHAR_IMG||{}).yuju?{id:'yuju',name:'유주',girl:true,art:'',c:['#ffeef5','#ffd1e3'],img:window.CHAR_IMG.yuju}:null;
 if(GIRL)GIRL.svg=()=>wrap(charArt(GIRL),false,GIRL.c);
+// 놀이(기차·과일·생일·악단)에 나오는 유주는 옷을 입어요. 꾸미기 놀이와 목욕은 원래 그림
+const GIRL_PLAY=GIRL&&window.CHAR_IMG.yuju_play?{...GIRL,img:window.CHAR_IMG.yuju_play}:GIRL;
+if(GIRL_PLAY&&GIRL_PLAY!==GIRL)GIRL_PLAY.svg=()=>wrap(charArt(GIRL_PLAY),false,GIRL_PLAY.c);
 const FRIENDS=GIRL?[GIRL,...ALLCH]:ALLCH;
 const svgURL=s=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
 const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});
@@ -1515,7 +1522,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='home')return;const b=document.querySelector('#'+S.screen+' [id$="Back"]');b?b.click():show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v42';
+const APP_VERSION='v43';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -2338,7 +2345,7 @@ const muProg=()=>stepBar('muStars',['ba_bed',muIcon('#4fc3f7'),muIcon('#ff6b9a',
 // 숲속 악단: 친구가 많아져서 들어올 때마다 여섯 명을 새로 뽑아요(+ 유주, 거북이)
 let muLandBand=null;
 const muBand=()=>{if(!(MU.world==='land'&&LAND.length))return CHARS.slice(0,8);
-  if(!muLandBand)muLandBand=[...shuffle(LAND.slice()).slice(0,GIRL?6:7),...(GIRL?[GIRL]:[]),CHARS[4]];return muLandBand;};
+  if(!muLandBand)muLandBand=[...shuffle(LAND.slice()).slice(0,GIRL?6:7),...(GIRL?[GIRL_PLAY]:[]),CHARS[4]];return muLandBand;};
 function muNote(i,t=0){const f=mtof(MU_NOTES[i]);tone({f,t,d:.55,v:.24});tone({f:f*2,t,d:.25,v:.06});tone({f:f*4,t,d:.06,v:.05});}
 function muStart(){muLandBand=null;show('music');document.body.classList.toggle('land',MU.world==='land');muWorldBtn();muStory0('친구 악단이에요! 쉿, 친구들이 자고 있어요. 톡톡 눌러서 깨워요');}
 // 1단계: 자는 친구들을 톡톡 깨워요
@@ -2373,7 +2380,8 @@ function muWorldBtn(){const other=MU.world==='land'?CHARS[0]:(LAND[0]||CHARS[1])
 function muBuild(){const A=$('muArea');A.innerHTML='';MU.keys=[];const W=A.clientWidth,H=A.clientHeight,cw=W*.94/8,x0=W*.03;
   muBand().forEach((ch,i)=>{const k=document.createElement('div');k.className='key'+(MU.step===0&&!MU.awake[i]?' sleep':'');const bh=H*(.36-i*.022),fz=Math.min(cw*.98,H*.27);
     Object.assign(k.style,{left:(x0+i*cw)+'px',width:cw+'px',bottom:(H*.05)+'px',height:(bh+fz)+'px'});
-    k.innerHTML=`<div class="bar" style="--c:${MU_COL[i]};height:${bh}px"></div><img src="${charSrc(ch)}" alt="" style="bottom:${bh-fz*.12}px;width:${fz}px;height:${fz}px">`;
+    const bw=cw*.84,cap=Math.min(bh*.42,bw/0.303*0.2);   // 그림 너비/높이 0.303, 끝 부분 0.2
+    k.innerHTML=`<div class="bar pic" style="--c:${MU_COL[i]};height:${bh}px;border-width:${cap}px 0;border-image-source:url(chars/mu_bar${i}.webp)"></div><img src="${charSrc(ch)}" alt="" style="bottom:${bh-fz*.12}px;width:${fz}px;height:${fz}px">`;
     k.addEventListener('pointerdown',e=>{e.preventDefault();muTap(i);});A.appendChild(k);MU.keys.push(k);});
   muMark();}
 function muSongs(){const g=$('muSongs');g.innerHTML='';
@@ -2493,15 +2501,6 @@ document.querySelectorAll('#title span').forEach((s,i)=>s.style.setProperty('--t
 [['puzzle','ic_puzzle'],['draw','ic_draw'],['bubble','ic_bubble'],['feed','ic_peek']].forEach(([a,img])=>{const el=document.querySelector(`.card .art[data-art="${a}"]`);
   if(el)el.innerHTML=`<img src="chars/${img}.webp" alt="" class="homeic">`;});
 
-{const el=document.querySelector('.card .art[data-art="music"]');if(el){el.style.setProperty('--bgc','#f1ebff');
-  el.innerHTML=`<svg viewBox="0 0 120 100"><g><rect x="10" y="70" width="30" height="22" rx="6" fill="#ff6b6b"/><rect x="45" y="74" width="30" height="18" rx="6" fill="#ffd93d"/><rect x="80" y="78" width="30" height="14" rx="6" fill="#4fc3f7"/></g>
-   <image href="${charSrc(CHARS[3])}" x="6" y="36" width="38" height="38"/><image href="${charSrc(CHARS[1])}" x="41" y="40" width="38" height="38"/><image href="${charSrc(CHARS[0])}" x="76" y="44" width="38" height="38"/>
-   <g fill="#8a6cf0"><path d="M30 8 v18" stroke="#8a6cf0" stroke-width="3"/><ellipse cx="26" cy="27" rx="5" ry="4"/><path d="M84 4 v16 M98 1 v16" stroke="#8a6cf0" stroke-width="3"/><path d="M84 4 L98 1" stroke="#8a6cf0" stroke-width="4"/><ellipse cx="80" cy="21" rx="5" ry="4"/><ellipse cx="94" cy="18" rx="5" ry="4"/></g></svg>`;}}
-
-{const el=document.querySelector('.card .art[data-art="shadow"]');if(el){el.style.setProperty('--bgc','#eef2f7');
-  el.innerHTML=`<svg viewBox="0 0 120 100"><defs><filter id="blkS"><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .3 0"/></filter></defs>
-   <image href="${charSrc(CHARS[2])}" x="62" y="14" width="54" height="54" filter="url(#blkS)"/><image href="${charSrc(CHARS[2])}" x="4" y="36" width="54" height="54"/>
-   <path d="M52 40 Q62 28 72 34" stroke="#ff8fb8" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M68 28 L74 35 L65 38" stroke="#ff8fb8" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}}
 
 // 칭찬 리본
 let cheerT=0;function cheer(t){const e=$('cheer');$('cheerTxt').textContent=t;e.classList.remove('on');void e.offsetWidth;e.classList.add('on');
@@ -2786,7 +2785,7 @@ const ieyo=w=>w+(hasBatchim(w)?'이에요':'예요');
 const KNUM=['','한','두','세','네','다섯'];
 // 친구 고르기: 바다 친구 또는 숲속 친구, 가끔 유주도 끼워요
 function friendPool(land,n,withGirl){const P=shuffle((land&&LAND.length?LAND:CHARS).slice()).slice(0,n);
-  if(withGirl&&GIRL&&n>1&&Math.random()<.4)P[Math.floor(Math.random()*n)]=GIRL;return P;}
+  if(withGirl&&GIRL&&n>1&&Math.random()<.4)P[Math.floor(Math.random()*n)]=withGirl==='raw'?GIRL:GIRL_PLAY;return P;}
 // 끌기와 톡 누르기를 같이: 조금만 움직이고 떼면 tap, 끌어서 놓으면 drop, 손을 놓치면 lost
 function dragTap(el,h){let d=null;
   el.addEventListener('pointerdown',e=>{if(d||(h.can&&!h.can()))return;e.preventDefault();try{el.setPointerCapture(e.pointerId);}catch(_){}
@@ -3201,7 +3200,7 @@ function baGeo(){const A=$('baArea'),W=A.clientWidth,H=A.clientHeight,land=W>=H;
   return{W,H,land,tw,th,tx,ty,fz,fx,fy,sz,sx,sy,dz:tw*.17};}
 function baRound(){if(S.screen!=='bath')return;busHush('ba');bgmHold('lullaby',false);baSponge(null,false);const g=++BA.gen,A=$('baArea'),G=baGeo();   // 문지르던 손가락은 놓아요
   Object.assign(BA,{G,stage:'load',last:Date.now(),lp:null,pid:null,st:0,kind:BA.round%2?'paint':'mud'});
-  const ch=pick(friendPool(Math.floor(BA.round/2)%2===1,4,true).filter(c=>c!==BA.who))||CHARS[0];BA.who=ch;
+  const ch=pick(friendPool(Math.floor(BA.round/2)%2===1,4,'raw').filter(c=>c!==BA.who))||CHARS[0];BA.who=ch;
   A.innerHTML=`<div class="bafloor" style="height:${G.H-(G.ty+G.th*.78)}px"></div>`;
   const src=ch.img||charSrc(ch),f=document.createElement('div');f.className='baf';f.id='baF';Object.assign(f.style,{left:G.fx+'px',top:G.fy+'px',width:G.fz+'px',height:G.fz+'px'});
   f.innerHTML=`<img src="${src}" alt=""><canvas></canvas>`;A.appendChild(f);
@@ -3217,17 +3216,24 @@ function baRound(){if(S.screen!=='bath')return;busHush('ba');bgmHold('lullaby',f
   baMud(src,g).then(()=>{if(BA.gen!==g)return;BA.stage='rub';BA.last=Date.now();
     say(`${ga(ch.name)} ${BA.kind==='mud'?'진흙 놀이를':'물감 놀이를'} 했어요! 쓱쓱 문질러서 씻겨 줘요!`);});}
 // 진흙(또는 물감) 점을 그린 다음, 친구 모양 안쪽에만 남겨요 (욕조 거품에 가려지는 아래쪽은 빼고)
-async function baMud(src,g){let im=null;try{im=await loadImg(src);}catch(e){}if(BA.gen!==g)return;BA.im=im;const N=BA.N,x=BA.cx,mud=BA.kind==='mud';
+let BA_SPLAT=null;   // 진흙 자국 그림 3장 (못 불러오면 둥근 점으로)
+async function baMud(src,g){let im=null;try{im=await loadImg(src);}catch(e){}
+  if(BA.kind==='mud'&&!BA_SPLAT){try{BA_SPLAT=await Promise.all([1,2,3].map(i=>loadImg(`chars/ba_mud${i}.webp`)));}catch(e){BA_SPLAT=[];}}
+  if(BA.gen!==g)return;BA.im=im;const N=BA.N,x=BA.cx,mud=BA.kind==='mud';
   const m=document.createElement('canvas');m.width=m.height=N;const mx=m.getContext('2d');
   const cols=mud?['#8a5a2e','#7a4b22','#9c6b3c','#6e4320','#a0703f']:['#ff6b6b','#ffd93d','#4fc3f7','#6fd36f','#a77bf3','#ff8fc7','#ff9f43'];
   // 점이 친구 모양 밖에만 떨어지면 다시 뿌려요(세 번까지). 그림을 못 불러오면 둥근 모양 안에 뿌려요
   for(let tr=0;tr<3;tr++){x.globalCompositeOperation='source-over';x.clearRect(0,0,N,N);
     if(im)x.drawImage(im,0,0,N,N);else{x.fillStyle='#000';x.beginPath();x.ellipse(N/2,N*.42,N*.36,N*.4,0,0,6.283);x.fill();}
     mx.clearRect(0,0,N,N);
-    for(let i=0;i<(mud?19:24);i++){const r=N*(.05+Math.random()*.06),cx=N*(.18+Math.random()*.64),cy=N*(.14+Math.random()*.42);mx.fillStyle=pick(cols);mx.beginPath();
+    if(mud&&BA_SPLAT&&BA_SPLAT.length)for(let i=0;i<7;i++){const sp=pick(BA_SPLAT),r=N*(.09+Math.random()*.07),cx=N*(.2+Math.random()*.6),cy=N*(.14+Math.random()*.34);
+      mx.save();mx.translate(cx,cy);mx.rotate((Math.random()-.5)*1.4);const k=sp.naturalWidth/sp.naturalHeight,w=k>=1?r*2:r*2*k,h=k>=1?r*2/k:r*2;mx.drawImage(sp,-w/2,-h/2,w,h);mx.restore();}
+    else for(let i=0;i<(mud?19:24);i++){const r=N*(.05+Math.random()*.06),cx=N*(.18+Math.random()*.64),cy=N*(.14+Math.random()*.42);mx.fillStyle=pick(cols);mx.beginPath();
       for(let k=0;k<6;k++){const a=Math.random()*6.283,d=r*.7*Math.random(),rr=r*(.45+Math.random()*.55),px=cx+Math.cos(a)*d,py=cy+Math.sin(a)*d;mx.moveTo(px+rr,py);mx.arc(px,py,rr,0,6.283);}
       mx.fill();if(mud&&Math.random()<.5){mx.beginPath();mx.moveTo(cx-r*.22,cy);mx.lineTo(cx+r*.22,cy);mx.lineTo(cx+r*.12,cy+r*1.3);mx.arc(cx,cy+r*1.3,r*.12,0,3.14);mx.fill();}}
-    mx.clearRect(0,N*.62,N,N);
+    // 거품에 가려지는 아래쪽은 직선으로 자르지 않고 점점 흐려지게
+    {mx.save();mx.globalCompositeOperation='destination-out';const gr=mx.createLinearGradient(0,N*.5,0,N*.64);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'#000');
+     mx.fillStyle=gr;mx.fillRect(0,N*.5,N,N*.5);mx.restore();}
     x.globalCompositeOperation='source-in';x.drawImage(m,0,0);x.globalCompositeOperation='source-over';
     if(baCount()>=N*N*.002)break;}
   BA.cv.style.opacity=1;BA.init=Math.max(1,baCount());}
@@ -3327,18 +3333,10 @@ $('goBath').onclick=()=>{sfx.tap();baStart();};
 $('baBack').onclick=()=>{sfx.tap();BA.gen++;BA.pid=null;busHush('ba');$('sponge').style.display='none';show('home');};
 
 // 새 놀이 카드 그림
-(function newCards(){const set=(k,bg,svg)=>{const el=document.querySelector(`.card .art[data-art="${k}"]`);if(!el)return;el.style.setProperty('--bgc',bg);el.innerHTML=`<svg viewBox="0 0 120 100">${svg}</svg>`;};
-  set('train','#ffecec',`<rect x="0" y="88" width="120" height="4" rx="2" fill="#a8b4c4"/>
-    <image href="${charSrc(CHARS[1])}" x="9" y="30" width="38" height="38"/><image href="chars/tr_car.webp" x="2" y="57" width="58" height="30"/>
-    <image href="chars/tr_engine.webp" x="58" y="40" width="60" height="48"/><g fill="#fff" stroke="#dfe7ef" stroke-width="1.5"><circle cx="100" cy="28" r="7"/><circle cx="108" cy="14" r="5"/></g>`);
-  set('fruit','#eafbe0',`<image href="chars/tree.webp" x="4" y="2" width="76" height="93"/>
-    <image href="chars/fr_apple.webp" x="20" y="16" width="17" height="17"/><image href="chars/fr_apple.webp" x="45" y="10" width="17" height="17"/><image href="chars/fr_apple.webp" x="36" y="34" width="17" height="17"/>
-    <image href="chars/basket.webp" x="72" y="64" width="46" height="31"/><image href="chars/fr_apple.webp" x="85" y="55" width="19" height="19"/>`);
-  set('cake','#ffeef6',`<image href="chars/cake.webp" x="22" y="28" width="76" height="72"/>
-    ${[46,60,74].map(x=>`<image href="chars/candle.webp" x="${x-3.5}" y="22" width="7" height="22"/><ellipse cx="${x}" cy="18" rx="3.4" ry="5.2" fill="#ffb02e"/><ellipse cx="${x}" cy="19.5" rx="1.7" ry="2.6" fill="#fff6c0"/>`).join('')}
-    ${heart(14,26,7,'#ff6b9a')}${star(106,24,8,'#ffd65a')}`);
-  set('bath','#e2f5ff',`<image href="${charSrc(CHARS[2])}" x="30" y="4" width="60" height="60"/><image href="chars/tub.webp" x="18" y="38" width="84" height="61"/>
-    <g fill="rgba(255,255,255,.9)" stroke="#bfe3f7" stroke-width="1.5"><circle cx="18" cy="24" r="6"/><circle cx="102" cy="16" r="8"/><circle cx="108" cy="34" r="4"/></g>`);})();
+// 첫 화면 카드 그림 (v43 코덱스): 악단·그림자·기차·과일·생일·목욕
+[['music','ic_music','#f1ebff'],['shadow','ic_shadow','#eef2f7'],['train','ic_train','#ffecec'],['fruit','ic_fruit','#eafbe0'],['cake','ic_cake','#ffeef6'],['bath','ic_bath','#e2f5ff']]
+  .forEach(([a,img,bg])=>{const el=document.querySelector(`.card .art[data-art="${a}"]`);if(!el)return;el.style.setProperty('--bgc',bg);
+    el.innerHTML=`<img src="chars/${img}.webp" alt="" class="homeic">`;});
 </script>
 </body>
 </html>
