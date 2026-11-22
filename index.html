@@ -1709,7 +1709,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='home')return;const b=document.querySelector('#'+S.screen+' [id$="Back"]');b?b.click():show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v50';
+const APP_VERSION='v51';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
