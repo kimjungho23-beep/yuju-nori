@@ -1,6 +1,6 @@
 # 3단계: 녹음 목소리 파일 만들기. lines.json의 문장마다 voice/<id>/<해시>.mp3 와 voice/list.js 를 만들어요
 #   이미 있는 파일은 건너뛰어요(새 문장만 만들어요). 해시 = 문장 글자의 FNV-1a (index.html의 vHash와 같아요)
-#   지금 목소리(v46): python tools/voice/build.py . g4 google --voice ko-KR-Chirp3-HD-Callirrhoe --no-name-lines
+#   지금 목소리(v47): python tools/voice/build.py . g4 google --voice ko-KR-Chirp3-HD-Callirrhoe   (아이 이름 문장 포함: 사용자가 허락함)
 #   백엔드: google (구글 Cloud TTS, 키는 바탕화면 'Google tts key.txt' → gkey.py)
 #           azure (키는 환경 변수 AZURE_SPEECH_KEY / AZURE_SPEECH_REGION 또는 %USERPROFILE%\.azure_speech.txt 에 "키 지역")
 #           edge  (미리듣기·시험 전용)

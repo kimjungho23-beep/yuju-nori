@@ -1252,11 +1252,12 @@ const vOn=()=>VSET.size>0&&store.get('yj_vmode','file')!=='tts';   // 부모 메
 const vPath=h=>`voice/${VP.id}/${h}.${VP.ext||'mp3'}`;
 function vUrl(t){if(!vOn())return null;const h=vHash(t);if(VSET.has(h))return vPath(h);(window.VMISS||(window.VMISS=new Set())).add(t);return null;}
 let VA=null;
+const VRATE={'.8':.95,'.9':1.1,'1':1.25};   // 부모 메뉴 말 빠르기(천천히·보통·조금 빠르게) → 녹음 파일 재생 빠르기
 function sayNow(t){const url=vUrl(t);if(url)sayFile(t,url);else sayTTS(t);}
 function sayFile(t,url){try{speechSynthesis.cancel();}catch(e){}
   if(!VA){VA=new Audio();VA.preload='auto';}const a=VA,tok={};try{a.pause();}catch(e){}
-  const rate=Math.min(1.2,Math.max(.85,(+store.get('yj_rate','.9')||.9)/.9));   // 말 빠르기: 보통(.9)이 파일 그대로
-  SAY.u=tok;SAY.busy=true;SAY.scr=S.screen;SAY.end=Date.now()+900+t.length*200;
+  const rate=VRATE[store.get('yj_rate','.9')]||1.1;   // 말 빠르기 (음 높이는 그대로): 보통이 파일보다 조금 빠르게 (v47 사용자 요청)
+  SAY.u=tok;SAY.busy=true;SAY.file=true;SAY.scr=S.screen;SAY.end=Date.now()+900+t.length*180;
   const back=()=>{if(SAY.u!==tok)return;SAY.u=null;sayTTS(t);};   // 파일을 못 틀면 기기 목소리로
   a.onended=()=>{if(SAY.u!==tok)return;SAY.busy=false;sayFlush();};a.onerror=back;
   a.onloadedmetadata=()=>{if(SAY.u===tok&&isFinite(a.duration))SAY.end=Date.now()+a.duration*1000/rate+250;};
@@ -1273,16 +1274,19 @@ async function voiceWarm(){if(!VSET.size||!('caches' in window)||!navigator.onLi
 setTimeout(voiceWarm,8000);
 function sayTTS(t){try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(t);
   u.lang='ko-KR';u.pitch=1.12;u.rate=+store.get('yj_rate','.9')||.9;u.volume=1;if(!KO_VOICE)pickVoice();if(KO_VOICE)u.voice=KO_VOICE;
-  SAY.u=u;SAY.busy=true;SAY.scr=S.screen;SAY.end=Date.now()+700+t.length*240/u.rate;   // 끝났다는 소식이 안 오는 기기도 있어서 예상 끝 시각
+  SAY.u=u;SAY.busy=true;SAY.file=false;SAY.scr=S.screen;SAY.end=Date.now()+700+t.length*240/u.rate;   // 끝났다는 소식이 안 오는 기기도 있어서 예상 끝 시각
   u.onend=u.onerror=()=>{if(SAY.u!==u)return;SAY.busy=false;sayFlush();};s.speak(u);}catch(e){}}
 function sayFlush(){clearTimeout(SAY.qT);const q=SAY.q;SAY.q=null;if(q&&q.scr===S.screen&&!document.hidden)sayNow(q.t);}
 function sayStop(){SAY.q=null;clearTimeout(SAY.qT);SAY.busy=false;SAY.u=null;try{speechSynthesis.cancel();}catch(e){}try{VA&&VA.pause();}catch(e){}}
 function say(txt){const t=sayText(txt);if(!t)return;let lt=0;try{lt=lastTouch;}catch(e){}
   if(t===SAY.last&&lt<=SAY.lastAt){if(++SAY.rep>=2)return;}else SAY.rep=0;   // 가만히 있을 때 같은 말 되풀이는 두 번까지
   SAY.last=t;SAY.lastAt=Date.now();
-  if(SAY.busy&&Date.now()<SAY.end&&SAY.scr===S.screen){
-    if(t.replace(/[\s!?.,]/g,'').length<=5)return;   // 말하는 중에 짧은 반응 말(톡톡, 이름 등)은 버려요
-    SAY.q={t,scr:S.screen};clearTimeout(SAY.qT);SAY.qT=setTimeout(sayFlush,Math.max(0,Math.min(2500,SAY.end-Date.now())));return;}
+  // 첫 화면에서 놀이 카드를 누르며 한 말(놀이 이름)은 놀이 화면으로 넘어가도 끝까지 해요 (v47: 퍼즐 '누구일까요?'가 앞말을 끊던 것)
+  const carry=SAY.scr==='home'&&S.screen!=='home';
+  if(SAY.busy&&Date.now()<SAY.end&&(SAY.scr===S.screen||carry)){
+    if(!carry&&t.replace(/[\s!?.,]/g,'').length<=5)return;   // 말하는 중에 짧은 반응 말(톡톡, 이름 등)은 버려요
+    const w=SAY.end-Date.now();   // 녹음 파일은 끝 시각을 정확히 알아서 끝까지 기다려요. 기기 목소리는 최대 2.5초
+    SAY.q={t,scr:S.screen};clearTimeout(SAY.qT);SAY.qT=setTimeout(sayFlush,Math.max(0,SAY.file?w+300:Math.min(2500,w)));return;}
   sayNow(t);}
 // 받침에 따라 조사 고르기: 문어를 / 펭귄을
 const hasBatchim=w=>{const c=w.charCodeAt(w.length-1)-0xAC00;return c>=0&&c<11172&&c%28!==0;};
@@ -1656,7 +1660,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='home')return;const b=document.querySelector('#'+S.screen+' [id$="Back"]');b?b.click():show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v46';
+const APP_VERSION='v47';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
