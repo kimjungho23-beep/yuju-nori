@@ -925,6 +925,7 @@ body.land #scene,body.land #bubbles{display:none}
 <img class="sponge" id="sponge" src="chars/sponge.webp" alt="">
 
 <script src="chars/chars.js"></script>
+<script src="voice/list.js"></script>
 <script>
 /* ================= 캐릭터 그림 (직접 그린 오리지널) ================= */
 function sea(top,bot){return `<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="${bot}"/></linearGradient></defs>
@@ -1244,12 +1245,38 @@ try{pickVoice();speechSynthesis.addEventListener('voiceschanged',pickVoice);}cat
 // 화면 글씨의 기호(~ ♪ ★)는 소리 내어 읽지 않게 빼요. "후~"는 "후우"로 길게
 const sayText=t=>String(t).replace(/후~+/g,'후우').replace(/[~♪♫♬★☆♥♡…]+/g,' ').replace(/\s+/g,' ').trim();
 const SAY={busy:false,end:0,q:null,qT:0,last:'',lastAt:0,rep:0,scr:'',u:null};
-function sayNow(t){try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(t);
+// 녹음 목소리 (v46): voice/list.js에 적힌 문장은 voice/<목소리>/<문장 번호>.mp3 파일로 말해요. 문장 번호 = 문장 글자로 만든 FNV-1a 해시
+const VP=window.VOICE_PACK||null,VSET=new Set(VP&&VP.h?VP.h.split(' '):[]);
+const vHash=t=>{let h=0x811c9dc5;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,'0');};
+const vOn=()=>VSET.size>0&&store.get('yj_vmode','file')!=='tts';   // 부모 메뉴에서 기기 목소리를 고르면 'tts'
+const vPath=h=>`voice/${VP.id}/${h}.${VP.ext||'mp3'}`;
+function vUrl(t){if(!vOn())return null;const h=vHash(t);if(VSET.has(h))return vPath(h);(window.VMISS||(window.VMISS=new Set())).add(t);return null;}
+let VA=null;
+function sayNow(t){const url=vUrl(t);if(url)sayFile(t,url);else sayTTS(t);}
+function sayFile(t,url){try{speechSynthesis.cancel();}catch(e){}
+  if(!VA){VA=new Audio();VA.preload='auto';}const a=VA,tok={};try{a.pause();}catch(e){}
+  const rate=Math.min(1.2,Math.max(.85,(+store.get('yj_rate','.9')||.9)/.9));   // 말 빠르기: 보통(.9)이 파일 그대로
+  SAY.u=tok;SAY.busy=true;SAY.scr=S.screen;SAY.end=Date.now()+900+t.length*200;
+  const back=()=>{if(SAY.u!==tok)return;SAY.u=null;sayTTS(t);};   // 파일을 못 틀면 기기 목소리로
+  a.onended=()=>{if(SAY.u!==tok)return;SAY.busy=false;sayFlush();};a.onerror=back;
+  a.onloadedmetadata=()=>{if(SAY.u===tok&&isFinite(a.duration))SAY.end=Date.now()+a.duration*1000/rate+250;};
+  a.defaultPlaybackRate=rate;a.src=url;a.playbackRate=rate;
+  try{const pr=a.play();if(pr&&pr.catch)pr.catch(e=>{if(e&&e.name==='AbortError')return;back();});}catch(e){back();}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&VA){try{VA.pause();}catch(e){}}});
+// 인터넷이 될 때 녹음 파일을 조용히 미리 받아 둬요 (세 개씩). 목소리를 바꾸면 옛 목소리 저장본은 지워요
+async function voiceWarm(){if(!VSET.size||!('caches' in window)||!navigator.onLine)return;
+  try{const name='yuju-voice-'+VP.id;for(const k of await caches.keys())if(k.startsWith('yuju-voice-')&&k!==name)caches.delete(k);
+    const c=await caches.open(name),have=new Set((await c.keys()).map(r=>r.url)),todo=[];
+    for(const h of VSET){const u=new URL(vPath(h),location.href).href;if(!have.has(u))todo.push(u);}
+    let i=0;const run=async()=>{while(i<todo.length){const u=todo[i++];try{const r=await fetch(u);if(r.ok)await c.put(u,r);}catch(e){return;}}};
+    await Promise.all([run(),run(),run()]);}catch(e){}}
+setTimeout(voiceWarm,8000);
+function sayTTS(t){try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(t);
   u.lang='ko-KR';u.pitch=1.12;u.rate=+store.get('yj_rate','.9')||.9;u.volume=1;if(!KO_VOICE)pickVoice();if(KO_VOICE)u.voice=KO_VOICE;
   SAY.u=u;SAY.busy=true;SAY.scr=S.screen;SAY.end=Date.now()+700+t.length*240/u.rate;   // 끝났다는 소식이 안 오는 기기도 있어서 예상 끝 시각
   u.onend=u.onerror=()=>{if(SAY.u!==u)return;SAY.busy=false;sayFlush();};s.speak(u);}catch(e){}}
 function sayFlush(){clearTimeout(SAY.qT);const q=SAY.q;SAY.q=null;if(q&&q.scr===S.screen&&!document.hidden)sayNow(q.t);}
-function sayStop(){SAY.q=null;clearTimeout(SAY.qT);SAY.busy=false;SAY.u=null;try{speechSynthesis.cancel();}catch(e){}}
+function sayStop(){SAY.q=null;clearTimeout(SAY.qT);SAY.busy=false;SAY.u=null;try{speechSynthesis.cancel();}catch(e){}try{VA&&VA.pause();}catch(e){}}
 function say(txt){const t=sayText(txt);if(!t)return;let lt=0;try{lt=lastTouch;}catch(e){}
   if(t===SAY.last&&lt<=SAY.lastAt){if(++SAY.rep>=2)return;}else SAY.rep=0;   // 가만히 있을 때 같은 말 되풀이는 두 번까지
   SAY.last=t;SAY.lastAt=Date.now();
@@ -1629,7 +1656,7 @@ addEventListener('popstate',()=>{history.pushState({yj:1},'');
   if(S.screen==='home')return;const b=document.querySelector('#'+S.screen+' [id$="Back"]');b?b.click():show('home');});
 
 /* 오프라인 저장 + 설치 */
-const APP_VERSION='v45';
+const APP_VERSION='v46';
 $('ver').textContent=APP_VERSION;
 let pendingReload=false;
 if('serviceWorker' in navigator){
@@ -2940,15 +2967,17 @@ function openParent(){const P=$('parent');P.classList.add('on');renderPhotos();
     b.textContent=t;b.className=limitMin()===m?'sel':'';b.onclick=()=>{store.set('yj_limit',m);openParent();};ls.appendChild(b);});
   const r=playRec();$('todayTime').textContent=`${Math.floor(r.s/60)}분`+(r.extra?` (10분씩 ${r.extra/10}번 더 줌)`:'');
   const rs=$('rateSeg');rs.innerHTML='';const cur=store.get('yj_rate','.9');[['.8','천천히'],['.9','보통'],['1','조금 빠르게']].forEach(([v,t])=>{const b=document.createElement('button');
-    b.textContent=t;b.className=cur===v?'sel':'';b.onclick=()=>{store.set('yj_rate',v);openParent();say('이 빠르기로 말할게요');};rs.appendChild(b);});
+    b.textContent=t;b.className=cur===v?'sel':'';b.onclick=()=>{store.set('yj_rate',v);openParent();sayStop();SAY.last='';say('이 빠르기로 말할게요');};rs.appendChild(b);});
   const vs2=$('volSeg');vs2.innerHTML='';const cv=store.get('yj_bgmvol','.12');[['.05','아주 작게'],['.12','작게'],['.22','보통'],['.35','크게']].forEach(([v,t])=>{const b=document.createElement('button');
     b.textContent=t;b.className=cv===v?'sel':'';b.onclick=()=>{store.set('yj_bgmvol',v);if(BGA)BGA.volume=+v;openParent();};vs2.appendChild(b);});
   const ds=$('dsndSeg');ds.innerHTML='';DRAWSND.forEach(([v,t])=>{const b=document.createElement('button');b.textContent=t;b.className=drawSnd()===v?'sel':'';
     b.onclick=()=>{store.set('yj_drawsnd',v);openParent();for(let k=0;k<14;k++)setTimeout(()=>{SCR.dist=999;SCR.lastB=0;drawSound(14,false,PH*(.2+k*.05),v);},k*(v==='scratch'?35:160));};ds.appendChild(b);});
   const vl=$('voiceList');vl.innerHTML='';let vs=[];try{vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));}catch(e){}
-  if(!vs.length)vl.innerHTML='<div class="none">탭에 한국어 목소리가 없어요. 설정 → 일반 → 텍스트 음성 변환에서 받을 수 있어요.</div>';
-  vs.forEach(v=>{const b=document.createElement('button');b.textContent='▶ '+v.name.replace(/\s*\(.*?\)\s*/g,' ').trim();b.className=KO_VOICE&&KO_VOICE.name===v.name?'sel':'';
-    b.onclick=()=>{store.set('yj_voice',v.name);KO_VOICE=v;say('안녕! 나는 유주 놀이터 친구야. 같이 놀자!');openParent();};vl.appendChild(b);});}
+  if(VSET.size){const b=document.createElement('button');b.textContent='▶ 귀여운 녹음 목소리'+(VP.name?` (${VP.name})`:'');b.className=vOn()?'sel':'';
+    b.onclick=()=>{store.set('yj_vmode','file');sayStop();SAY.last='';say('안녕! 반가워!');openParent();};vl.appendChild(b);}
+  if(!vs.length&&!VSET.size)vl.innerHTML='<div class="none">탭에 한국어 목소리가 없어요. 설정 → 일반 → 텍스트 음성 변환에서 받을 수 있어요.</div>';
+  vs.forEach(v=>{const b=document.createElement('button');b.textContent='▶ '+v.name.replace(/\s*\(.*?\)\s*/g,' ').trim();b.className=!vOn()&&KO_VOICE&&KO_VOICE.name===v.name?'sel':'';
+    b.onclick=()=>{store.set('yj_voice',v.name);store.set('yj_vmode','tts');KO_VOICE=v;sayStop();SAY.last='';say('안녕! 나는 유주 놀이터 친구야. 같이 놀자!');openParent();};vl.appendChild(b);});}
 longPress($('title'),3000,()=>{sfx.tap();openParent();});
 $('parentClose').onclick=()=>$('parent').classList.remove('on');
 /* ================= 친구 꾸미기 (옷입히기 자리) ================= */
@@ -3399,7 +3428,7 @@ function ftShare(g){if(FT.gen!==g||S.screen!=='fruit')return;const G=FT.G,A=$('f
     d.animate([{transform:`translateX(${G.W-x+40}px)`},{transform:'translateY(-12%)',offset:.7},{transform:'none'}],{duration:900+i*260,easing:'ease-out'});
     const it={el:d,ch,ate:0};d.addEventListener('pointerdown',e=>{e.preventDefault();ftGive(it);});return it;});
   sfx.giggle();
-  setTimeout(()=>{if(FT.gen!==g)return;say(`${FT.pals.map(c=>c.name).join(', ')}! 친구들이 왔어요. 과일을 나눠 줘요! 친구를 톡 눌러요`);},1000);}
+  setTimeout(()=>{if(FT.gen!==g)return;say('친구들이 왔어요! 과일을 나눠 줘요! 친구를 톡 눌러요');},1000);}
 function ftGive(it){if(FT.stage==='party'&&it){it.el.classList.remove('munch','jump');void it.el.offsetWidth;it.el.classList.add('jump');sfx.giggle();say(it.ch.name);return;}
   if(FT.stage!=='share')return;const left=FT.wf.filter(e=>e.isConnected);if(!left.length)return;FT.last=Date.now();
   const min=Math.min(...FT.pe.map(p=>p.ate)),hungry=FT.pe.find(p=>p.ate===min);
